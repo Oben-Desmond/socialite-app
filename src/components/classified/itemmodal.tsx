@@ -3,20 +3,42 @@
 import { IonAvatar, IonBackdrop, IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonText, IonToolbar } from '@ionic/react';
 import { arrowBack, callOutline, close, heartOutline, locationOutline, logoWhatsapp, mailOutline, shareSocial, shareSocialOutline } from 'ionicons/icons';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { classifiedItemInterface } from '../../interfaces/classifiedItems';
+import { StoreStateInteface } from '../../interfaces/redux';
+import { UserInterface } from '../../interfaces/users';
 import LetteredAvatar from '../LetterAvatar';
 import ClassifiedItem from './ClassifiedItem';
+import { Share } from "@capacitor/share";
+
 import "./style.css";
 
 
 const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, item: classifiedItemInterface, distance: number }> = function ({ isOpen, onDidDismiss, item, distance }) {
-    
-    const contentRef= React.useRef<HTMLIonContentElement>(null)
 
-    function scrollToBottom(){
+    const contentRef = React.useRef<HTMLIonContentElement>(null)
+    const rootState: StoreStateInteface | any = useSelector(state => state)
+    const user: UserInterface | undefined = rootState.userReducer
+
+
+    function scrollToBottom() {
         contentRef.current?.scrollToBottom(2500)
     }
-    
+
+    function contactSeller() {
+        if (user?.email && user.name)
+            fetch(`https://socialiteapp-backend.herokuapp.com/classified/contact-warning?email=${user.email}&name=${user.name}`).finally(console.log)
+    }
+
+  async  function shareItem() {
+
+        await Share.share({
+            title: `${item.item_name}`,
+            text: `Checkout this cool item from Socialite app`,
+            url: `http:socialite.web.app/${item.item_id}`,
+            dialogTitle: 'Share with friends and Family',
+        });
+    }
     return (
         <IonModal cssClass={`classified-modal`} onDidDismiss={onDidDismiss} isOpen={isOpen}>
             <IonContent ref={contentRef}>
@@ -60,12 +82,12 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                                 <IonIcon icon={heartOutline}></IonIcon>
                             </IonButton></div>
                             <div>
-                                <IonButton fill={`clear`} className={`btn-react`} color={`dark`}>
+                                <IonButton onClick={shareItem} fill={`clear`} className={`btn-react`} color={`dark`}>
                                     <IonIcon icon={shareSocialOutline}></IonIcon>
                                 </IonButton>
                             </div>
                             <div>
-                                <IonButton onClick={()=>scrollToBottom()} fill={`clear`} className={`btn-react`} color={`dark`}>
+                                <IonButton onClick={() => scrollToBottom()} fill={`clear`} className={`btn-react`} color={`dark`}>
                                     <IonIcon icon={locationOutline}></IonIcon>
                                 </IonButton>
                             </div>
@@ -97,7 +119,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                             </IonCol>
                             <IonCol>
                                 <div className="name">{item.item_contact.user_name}</div>
-                                <IonRow>
+                                <IonRow onClick={contactSeller} className={`contact-fabs`}>
                                     <IonCol>
                                         <IonFabButton href={`https://wa.me/${item.item_contact.user_tel}`} color={`success`}>
                                             <IonIcon icon={logoWhatsapp} />
@@ -118,7 +140,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                         </IonRow>
                     </IonGrid>
                     <IonCardTitle className={`sub-title`}>
-                        Location <br/>
+                        Location <br />
                         <IonNote>
                             {Math.floor(distance)} km from you
                     </IonNote>

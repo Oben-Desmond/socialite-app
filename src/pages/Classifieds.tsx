@@ -30,9 +30,9 @@ const Classifieds: React.FC = () => {
 
     useEffect(() => {
 
-        const category = (categoryData[1].name)
-        setloading(true)
-        const unsub = fstore.collection(`classified`).where(`item_category`, `==`, category.toLowerCase()).onSnapshot(res => {
+        const category = selectedTab
+        console.log(selectedTab)
+       const unsub=  fstore.collection(`classified`).where(`item_category`, `==`, category.toLowerCase()).onSnapshot(res => {
             const docs: any[] = res.docs.map((doc) => doc.data())
             console.log(docs)
             setclassifiedList(docs)
@@ -41,8 +41,9 @@ const Classifieds: React.FC = () => {
             
         })
 
-        return (unsub)
-    }, [])
+        return (()=>unsub())
+
+    }, [selectedTab])
 
     function getClassified(category: string) {
 

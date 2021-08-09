@@ -9,9 +9,14 @@
      
       margin-bottom: -10px;
 }
-.login .login-list{
+.signup .login-list{
     padding: 20px 0;
     margin-top: -80px;
+    --ion-background-color:transparent;
+}
+.login .login-list{
+    padding: 20px 0;
+    transform: translate(0,-40px);
     --ion-background-color:transparent;
 }
 

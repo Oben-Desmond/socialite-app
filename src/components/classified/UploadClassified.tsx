@@ -53,6 +53,8 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                 Toast.show({ text: `post has been sent` })
                 setselectedTab(data.category)
                 dropRef.current?.click()
+                fetch(`https://socialiteapp-backend.herokuapp.com/classified/upload-mail?email=${user.email}&name=${user.name}`, { mode: `cors` }).catch(console.log).finally(console.log)
+
             }).finally(() => {
                 setimages([])
                 setloading(false)
@@ -93,7 +95,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
         photosFromCamera().then((data: any) => {
             if (data)
                 setimages([...images, data])
-                
+
         })
     }
 
@@ -146,7 +148,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
-                                <IonSelect  name={`category`} >
+                                <IonSelect name={`category`} >
                                     <IonSelectOption value={`clothing`}>clothing</IonSelectOption>
                                     <IonSelectOption value={`food`}>food stuff</IonSelectOption>
                                     <IonSelectOption value={`electronics`}>Electronics</IonSelectOption>

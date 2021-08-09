@@ -15,7 +15,7 @@ import {
   IonToolbar,
 } from '@ionic/react';
 
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exitOutline, flagOutline, heart, heartOutline, heartSharp, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 import { Pictures } from '../pages/images/images';
@@ -26,6 +26,9 @@ import FlipMove from 'react-flip-move';
 import React from 'react';
 import { updateCountry } from '../states/action-creators/country';
 import { countryInfoInterface } from '../interfaces/country';
+import LetteredAvatar from './LetterAvatar';
+import {Storage} from '@capacitor/storage';
+import { updateUser } from '../states/action-creators/users';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -78,7 +81,7 @@ const Menu: React.FC = () => {
   const user: UserInterface = rootState.userReducer;
   const dispatch = useDispatch()
   const countryInfo:countryInfoInterface|undefined=  rootState.countryReducer
-
+  const history= useHistory()
   useEffect(() => {
  
     fetch(`https://get.geojs.io/v1/ip/country.json`).then(async res => {
@@ -88,18 +91,37 @@ const Menu: React.FC = () => {
       }
     }).catch(console.log)
 
+   initUser()
+
   }, [])
+
+
+ async  function initUser(){
+   const userStr=( await  Storage.get({key:`user`})).value
+   if(userStr){
+     const user = JSON.parse(userStr)
+     dispatch(updateUser(user))
+     history.push(`/home`)
+
+   }
+  }
   return (
     <IonMenu className={`menu`} contentId="main" type="overlay">
       <IonToolbar color={`none`}>
         <div className={`country-flag`}>
-          <IonImg src={user?.photoUrl|| Pictures.dp} />
+          <IonImg src={user?.photoUrl|| Pictures.bg} />
         </div>
         <IonToolbar className={`dp`} color={`none`} style={{ marginTop: `-20px` }}>
        {countryInfo?.country&& <img style={{marginBottom:`-20px`}} src={`https://www.countryflags.io/${countryInfo?.country}/shiny/64.png`}/>}
-          <IonAvatar slot={`end`}  >
+          {user.photoUrl&&<IonAvatar slot={`end`}  >
             <IonImg src={user.photoUrl} />
-          </IonAvatar>
+          </IonAvatar>}
+          {
+            !user.photoUrl&& user.name&& <IonButtons slot={`end`}>
+              <LetteredAvatar size={60} backgroundColor={`var(--ion-color-secondary)`} name={user?.name[0]} />
+            </IonButtons>
+                              
+           }
         </IonToolbar>
       </IonToolbar>
       <IonContent>

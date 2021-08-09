@@ -15,6 +15,7 @@ import { UserInterface } from '../../interfaces/users';
 import FlipMove from 'react-flip-move';
 import { uploadCommentToFirebase } from '../../Firebase/pages/story modal';
 import ProfileModal from '../ProfileModal';
+import LetteredAvatar from '../LetterAvatar';
 
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
@@ -144,7 +145,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         setviewProfile(true)
 
         if (email == post.email) {
-            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url,tel:(user?.tel ||``) })
+            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``) })
         }
     }
     return (
@@ -369,14 +370,34 @@ function ViewIcon(props: { user: UserInterface | undefined, dislikes: string[] }
 function Comment(props: { comment: commentInterface }) {
     const { comment } = props
     const [reply, setreply] = useState(false)
+    const colors=[`primary`,`secondary`,`danger`,`success`,`warning`,`tertiary`,`dark`,`medium`]
+    const alpha=`abcdefghijklmnopqrstuvwxyz`;
+    const [randomColor]= useState(colors[getColorIndex(comment.author_name)])
+
+    function getColorIndex(name:string){
+        let num=0
+        if(!name) return num;
+
+       const index= alpha.indexOf(name[0].toLowerCase())
+       num= index>=0?index:0;
+       
+        return num%colors.length
+    }
     return (
         <IonRow className={`comment`}>
             <IonCol>
                 <IonRow>
                     <IonCol size={`3`}>
-                        <IonAvatar style={{ maxHeight: `50px` }}>
+                      { comment.photoUrl && <IonAvatar style={{ maxHeight: `50px` }}>
                             <img src={comment.photoUrl} ></img>
-                        </IonAvatar>
+                        </IonAvatar>}
+                      
+                        {
+                            !comment.photoUrl && comment.author_name && <IonButtons >
+                                <LetteredAvatar size={50} backgroundColor={`var(--ion-color-${randomColor})`} name={comment.author_name} />
+                            </IonButtons>
+
+                        }
                     </IonCol>
                     <IonCol>
                         <label>{comment.author_name}</label><br />

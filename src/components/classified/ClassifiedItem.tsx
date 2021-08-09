@@ -9,6 +9,7 @@ import { classifiedItemInterface } from "../../interfaces/classifiedItems";
 const ClassifiedItem: React.FC<{ item: classifiedItemInterface }> = ({ item }) => {
 
     const [viewItem, setviewItem] = useState(false)
+    const [distance, setdistance] =  useState(Math.floor(CalculateDistanceKm({long:0.2839,lat:7.8989},item.item_location)))
     return (
         <>
             <div onClick={() => setviewItem(true)} className="card">
@@ -16,10 +17,11 @@ const ClassifiedItem: React.FC<{ item: classifiedItemInterface }> = ({ item }) =
                 <div className="info">
                     <span className="label">{item.item_name}</span>
                     {item.item_features.length > 0 && <span className="desc">{item.item_features[0].substr(0,20)}</span>}
+                    <span style={{color:`var(--ion-color-secondary)`}} className="desc">{distance} km</span>
                     <span className="price">{item.item_cost}</span>
                 </div>
             </div>
-            <ClassifiedItemModal distance={CalculateDistanceKm({long:0.2839,lat:7.8989},item.item_location)} item={item} onDidDismiss={() => { setviewItem(false) }} isOpen={viewItem}></ClassifiedItemModal>
+            <ClassifiedItemModal distance={distance} item={item} onDidDismiss={() => { setviewItem(false) }} isOpen={viewItem}></ClassifiedItemModal>
         </>
     )
 }

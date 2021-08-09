@@ -1,6 +1,6 @@
 // @flow strict
-import { IonButton, IonCard, IonCardHeader, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonNote, IonPage, IonRadio, IonRadioGroup, IonSelect, IonSelectOption, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
-import { arrowForward, bagOutline, lockClosedOutline, mailOpenOutline, peopleOutline, personOutline } from 'ionicons/icons';
+import { IonButton, IonCard, IonCardHeader, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonLoading, IonNote, IonPage, IonRadio, IonRadioGroup, IonSelect, IonSelectOption, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
+import { arrowForward, bagOutline, lockClosedOutline, logoWhatsapp, mailOpenOutline, peopleOutline, personOutline } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { hideTabBar } from '../App';
@@ -9,11 +9,15 @@ import './style/Login.css';
 import { UserInterface } from '../interfaces/users';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../states/action-creators/users';
+import { auth, fstore } from '../Firebase/Firebase';
+import { Dialog } from "@capacitor/dialog";
+import { Storage } from "@capacitor/storage";
 
 const SignUp: React.FC = () => {
 
     const [businessAcc, setbusinessAcc] = useState(false)
     const [acctype, setacctype] = useState(`0`)
+    const [loading, setloading]  = useState(false)
     function modifyAccountType(value: string) {
         setacctype(value)
         setbusinessAcc(value === `1` ? true : false)
@@ -34,20 +38,33 @@ const SignUp: React.FC = () => {
             }
         })
         console.log(data)
+        if(!(data.email && data.name && data.tel &&data.pass)) {
+            Dialog.alert({message:`you have some missen fields`,title:`Authentication error`});
+        }
         const user: UserInterface = {
             name: data.name,
             bio: ``,
-            domain: data.domain,
+            domain: data.domain||``,
             email: data.email,
-            location: `pitsburg`,
+            location: ``,
             photoUrl: ``,
             tel:data.tel
         }
+        setloading(true)
+        
+        auth.createUserWithEmailAndPassword(data.email,data.pass).then(()=>{
+       
+           fstore.collection(`users`).doc(data.email).set(user).catch(err=>Dialog.alert({message:`${err.message}`,title:`Authentication Error`}))
+           location.push(`/home`)
+           Dialog.alert({message:`Account has been successfully created`,title:`Successful`})
+           Storage.set({key:`user`,value:JSON.stringify(user)});
+        }).catch(async(err)=>{
+         
+            await Dialog.alert({message:`${err.message}`,title:`Unable to Create Account`,buttonTitle:`ok`})
+        }).finally(()=>{
+            setloading(false)
+        })
         dispatch(updateUser(user))
-        location.push(`/home`)
-
-
-
 
     }
     return (
@@ -59,7 +76,7 @@ const SignUp: React.FC = () => {
             </IonHeader> */}
 
             <IonContent className={`login signup`}>
-
+                <IonLoading  message={`creating user`} onDidDismiss={()=>setloading(false)} isOpen={loading}></IonLoading>
                 <div className={`upper-decor`}>
                     <div className="bubble1"></div>
                     <div className="bubble2"></div>
@@ -67,14 +84,14 @@ const SignUp: React.FC = () => {
                 <form onSubmit={signIn} action="">
                     <IonList className={`login-list`}>
                         <IonToolbar>
-                            <IonTitle>Sign up</IonTitle>
+                            <IonTitle>Sign up | <span style={{color:`var(--ion-color-secondary)`}}>Socialite</span></IonTitle>
                         </IonToolbar>
 
                         <IonCard>
                             <FlipMove>
                                 <IonItem key={`1`} lines={`inset`}>
                                     <IonIcon icon={personOutline}></IonIcon>
-                                    <IonInput name={`name`} required placeholder={`Enter user name`}></IonInput>
+                                    <IonInput name={`name`} required placeholder={`Enter names`}></IonInput>
                                 </IonItem>
 
                                 <IonItem key={`2`} lines={`inset`}>
@@ -82,7 +99,7 @@ const SignUp: React.FC = () => {
                                     <IonInput name={`email`} placeholder={`Enter email`} required></IonInput>
                                 </IonItem>
                                 <IonItem key={`3`} lines={`inset`}>
-                                    <IonIcon icon={mailOpenOutline}></IonIcon>
+                                    <IonIcon icon={logoWhatsapp}></IonIcon>
                                     <IonInput name={`tel`} placeholder={`Enter phone number`} required></IonInput>
                                 </IonItem>
                                 <IonItem key={`8`} lines={`inset`}>
@@ -119,7 +136,7 @@ const SignUp: React.FC = () => {
                             </FlipMove>
                         </IonCard>
                         <IonToolbar className={`submit-button`}>
-                            <IonButton type={`submit`}>submit</IonButton>
+                            <IonButton type={`submit`}>sign up</IonButton>
                         </IonToolbar>
 
                     </IonList>
