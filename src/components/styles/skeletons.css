@@ -1,0 +1,14 @@
+.home-skeleton .head{
+   height: 150px;
+}
+.home-skeleton .title{
+    height: 20px;
+    width:30%;
+ }
+ .home-skeleton .description{
+    height: 20px;
+    width:89%;
+ }
+.home-skeleton-widget{
+ padding: 10px 20px 0px 10px;
+}

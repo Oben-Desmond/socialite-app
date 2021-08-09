@@ -1,0 +1,49 @@
+.home ion-buttons.weather ion-label{
+   font-size: 13px;
+}
+.story-card .author {
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+.story-card .author ion-avatar{
+   height: 50px;
+   width: 50px;
+}
+.story-card .author ion-label{
+  font-size: 13px;
+}
+.story-card .rating ion-icon{
+    display: block;
+}
+.comment ion-label{
+    font-size: 12px;
+}
+
+.comment p{
+    font-size: 13px;
+}
+.add-modal{
+    padding-top: 20vh;
+    --background:transparent;
+}
+.add-modal ion-header div.header{
+     border-radius: 20px 020px 0 0 ;
+     padding: 20px;
+     background-color: white;
+}
+.add-modal ion-header div.header div.bar{
+  height: 3px;
+  background-color: rgb(171, 171, 171);
+  border-radius: 40px;
+  width: 40vh;
+  margin: auto;
+}
+.add-modal div.input{
+    background-color: rgb(241, 242, 242);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border:1px solid rgb(225, 225, 225);
+}
+.add-modal ion-item.images > ion-thumbnail{
+    margin-left: 10px;
+}

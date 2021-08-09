@@ -1,0 +1,14 @@
+.profile-modal{
+    margin-top: 17vh;
+}
+
+.profile-modal .dp-background{
+    background-color: black;
+}
+.profile-modal  .dp-background ion-img{
+    opacity: 0.9;
+}
+
+.profile-spinner{
+    transform: scale(2);
+}

@@ -1,0 +1,71 @@
+.stories-card{
+    padding:10px;
+    margin-bottom: 20px;
+    
+}
+.stories-card>.news-caption,.stories-card>.time-place{
+    display: block;
+    margin-top: 6px;
+}
+.stories-card .news-caption{
+    font-size: 14px;
+}
+.stories-card .time-place{
+    font-size: 14px;
+}
+.stories-card hr{
+    border:0.2px solid rgb(242, 242, 242);
+    height:0.2px
+}
+.story-card{
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: -30px;
+    background: white;
+}
+.stories-card .hero-img{
+    /* max-height: 300px; */
+}
+
+.stories-card  .hero-img img{
+      object-fit: cover;
+      max-height: 50vh;
+      width: 100%;
+}
+.stories-card .description {
+    font-size: 14px;
+    color: rgb(91, 89, 89);
+}
+.stories-card .news-caption{
+    font-size: 20px !important;
+    text-transform: capitalize;
+}
+.story-modal{
+    /* --background:transparent */
+}
+.story-modal .edit-fab{
+    transform: translateY(-80px);
+}
+
+.story-modal .card-title{
+     text-transform: capitalize;
+     font-size: 26px;
+}
+.story-modal .background{
+    max-height: 50vh;
+}
+.comment-footer{
+    border-radius: 20px;
+    --background:transparent !important;
+}
+.comment-footer ion-toolbar{
+    border-radius: 30px;
+   
+}
+.comment-field *{
+ margin: 0;
+ padding: 0;
+}
+.comment-field  ion-col{
+    margin-right: 10px;
+}

@@ -1,0 +1,10 @@
+.photo-option-modal{
+    padding-top:70vh;
+    background-color: rgba(0, 0, 0, 0.181);
+}
+.photo-option-modal .option-container{
+  display: grid;
+  grid-template-columns: auto auto 40%;
+  padding: 20px;
+}
+

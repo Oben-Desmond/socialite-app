@@ -1,0 +1,118 @@
+.classified-modal .main-img{
+    height:60vh;
+    width: 100%;
+    object-fit: cover;
+}
+.classified-modal .top-slide  {
+    position: relative;
+}
+
+.classified-modal .top-slide  .close-btn{
+   position: absolute;
+   top: 60px;
+   z-index: 99999999999999 !important;
+   opacity:0.6;
+
+}
+
+.classified-modal .top-slide .pager{
+     background-color: rgba(0, 0, 0, 0.092);
+     padding: 5px;
+     display: grid;
+     grid-template-columns: 35% auto 35%;
+     position: absolute;
+     bottom:7%;
+     z-index: 99999999999999 !important;
+     width: 100%;
+} 
+
+.classified-modal .top-slide .pager .pager-content{
+   display: flex;
+}
+
+.classified-modal .top-slide .pager  .pager-content>*{
+   flex: 1;
+   width: 100%;
+}
+.classified-modal .top-slide .pager .circle{
+   
+    background-color: white;
+    border-radius: 50%;
+    flex: 1;
+    height: 8px;
+    width: 8px;
+    margin: auto;
+ }
+ .classified-modal .top-slide .pager .circle.active{
+    background-color: var(--ion-color-secondary)
+ }
+
+
+ .classified-modal .name-price{
+     display: grid;
+     grid-template-columns: 60% auto;
+ }
+ .classified-modal .item-title{
+    color: var(--ion-color-primary);
+     font-size: 24px;
+ }
+
+ .classified-modal .item-price{
+     padding:10px;
+     font-size:20px;
+     text-align:right;
+     color:var(--ion-color-secondary)
+
+ }
+
+ .classified-modal .item-desc{
+     font-size: 15px;
+     padding: 20px 0 0 0 ;
+ }
+ .classified-modal .sub-title{
+     margin: 20px 0;
+     color: var(--ion-color-primary)
+ }
+ .classified-modal .list {
+     padding-bottom: 20px;
+ }
+ .classified-modal .list ion-item{
+     font-size: 14px;
+      color: rgb(47, 47, 47);
+ }
+
+ .classified-modal .reactions{
+     padding: 10px 20px;
+
+ }
+
+ .classified-modal .contact-card *{
+     margin:0;
+     padding: 0;
+ }
+
+ .classified-modal .reactions ion-button{
+      box-shadow: 1px 2px 10px rgba(43, 43, 43, 0.112);
+      opacity: 1;
+      border-radius: 10px;
+      
+ }
+ .classified-modal .reactions ion-button ion-icon{
+      transform: scale(1.5);
+ }
+ .classified-modal .reactions .react-grid{
+     display: grid;
+     grid-template-columns: auto auto auto;
+ }
+
+ .classified-modal .contact-card .name{
+     font-size: 18px;
+     margin-bottom: 15px;
+ }
+ .classified-modal .contact-card {
+     margin-bottom: 15px;
+ }
+ 
+ .classified-menu {
+     transform: translateY(50px);
+ }

@@ -1,0 +1,71 @@
+.login ion-card{
+    border-radius: 4px  28px 28px 4px;
+}
+.login {
+    --background:var(--ion-color-light);
+  
+}
+.login .fab{
+     
+      margin-bottom: -10px;
+}
+.login .login-list{
+    padding: 20px 0;
+    margin-top: -80px;
+    --ion-background-color:transparent;
+}
+
+.upper-decor{
+    position:relative;
+    top: 0px;
+    height: 200px;
+    margin-top: -10px;
+    margin-left: -10px;
+    transform: scale(1.6);
+}
+.upper-decor>*{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: var(--ion-color-primary);
+    border-radius: 50%;
+    opacity: 0.96;
+}
+.upper-decor .bubble1{
+    top: 0px;
+    width: 130px;
+    height: 130px;
+}
+
+.upper-decor .bubble2{
+  left:60px;
+}
+.login ion-toolbar.forgot a{
+    text-align: end;
+    color: var(--ion-color-secondary);
+}
+
+ .login-list ion-input,.login-list ion-label{
+     margin-left: 10px;
+ }
+
+ .signup ion-label{
+   font-size: 13px;
+ }
+ .signup ion-input{
+    font-size: 13px;
+  }
+
+  .signup ion-radio-group ion-label{
+    font-size: 14px !important;
+  }
+
+  .signup ion-select {
+    font-size: 14px !important;
+  }
+  .signup ion-item.domain ion-label{
+      color: rgb(91, 89, 89) !important;
+  }
+  .submit-button{
+      text-align: center;
+  }
