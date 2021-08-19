@@ -14,7 +14,6 @@ export interface classifiedItemInterface{
       item_images:string[],
       item_cost:string,
       country_code:string,
-      item_keywords:string[]
 }
 
 
@@ -22,5 +21,16 @@ export interface ClassifiedContactInterface{
     user_name:string,
     user_email:string,
     user_tel:string,
-    user_photo:string
+    user_photo:string,
+}
+
+
+export interface ReviewItemInterface{
+     rating:number,
+     photoUrl:string,
+     username:string,
+     text:string,
+     timestamp:number,
+     id:string,
+     email:string
 }

@@ -116,3 +116,44 @@
  .classified-menu {
      transform: translateY(50px);
  }
+ .classified-modal .review-item ion-label{
+     font-size: 14px;
+ }
+ .classified-modal .review-item ion-buttons{
+     transform: scale(0.9);
+ }
+
+.classified-modal .review-item div{
+    font-size: 12.4px;
+ }
+
+ .classified-modal .review-item .date span{
+     font-size: 15px;
+     color: rgb(132, 131, 131);
+     margin-top: 10px; 
+ }
+
+ .star-input{
+     padding: 40px 20px;
+     text-align: center;
+     position:relative;
+ }
+ .star-input>.star-button{
+     position: absolute;
+     left:50%;
+     transform: translate(-50%,-50%);
+ }
+
+ .star-btn-next {
+    position: relative;
+    padding: 10px;
+  }
+
+
+ .star-btn-next {
+    margin: auto;
+  }
+
+  .star-input>.star-button .emoji{
+      font-size: 20px;
+  }

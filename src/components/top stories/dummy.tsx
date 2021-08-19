@@ -24,7 +24,7 @@ const SkeletonWidget = () => {
         <div className={`home-skeleton-widget`}>
             <SkeletonHeader></SkeletonHeader>
             <IonSkeletonText className={`title`}></IonSkeletonText>
-            <IonSkeletonText className={`description`}></IonSkeletonText>
+            <IonSkeletonText animated className={`description`}></IonSkeletonText>
             <IonSkeletonText className={`description`}></IonSkeletonText>
         </div>
     )

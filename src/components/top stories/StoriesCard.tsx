@@ -16,6 +16,8 @@ import FlipMove from 'react-flip-move';
 import { uploadCommentToFirebase } from '../../Firebase/pages/story modal';
 import ProfileModal from '../ProfileModal';
 import LetteredAvatar from '../LetterAvatar';
+import TimeAgo from '../timeago';
+
 
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
@@ -44,28 +46,9 @@ export default StoriesCard;
 
 
 export function GetHoursAgo(props: { timestamp: number }) {
-    let time = (Date.now() - props.timestamp) / 1000 / 60 / 60
-
-    if (time < 1 && !(time * 60 > 0)) {
-        return (<span>
-            just now
-        </span>)
-    }
-    if (time < 1 && time * 60 > 0) {
-        return (<span>
-            {Math.round(time * 60)} mins Ago
-        </span>)
-    }
-
-    if (time > 24) {
-        return (<span>
-            {Math.round(time / 24)} days Ago
-        </span>)
-    }
+    
     return (
-        <span>
-            {Math.round(time)} Hours Ago
-        </span>
+        <TimeAgo timestamp={props.timestamp}/>
     )
 }
 
@@ -370,28 +353,28 @@ function ViewIcon(props: { user: UserInterface | undefined, dislikes: string[] }
 function Comment(props: { comment: commentInterface }) {
     const { comment } = props
     const [reply, setreply] = useState(false)
-    const colors=[`primary`,`secondary`,`danger`,`success`,`warning`,`tertiary`,`dark`,`medium`]
-    const alpha=`abcdefghijklmnopqrstuvwxyz`;
-    const [randomColor]= useState(colors[getColorIndex(comment.author_name)])
+    const colors = [`primary`, `secondary`, `danger`, `success`, `warning`, `tertiary`, `dark`, `medium`]
+    const alpha = `abcdefghijklmnopqrstuvwxyz`;
+    const [randomColor] = useState(colors[getColorIndex(comment.author_name)])
 
-    function getColorIndex(name:string){
-        let num=0
-        if(!name) return num;
+    function getColorIndex(name: string) {
+        let num = 0
+        if (!name) return num;
 
-       const index= alpha.indexOf(name[0].toLowerCase())
-       num= index>=0?index:0;
-       
-        return num%colors.length
+        const index = alpha.indexOf(name[0].toLowerCase())
+        num = index >= 0 ? index : 0;
+
+        return num % colors.length
     }
     return (
         <IonRow className={`comment`}>
             <IonCol>
                 <IonRow>
                     <IonCol size={`3`}>
-                      { comment.photoUrl && <IonAvatar style={{ maxHeight: `50px` }}>
+                        {comment.photoUrl && <IonAvatar style={{ maxHeight: `50px` }}>
                             <img src={comment.photoUrl} ></img>
                         </IonAvatar>}
-                      
+
                         {
                             !comment.photoUrl && comment.author_name && <IonButtons >
                                 <LetteredAvatar size={50} backgroundColor={`var(--ion-color-${randomColor})`} name={comment.author_name} />

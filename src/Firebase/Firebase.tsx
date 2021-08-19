@@ -16,5 +16,6 @@ const firebaseConfig = {
   const fstore= app.firestore()
   const auth = app.auth()
   const storage = app.storage()
+  const db = app.database()
 
-  export {fstore,auth , storage}
+  export {fstore,auth , storage, db}

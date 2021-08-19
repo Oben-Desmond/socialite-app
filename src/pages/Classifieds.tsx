@@ -1,58 +1,143 @@
 // @flow strict
 
-import { IonAvatar, IonBackdrop, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonListHeader, IonMenuButton, IonPage, IonPopover, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
-import { addCircle, addCircleOutline, addOutline, close, ellipsisVertical, heart, heartOutline, menu, shirtOutline } from 'ionicons/icons';
+import { Geolocation } from '@capacitor/geolocation';
+import { IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRow, IonSearchbar, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline } from 'ionicons/icons';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import FlipMove from 'react-flip-move';
 import { useDispatch, useSelector } from 'react-redux';
 import ClassifiedItem from '../components/classified/ClassifiedItem';
+import { fetchMyItems } from '../components/classified/classifieds-fetch';
+import SearchModal from '../components/classified/searchModal';
 import UploadClassified from '../components/classified/UploadClassified';
+import { getItemsMatching } from '../components/classified/uploadClassifiedToDB';
 import SkeletonHome from '../components/top stories/dummy';
 import { fstore } from '../Firebase/Firebase';
 import { classifiedItemInterface } from '../interfaces/classifiedItems';
-import { StoreStateInteface } from '../interfaces/redux';
+import { UserInterface } from '../interfaces/users';
+import { selectLocation, update_location } from '../states/reducers/location-reducer';
+import { selectUser } from '../states/reducers/userReducers';
 import { Pictures } from './images/images';
 import "./style/Classifieds.css";
+
 const mycontext: any = []
 export const SelectedTabContext = createContext(mycontext)
 
 const Classifieds: React.FC = () => {
     const [showMenu, setshowMenu] = useState(false)
+    const [startSearch, setstartSearch] = useState(false)
     const [uploadItem, setuploadItem] = useState(false)
+    const [searchResults, setsearchResults] = useState(false)
     const [classifiedList, setclassifiedList] = useState<classifiedItemInterface[]>()
     const [loading, setloading] = useState(false)
     const [notFound, setnotFound] = useState(false)
     const [selectedTab, setselectedTab] = useState(categoryData[1].name)
+    const user_location = useSelector(selectLocation)
+    const user: UserInterface = useSelector(selectUser)
+
+    const dispatch = useDispatch()
     function openUploadItem() {
         setuploadItem(true)
         setshowMenu(false)
     }
+    useIonViewDidEnter(() => {
+        Geolocation.checkPermissions().then((res) => {
+            if (res.location == `granted`)
+                Geolocation.getCurrentPosition().then(data => {
+                    dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
+                })
+            else {
+                Geolocation.requestPermissions().then((res) => {
+                    if (res.location == `granted`) {
+                        Geolocation.getCurrentPosition().then(data => {
+                            dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
+                        })
+                    }
+                })
+
+            }
+        }).catch(sendAlert)
+
+    })
+
+    function sendAlert(val: any) {
+        alert(JSON.stringify(val))
+    }
+    useEffect(() => {
+
+
+        //   fstore.collection(`classified`).get().then((res)=>{
+        //            const docs:any= res.docs.map(doc=>doc.data())
+        //            let queries:any[]=[]
+        //            for(let i in docs){
+        //                const doc:classifiedItemInterface=docs[i]
+        //                db.ref(`indices`)
+        //            }
+        //   })
+
+    }, [])
 
     useEffect(() => {
 
         const category = selectedTab
         console.log(selectedTab)
-       const unsub=  fstore.collection(`classified`).where(`item_category`, `==`, category.toLowerCase()).onSnapshot(res => {
+        setloading(true)
+        setsearchResults(false)
+        const unsub = fstore.collection(`classified`).where(`item_category`, `==`, category.toLowerCase()).onSnapshot(res => {
             const docs: any[] = res.docs.map((doc) => doc.data())
             console.log(docs)
             setclassifiedList(docs)
             setnotFound(docs.length <= 0)
             setloading(false)
-            
+
         })
 
-        return (()=>unsub())
+        return (() => unsub())
 
     }, [selectedTab])
 
+
     function getClassified(category: string) {
+
+    }
+
+    async function getMyItems() {
+        try {
+            setloading(true)
+            const myItems: classifiedItemInterface[] | any = await fetchMyItems(user)
+            setclassifiedList([...myItems])
+            setshowMenu(false)
+            setloading(false)
+
+        } catch (err) {
+            console.log(err)
+            setshowMenu(false)
+            setloading(false)
+        }
+
+    }
+
+    async function searchForItem(text: string) {
+        setstartSearch(false)
+        setclassifiedList([])
+        setloading(true)
+        setnotFound(false)
+
+        const items = await getItemsMatching(text, user_location)
+        if (items.length > 0) {
+            setclassifiedList([...items])
+            setsearchResults(true)
+        } else {
+            setnotFound(true)
+        }
+        setloading(false)
 
     }
     return (
         <IonPage className={`classifieds`}>
             <SelectedTabContext.Provider value={[selectedTab, setselectedTab]}>
-                <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
-                <div className={`header`}>
+              <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
+              { loading&&   <IonProgressBar  color={`secondary`} value={0.5} buffer={0.7}></IonProgressBar>}
+                <div className={`header`} style={{ background: `white` }}>
                     <div className="title">
                         <IonLabel>Classifieds</IonLabel>
                         <div className="menu" onClick={() => setshowMenu(true)}>
@@ -61,7 +146,8 @@ const Classifieds: React.FC = () => {
                             </IonButton>
                         </div>
                     </div>
-                    <IonSearchbar mode={`ios`} placeholder={`search`}></IonSearchbar>
+                   <IonSearchbar onClick={() => setstartSearch(true)} mode={`ios`} placeholder={`search`}></IonSearchbar>
+                   
                 </div>
                 <IonContent >
                     <IonContent scrollY={false} style={{ height: `45px`, width: `100%` }} scrollX className={`category-tab`}>
@@ -71,6 +157,12 @@ const Classifieds: React.FC = () => {
                     </IonContent>
                     {loading && <SkeletonHome></SkeletonHome>}
                     {notFound && <div className={`ion-padding`}><IonImg src={Pictures.notfound} /> <IonLabel>NOT FOUND</IonLabel></div>}
+                    {searchResults && <IonToolbar>
+                        <IonText>
+                            Search Results
+                        </IonText>
+
+                    </IonToolbar>}
                     <IonGrid>
                         <IonRow>
                             <IonCol size={`6`}>
@@ -107,6 +199,7 @@ const Classifieds: React.FC = () => {
                         </IonCol> */}
                         </IonRow>
                     </IonGrid>
+
                 </IonContent>
 
 
@@ -123,7 +216,7 @@ const Classifieds: React.FC = () => {
                             <IonIcon slot={`start`} icon={addCircleOutline} />
                             <IonLabel>upload item</IonLabel>
                         </IonItem>
-                        <IonItem button >
+                        <IonItem onClick={() => getMyItems()} button >
                             <IonIcon slot={`start`} icon={shirtOutline} />
                             <IonLabel>My Items</IonLabel>
                         </IonItem>
@@ -133,6 +226,7 @@ const Classifieds: React.FC = () => {
                         </IonItem>
                     </IonContent>
                 </IonPopover>
+                <SearchModal searchForItem={searchForItem} onDidDismiss={() => setstartSearch(false)} isOpen={startSearch}></SearchModal>
                 <UploadClassified onDidDismiss={() => { setuploadItem(false) }} isOpen={uploadItem}></UploadClassified>
             </SelectedTabContext.Provider>
         </IonPage>

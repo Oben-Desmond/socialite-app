@@ -14,4 +14,7 @@ const userReducer=(state=init, action:actionInterface)=>{
 }
 
 
+export const selectUser=(state:any)=>state.userReducer
+
+
 export default userReducer;

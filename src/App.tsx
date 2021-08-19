@@ -1,4 +1,4 @@
-import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonSplitPane, IonTab, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
+import { IonApp, IonBadge, IonIcon, IonLabel, IonRouterOutlet, IonSplitPane, IonTab, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 import Menu from './components/Menu';
@@ -37,57 +37,55 @@ import IncidentReport from './pages/IncidentReport';
 import React, { useEffect } from 'react';
 import ProfileModal from './components/ProfileModal';
 import Classifieds from './pages/Classifieds';
-import {StatusBar} from "@capacitor/status-bar";
+import { StatusBar } from "@capacitor/status-bar";
 
 const App: React.FC = () => {
 
-  useEffect(()=>{
-        StatusBar.setOverlaysWebView({overlay:true}).catch(console.log)
-  },[])
+  useEffect(() => {
+    StatusBar.setOverlaysWebView({ overlay: true }).catch(console.log)
+  }, [])
   return (
     <IonApp>
       <IonReactRouter>
         {/* <IonSplitPane contentId="main"> */}
-          <Menu />
+        <Menu />
 
 
-          <IonTabs>
-            <IonRouterOutlet id="main">
-              <Route path="/" exact={true}>
-                <Redirect to="/Login" />
-              </Route>
-              <Route path="/notifications" component={Notifications} exact={true} />
-              <Route path="/jobs" component={Jobs} exact={true} />
-              <Route path="/settings" component={Settings} exact={true} />
-              <Route path="/incident-report" component={IncidentReport} exact={true} />
-              <Route path="/home" component={Home} exact={true} />
-              <Route path="/events" component={Events} exact={true} />
-              <Route path="/classifieds" component={Classifieds} exact={true} />
-              <Route path="/public-notice" component={PublicNotice} exact={true} />
-              {/* <Route path="/page/:name" exact={true}>
-                <Page />
-              </Route> */}
-            </IonRouterOutlet>
-            {/* </IonSplitPane> */}
-          {<IonTabBar id={`tabbar`} color={`primary`} slot={`bottom`}>
-            <IonTabButton tab={`stories`} href={`/Home`}>
+        <IonTabs>
+          <IonRouterOutlet id="main">
+            <Route path="/" exact={true}>
+              <Redirect to="/Login" />
+            </Route>
+            <Route path="/notifications" component={Notifications} exact={true} />
+            <Route path="/jobs" component={Jobs} exact={true} />
+            <Route path="/settings" component={Settings} exact={true} />
+            <Route path="/incident-report" component={IncidentReport} exact={true} />
+            <Route path="/home" component={Home} exact={true} />
+            <Route path="/events" component={Events} exact={true} />
+            <Route path="/classifieds" component={Classifieds} exact={true} />
+            <Route path="/public-notice" component={PublicNotice} exact={true} />
+
+          </IonRouterOutlet>
+          <IonTabBar id={`tabbar`} color={`primary`} slot={`bottom`}>
+            <IonTabButton tab={`home`} href={`/home`}>
               <IonIcon icon={documentOutline} />
-              <IonLabel >Top Stories</IonLabel>
+              <IonLabel >Local Feed</IonLabel>
             </IonTabButton>
             <IonTabButton tab={`notice`} href={`/public-notice`}>
               <IonIcon icon={alertCircleOutline} />
+              <IonBadge color={`danger`}>3</IonBadge>
               <IonLabel>Public Notice</IonLabel>
             </IonTabButton>
             <IonTabButton tab={`events`} href={`/events`}>
               <IonIcon icon={wineOutline} />
               <IonLabel>Events</IonLabel>
             </IonTabButton>
-            <IonTabButton  tab={`classifieds`} href={`/classifieds`}>
+            <IonTabButton tab={`classifieds`} href={`/classifieds`}>
               <IonIcon icon={shirtOutline} />
               <IonLabel>Classifieds</IonLabel>
             </IonTabButton>
-          </IonTabBar>}
-          </IonTabs>
+          </IonTabBar>
+        </IonTabs>
         <Route path="/Login" component={Login} exact={true} />
         <Route path="/signup" component={SignUp} exact={true} />
       </IonReactRouter>

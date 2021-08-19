@@ -41,7 +41,6 @@ const AddEventModal:React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = fu
             setloading(true)
 
             UploadEventContent(data,images, user, countryInfo).then(() => {
-                alert(`posted`)
                 Toast.show({ text: `Event has been posted` })
                 dropRef.current?.click()
             }).finally(() => {

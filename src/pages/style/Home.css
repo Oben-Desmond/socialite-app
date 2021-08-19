@@ -25,7 +25,13 @@
 .add-modal{
     padding-top: 20vh;
     --background:transparent;
+    background:rgba(0, 0, 0, 0.366);
 }
+.edit-modal{
+    
+    
+}
+
 .add-modal ion-header div.header{
      border-radius: 20px 020px 0 0 ;
      padding: 20px;
