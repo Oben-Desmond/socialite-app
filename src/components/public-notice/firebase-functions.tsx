@@ -27,11 +27,11 @@ export async function UploadPublicNotice(data: { category: string, title: string
         const main = images[0]
         const blob = await (await fetch(main)).blob()
         console.log(blob)
-        storage.ref(`notice/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
+        storage.ref(`posts/${country_name}/notice/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
             const url = await res.ref.getDownloadURL()
             if (url) {
                 console.log(url)
-                fstore.collection(`notice`).doc(post.timestamp + `${user.email}`).set({ ...post, images: [url] })
+                fstore.collection(`posts/${country_name}/notice`).doc(post.timestamp + `${user.email}`).set({ ...post, images: [url] })
                     .then(async () => {
                         console.log(`resolving`)
                         resolve(`successfull`)
@@ -46,7 +46,7 @@ export async function UploadPublicNotice(data: { category: string, title: string
                             }
                         }
                         console.log(imageUrls)
-                        fstore.collection(`notice`).doc(post.timestamp + `${user.email}`).update({ images: [url, ...imageUrls] })
+                        fstore.collection(`posts/${country_name}/notice`).doc(post.timestamp + `${user.email}`).update({ images: [url, ...imageUrls] })
                     }).catch(reject)
             }
             else reject({ message: `unable to obtain url, sorry` })

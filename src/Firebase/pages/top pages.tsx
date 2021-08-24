@@ -23,11 +23,11 @@ export async function UploadContent(data: { category: string, title: string, sto
         const main = images[0]
         const blob = await (await fetch(main)).blob()
         console.log(blob)
-        storage.ref(`posts/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
+        storage.ref(`posts/${post.location}/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
             const url = await res.ref.getDownloadURL()
             if (url) {
                 console.log(url)
-                fstore.collection(`posts`).doc(post.timestamp + `${user.email}`).set({ ...post, images: [url] })
+                fstore.collection(`posts/${post.location}/feed`).doc(post.timestamp + `${user.email}`).set({ ...post, images: [url] })
                     .then(async () => {
                         console.log(`resolving`)
                         resolve(`successfull`)
@@ -36,13 +36,13 @@ export async function UploadContent(data: { category: string, title: string, sto
                         for (let i = 1; i < images.length; i++) {
                             const blob = await (await fetch(images[i])).blob()
                             if (blob) {
-                                const u = await (await storage.ref(`posts/${user.email}`).put(blob)).ref.getDownloadURL()
+                                const u = await (await storage.ref(`posts/${post.location}/${user.email}`).put(blob)).ref.getDownloadURL()
                                 if (u)
                                     imageUrls = [...imageUrls, u]
                             }
                         }
                         console.log(imageUrls)
-                        fstore.collection(`posts`).doc(post.timestamp + `${user.email}`).update({ images: [url, ...imageUrls] })
+                        fstore.collection(`posts/${post.location}`).doc(post.timestamp + `${user.email}`).update({ images: [url, ...imageUrls] })
                     }).catch(reject)
             }
             else reject({ message: `unable to obtain url, sorry` })
@@ -76,11 +76,11 @@ export async function UploadEventContent(data: { category: string, title: string
         const main = images[0]
         const blob = await (await fetch(main)).blob()
         console.log(blob)
-        storage.ref(`events/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
+        storage.ref(`posts/${country_name}/events/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
             const url = await res.ref.getDownloadURL()
             if (url) {
                 console.log(url)
-                fstore.collection(`events`).doc(post.timestamp + `${user.email}`).set({ ...post, images: [url] })
+                fstore.collection(`posts/${country_name}/events`).doc(post.timestamp + `${user.email}`).set({ ...post, images: [url] })
                     .then(async () => {
                         console.log(`resolving`)
                         resolve(`successfull`)
@@ -95,7 +95,7 @@ export async function UploadEventContent(data: { category: string, title: string
                             }
                         }
                         console.log(imageUrls)
-                        fstore.collection(`events`).doc(post.timestamp + `${user.email}`).update({ images: [url, ...imageUrls] })
+                        fstore.collection(`posts/${country_name}/events`).doc(post.timestamp + `${user.email}`).update({ images: [url, ...imageUrls] })
                     }).catch(reject)
             }
             else reject({ message: `unable to obtain url, sorry` })

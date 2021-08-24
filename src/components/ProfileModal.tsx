@@ -15,9 +15,9 @@ const ProfileModal: React.FC<{ profile: UserInterface | undefined, isOpen: boole
     return (
         <IonModal swipeToClose mode={`ios`} cssClass={`profile-modal`} isOpen={isOpen} onDidDismiss={onDidDismiss} >
             <IonHeader>
-                <div className="dp-background">
+               {profile?.photoUrl &&  <div className="dp-background">
                     <IonImg src={profile?.photoUrl} />
-                </div>
+                </div>}
             </IonHeader>
             <IonContent>
                 <IonToolbar style={{ height: `70vh`, overFlow: `scroll` }} color={`primary`}>

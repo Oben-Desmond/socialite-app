@@ -4,7 +4,7 @@ import { UPDATE_COUNTRY_INFO } from "../constants"
 
 const init:countryInfoInterface | any={}
 
-const userReducer=(state=init, action:actionInterface)=>{
+const countryReducer=(state=init, action:actionInterface)=>{
    
       switch(action.type){
           case  UPDATE_COUNTRY_INFO: return action.payload
@@ -14,4 +14,6 @@ const userReducer=(state=init, action:actionInterface)=>{
 }
 
 
-export default userReducer;
+export const selectCountry=(state:any)=> state.countryReducer
+
+export default countryReducer;

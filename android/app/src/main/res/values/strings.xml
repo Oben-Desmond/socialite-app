@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">socionet</string>
-    <string name="title_activity_main">socionet</string>
-    <string name="package_name">com.example.app</string>
-    <string name="custom_url_scheme">com.example.app</string>
+    <string name="app_name">Socionet</string>
+    <string name="title_activity_main">Socionet</string>
+    <string name="package_name">com.socionet</string>
+    <string name="custom_url_scheme">com.socionet</string>
 </resources>

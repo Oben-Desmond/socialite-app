@@ -136,7 +136,7 @@ const Classifieds: React.FC = () => {
         <IonPage className={`classifieds`}>
             <SelectedTabContext.Provider value={[selectedTab, setselectedTab]}>
               <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
-              { loading&&   <IonProgressBar  color={`secondary`} value={0.5} buffer={0.7}></IonProgressBar>}
+              { loading&&   <IonProgressBar  color={`secondary`} type={`indeterminate`}></IonProgressBar>}
                 <div className={`header`} style={{ background: `white` }}>
                     <div className="title">
                         <IonLabel>Classifieds</IonLabel>
@@ -168,7 +168,7 @@ const Classifieds: React.FC = () => {
                             <IonCol size={`6`}>
                                 {
                                     classifiedList?.map((item: classifiedItemInterface, index: number) => {
-                                        if (!!!(index % 2)) return (
+                                        if (!!!(index % 2) && item) return (
                                             <ClassifiedItem key={index} item={item}></ClassifiedItem>
                                         )
                                     })
@@ -180,7 +180,7 @@ const Classifieds: React.FC = () => {
                             <IonCol size={`6`}>
                                 {
                                     classifiedList?.map((item: classifiedItemInterface, index: number) => {
-                                        if (!!(index % 2)) return (
+                                        if (!!(index % 2)  && item) return (
                                             <ClassifiedItem key={index} item={item}></ClassifiedItem>
                                         )
                                     })

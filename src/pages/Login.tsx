@@ -36,7 +36,7 @@ const Login: React.FC = () => {
                     }
                 }).catch(err => Dialog.alert({ message: `${err.message}`, title: `Authentication Error` }))
                     .finally(() => setloading(false))
-            }).catch(err => Dialog.alert({ message: `${err.message}`, title: `Authentication Error` }))
+            }).catch(err => Dialog.alert({ message: `${err.message}`, title: `Authentication Error` })).finally(() => setloading(false))
 
         }
 

@@ -1,12 +1,19 @@
+import { Dialog } from '@capacitor/dialog';
+import { Toast } from '@capacitor/toast';
 import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonLabel, IonPage, IonToolbar, IonGrid, IonRow, IonThumbnail, IonImg, IonCol, IonItem, useIonViewDidEnter, useIonViewDidLeave, IonIcon, IonNote, IonFab, IonFabButton, IonCardSubtitle } from '@ionic/react';
 import { add, sunnyOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PageHeader from '../components/PageHeader';
 import AddNoticeModal from '../components/public-notice/AddNoticeModal';
+import PublicNoticeModal from '../components/public-notice/PublicNoticeModal';
 import Addmodal from '../components/top stories/addmodal';
+import SkeletonHome from '../components/top stories/dummy';
 import { GetHoursAgo, StoryModal } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
+import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
+import { selectCountry } from '../states/reducers/countryReducer';
 import { Pictures } from './images/images';
 
 
@@ -14,22 +21,32 @@ const PublicNotice: React.FC = function () {
 
     const [addNotice, setaddNotice] = useState(false)
     const [notices, setnotices] = useState<PostInterface[]>([])
+    const countryinfo: countryInfoInterface = useSelector(selectCountry)
+    const [ noData, setnoData] = useState(false)
 
     useEffect(() => {
         console.log(`fetching...`)
-        fstore.collection(`notice`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
-            const data: any[] = res.docs.map(doc => {
-                return doc.data()
+        if (countryinfo) {
+            const country_name=countryinfo.name || `South Africa`
+            setnoData(false)
+            fstore.collection(`posts/${country_name}/notice`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
+                const data: any[] = res.docs.map(doc => {
+                    return doc.data()
+                })
+                if(data.length<=0){
+                    setnoData(true)
+                }
+                console.log(data)
+               setnotices([...data])
             })
-            console.log(data)
-            setnotices([...data])
-        })
+        }
 
-    }, [])
+    }, [countryinfo])
     return (
         <IonPage>
             <PageHeader></PageHeader>
             <IonContent>
+                { notices.length <= 0 && !noData&& <SkeletonHome></SkeletonHome>}
                 <IonGrid >
                     {
                         notices.map((post) => {
@@ -39,7 +56,7 @@ const PublicNotice: React.FC = function () {
                         })
                     }
                     {
-                        notices.length <= 0 && <IonToolbar style={{textAlign:`center`,paddingTop:`10vh`}}><IonImg src={Pictures.notfound} />
+                        notices.length <= 0 && noData&& <IonToolbar style={{textAlign:`center`,paddingTop:`10vh`}}><IonImg src={Pictures.notfound} />
                         <IonCardSubtitle>NO PUBLIC NOTICE YET </IonCardSubtitle>
                         </IonToolbar>
                     }
@@ -83,7 +100,7 @@ const NoticeCard: React.FC<{ post: PostInterface }> = function ({ post }) {
                     </IonCol>
                 </IonRow>
             </IonCol>
-            <StoryModal title={`public notice`} isOpen={openNotice} onDidDismiss={() => setopenNotice(false)} post={post}></StoryModal>
+            <PublicNoticeModal title={`public notice`} isOpen={openNotice} onDidDismiss={() => setopenNotice(false)} post={post}></PublicNoticeModal>
         </IonRow>
     )
 }

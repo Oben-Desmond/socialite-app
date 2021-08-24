@@ -2,37 +2,46 @@ import { IonCardSubtitle, IonContent, IonFab, IonFabButton, IonIcon, IonImg, Ion
 import { add } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import FlipMove from 'react-flip-move';
+import { useSelector } from 'react-redux';
 import AddEventModal from '../components/Events/addEventModal';
+import EventsModal from '../components/Events/EventsModal';
 import PageHeader from '../components/PageHeader';
 import ProfileModal from '../components/ProfileModal';
 import Addmodal from '../components/top stories/addmodal';
 import SkeletonHome from '../components/top stories/dummy';
 import { GetHoursAgo, StoryModal } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
+import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
+import { selectCountry } from '../states/reducers/countryReducer';
 import { Pictures } from './images/images';
 
 
 const Events: React.FC = function () {
     const [addEvent, setaddEvent] = useState(false)
+    const [noData, setnoData] = useState(false)
     const [events, setevents] = useState<PostInterface[]>([])
-
+    const countryinfo: countryInfoInterface = useSelector(selectCountry)
     useEffect(() => {
         console.log(`fetching...`)
-        fstore.collection(`events`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
-            const data: any[] = res.docs.map(doc => {
-                return doc.data()
+        if (countryinfo) {
+            setnoData(false)
+            const country_name=countryinfo.name || `South Africa`
+            fstore.collection(`posts/${country_name}/events`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
+                const data: any[] = res.docs.map(doc => {
+                    return doc.data()
+                })
+                if(data.length<=0) setnoData(true)
+                setevents([...data])
             })
-            console.log(data)
-            setevents([...data])
-        })
+        }
 
-    }, [])
+    }, [countryinfo])
     return (
         <IonPage>
             <PageHeader></PageHeader>
             <IonContent>
-                {events.length<=0&&<SkeletonHome></SkeletonHome>}
+                {events.length <= 0 && !noData&& <SkeletonHome></SkeletonHome>}
                 <FlipMove>
                     {
                         events.map((post, index) => {
@@ -44,7 +53,7 @@ const Events: React.FC = function () {
                 </FlipMove>
                 <FlipMove>
                     {
-                        events.length <= 0 && <IonToolbar style={{ textAlign: `center`, paddingTop: `10vh` }}><IonImg src={Pictures.notfound} />
+                        events.length <= 0 && noData&& <IonToolbar style={{ textAlign: `center`, paddingTop: `10vh` }}><IonImg src={Pictures.notfound} />
                             <IonCardSubtitle>NO EVENTS YET </IonCardSubtitle>
                         </IonToolbar>
                     }
@@ -75,15 +84,15 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
             <IonToolbar style={{ padding: `10px 20px` }}>
                 <div >
                     <IonLabel style={{ textTransform: `capitalize` }}><b>{post.title}</b></IonLabel>
-                    <p style={{ color: `#595858`, fontSize: `15px` ,marginBottom:`0`}} >
+                    <p style={{ color: `#595858`, fontSize: `15px`, marginBottom: `0` }} >
                         {post.description.substr(0, 150)}...
                         </p>
                 </div>
                 <IonToolbar>
-                    <IonLabel color={`primary`} ><GetHoursAgo timestamp={post.timestamp} /> | <IonLabel color={`secondary`}>{post.location}</IonLabel></IonLabel>
+                    <IonLabel color={`medium`} ><GetHoursAgo timestamp={post.timestamp} />  <IonLabel color={`secondary`}>{post.location}</IonLabel></IonLabel>
                 </IonToolbar>
             </IonToolbar>
-            <StoryModal title={`Events`} isOpen={openNotice} onDidDismiss={() => setopenNotice(false)} post={post}></StoryModal>
+            <EventsModal   isOpen={openNotice} onDidDismiss={() => setopenNotice(false)} post={post}></EventsModal>
         </div>
     )
 }

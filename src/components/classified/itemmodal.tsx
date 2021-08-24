@@ -258,7 +258,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                 </IonCardContent>
 
             </IonContent>
-        { user.email == item.item_contact.user_email && <EditClassifiedFab  onFinish={()=>{}} item={item}></EditClassifiedFab>}
+        { user.email == item.item_contact.user_email && <EditClassifiedFab  onEdit={()=>{}} onDelete={()=>{ onDidDismiss()}} item={item}></EditClassifiedFab>}
         </IonModal>
     );
 };

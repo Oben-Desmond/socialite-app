@@ -9,9 +9,13 @@ import { selectLocation } from "../../states/reducers/location-reducer";
 
 
 const ClassifiedItem: React.FC<{ item: classifiedItemInterface }> = ({ item }) => {
+   
     const user_location:{long:number, lat:number} = useSelector(selectLocation)
     const [viewItem, setviewItem] = useState(false)
     const [distance, setdistance] =  useState(Math.round(CalculateDistanceKm(item.item_location,user_location)))
+    if(!item){
+        return <></>
+    }
     return (
         <>
             <div onClick={() => setviewItem(true)} className="card">
