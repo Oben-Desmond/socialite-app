@@ -1,8 +1,8 @@
 // @flow strict
 
 import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCardContent, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonFabList, IonGrid, IonIcon, IonImg, IonItem, IonItemDivider, IonLabel, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonText, IonToolbar } from '@ionic/react';
-import { arrowBack, callOutline, close, gridOutline, heartOutline, locationOutline, logoWhatsapp, mailOutline, pencil, shareSocial, shareSocialOutline, star, starHalf, starHalfOutline, starOutline, trashOutline } from 'ionicons/icons';
-import * as React from 'react';
+import { arrowBack, callOutline, close, gridOutline, heart, heartOutline, locationOutline, logoWhatsapp, mailOutline, pencil, shareSocial, shareSocialOutline, star, starHalf, starHalfOutline, starOutline, trashOutline } from 'ionicons/icons';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { classifiedItemInterface, ReviewItemInterface } from '../../interfaces/classifiedItems';
 import { StoreStateInteface } from '../../interfaces/redux';
@@ -20,26 +20,40 @@ import ReviewInput from './ReviewInput';
 import { selectUser } from '../../states/reducers/userReducers';
 import { fstore } from '../../Firebase/Firebase';
 import EditClassifiedFab from './EditClassifieds';
+import { remove_from_favorites, selectFavorites, update_favorites } from '../../states/reducers/favoritesReducer';
+import { Storage } from '@capacitor/storage';
 
 
-const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, item: classifiedItemInterface, distance: number }> = function ({ isOpen, onDidDismiss, item, distance }) {
+const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item: classifiedItemInterface, distance: number }> = function ({ isOpen, onDidDismiss, item, distance }) {
 
-    const contentRef = React.useRef<HTMLIonContentElement>(null)
+    const contentRef = useRef<HTMLIonContentElement>(null)
     const rootState: StoreStateInteface | any = useSelector(state => state)
-    const [addReview, setaddReview] = React.useState(false)
+    const [addReview, setaddReview] = useState(false)
     const user: UserInterface = useSelector(selectUser)
     const suppliersReviewsState: ReviewItemInterface[] = useSelector(selectClassifiedReviews)
     const thisSuppliersReviews = suppliersReviewsState
-    const [reviewItems, setreviewItems] = React.useState<ReviewItemInterface[]>([])
-    const [myreview, setmyreview] = React.useState<ReviewItemInterface>()
+    const [reviewItems, setreviewItems] = useState<ReviewItemInterface[]>([])
+    const [myreview, setmyreview] = useState<ReviewItemInterface>()
     const dispatch = useDispatch()
-    React.useEffect(() => {
-        getReviewData()
-    }, [])
-    function scrollToBottom() {
-        contentRef.current?.scrollToBottom(2500)
-    }
+    const mapRef = useRef<HTMLDivElement>(null)
+    const favorites: classifiedItemInterface[] = useSelector(selectFavorites)
+     console.log(favorites)
+    const [isAfavorite, setisAfavorite] = useState(false)
 
+    useEffect(() => {
+        getReviewData()
+        Storage.get({key:`favorites`}).then(res=>console.log(`favorites - -- --- --`,res.value))
+    }, [])
+    function scrollToMap() {
+        mapRef.current?.scrollIntoView({ behavior: `smooth` })
+    }
+    useEffect(() => {
+        if (favorites.filter(el => el.item_id == item.item_id).length > 0) {
+            setisAfavorite(true)
+        } else {
+            setisAfavorite(false)
+        }
+    }, [favorites,item])
     function contactSeller() {
         if (user?.email && user.name)
             fetch(`https://socialiteapp-backend.herokuapp.com/classified/contact-warning?email=${user.email}&name=${user.name}`).finally(console.log)
@@ -59,8 +73,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
 
         fstore.collection(`users`).doc(item.item_contact.user_email)
             .collection(`classified_reviews`)
-            .orderBy(`timestamp`)
-            .limitToLast(10).onSnapshot((snapshot) => {
+             .onSnapshot((snapshot) => {
                 const reviews: ReviewItemInterface[] = snapshot.docs.map((doc: any) => doc.data())
                 dispatch(group_update_reviews(reviews))
                 console.log(reviews)
@@ -87,6 +100,14 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                     setmyreview(review)
             })
     }
+    function addToFavorites() {
+        if (isAfavorite) dispatch(remove_from_favorites(item))
+          else  dispatch(update_favorites(item))
+    }
+    useEffect(()=>{
+        Storage.set({key:`favorites`,value:JSON.stringify(favorites)})
+
+    },[isAfavorite])
     return (
         <IonModal cssClass={`classified-modal`} onDidDismiss={onDidDismiss} isOpen={isOpen}>
             <IonContent ref={contentRef}>
@@ -126,8 +147,8 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                         <IonCardTitle className="sub-title">
                         </IonCardTitle>
                         <div className="react-grid">
-                            <div> <IonButton fill={`clear`} className={`btn-react`} color={`dark`}>
-                                <IonIcon icon={heartOutline}></IonIcon>
+                            <div> <IonButton onClick={addToFavorites} fill={`clear`} className={`btn-react`} color={`dark`}>
+                                <IonIcon color={isAfavorite ? `danger` : `none`} icon={!isAfavorite ? heartOutline : heart}></IonIcon>
                             </IonButton></div>
                             <div>
                                 <IonButton onClick={shareItem} fill={`clear`} className={`btn-react`} color={`dark`}>
@@ -135,7 +156,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                                 </IonButton>
                             </div>
                             <div>
-                                <IonButton onClick={() => scrollToBottom()} fill={`clear`} className={`btn-react`} color={`dark`}>
+                                <IonButton onClick={() => scrollToMap()} fill={`clear`} className={`btn-react`} color={`dark`}>
                                     <IonIcon icon={locationOutline}></IonIcon>
                                 </IonButton>
                             </div>
@@ -196,7 +217,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                     </IonNote>
                     </IonCardTitle>
 
-                    <div>
+                    <div ref={mapRef}>
                         <iframe src={`http://maps.google.com/maps?q=${item.item_location.lat}, ${item.item_location.long}&z=15&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
                     </div>
                     <IonItemDivider>
@@ -258,7 +279,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
                 </IonCardContent>
 
             </IonContent>
-        { user.email == item.item_contact.user_email && <EditClassifiedFab  onEdit={()=>{}} onDelete={()=>{ onDidDismiss()}} item={item}></EditClassifiedFab>}
+            { user.email == item.item_contact.user_email && <EditClassifiedFab onEdit={() => { }} onDelete={() => { onDidDismiss() }} item={item}></EditClassifiedFab>}
         </IonModal>
     );
 };
@@ -266,7 +287,7 @@ const ClassifiedItemModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void,
 export default ClassifiedItemModal
 
 
- 
+
 
 
 export function CalculateDistanceKm(point1: { long: number, lat: number }, point2: { long: number, lat: number }) {
@@ -295,11 +316,11 @@ export function CalculateDistanceKm(point1: { long: number, lat: number }, point
 }
 
 
-export const StarReview: React.FC<{ value: number }> = ({ value }) => {
+export const StarReview: FC<{ value: number }> = ({ value }) => {
     const numStars = value > 5 ? 5 : value < 0 ? 0 : value
-    const [stars, setstars] = React.useState([0, 0, 0, 0, 0])
+    const [stars, setstars] = useState([0, 0, 0, 0, 0])
 
-    React.useEffect(() => {
+    useEffect(() => {
 
         const wholeNum = Math.floor(numStars)
         const extra = numStars - wholeNum;

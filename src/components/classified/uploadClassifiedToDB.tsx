@@ -23,7 +23,7 @@ export async function UploadClassifiedItem(data: dataInterface, images: string[]
         timestamp: Date.now(),
         item_name: data.name,
         item_desc: data.desc,
-        item_contact: { user_email: user.email, user_name: user.name, user_tel: `6772732`, user_photo: `` },
+        item_contact: { user_email: user.email, user_name: user.name, user_tel: user.tel||`677277277`, user_photo: `` },
         item_id,
         item_cost: data.cost,
         item_features: features,
@@ -39,7 +39,7 @@ export async function UploadClassifiedItem(data: dataInterface, images: string[]
         console.log(blob)
         console.log(keywords);
 
-        storage.ref(`classified/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
+        storage.ref(`classified/${country_name}/${user.email}/${Date.now()}.png`).put(blob).then(async res => {
             const url = await res.ref.getDownloadURL()
             console.log(blob)
             if (url) {

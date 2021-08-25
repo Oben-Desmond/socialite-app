@@ -31,7 +31,7 @@ const EditEventsFab: React.FC<{ post: PostInterface, comments: commentInterface[
         if (res.value) {
             onDelete()
             DeleteItemFromDB(post, comments, commentTitle).then(() => {
-                Toast.show({ text: `Public notice deleted` })
+                Toast.show({ text: `Event deleted` })
             }).catch(err => alert(JSON.stringify(err)))
         }
     }
@@ -181,7 +181,7 @@ const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, pos
                             </IonToolbar>
                         </form>
                     </IonCardContent>
-                    <IonToolbar style={{ height: `50px` }}></IonToolbar>
+                    <IonToolbar style={{ height: `80px` }}></IonToolbar>
                 </IonCardContent>
                 <PhotoOptionsModal fromPhotos={galleryPhotos} fromCamera={takePicture} onDidDismiss={() => { setPhotoOptions(false) }} isOpen={PhotoOptions}></PhotoOptionsModal>
             </IonContent>
@@ -194,7 +194,7 @@ const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, pos
 
 
 function DeleteItemFromDB(post: PostInterface, comments: commentInterface[],commentTitle:string) {
-    const query1 = fstore.collection(`posts/${post.location}/notice`).doc(post.id).delete()
+    const query1 = fstore.collection(`posts/${post.location}/events`).doc(post.id).delete()
     const query2 = fstore.collection(`posts/${post.location}/${commentTitle}-reactions`).doc(post.id).delete()
     const queryComments = comments.map(comment => fstore.collection(`posts/${post.location}/${commentTitle}-reactions`).doc(post.id).collection(`comments`).doc(comment.id).delete())
     post.images.map(imageUrl => storage.refFromURL(imageUrl).delete())
@@ -208,7 +208,7 @@ function UpdatePost(data: { title: string, description: string }, category: stri
         const { title, description } = data
         const newPost: PostInterface = { ...post, ...data, location: countryInfo.name, category }
 
-        fstore.collection(`posts/${post.location}/notice`).doc(post.id).set(newPost)
+        fstore.collection(`posts/${post.location}/events`).doc(post.id).set(newPost)
             .then(async () => {
                 resolve(`successfull`)
             }).catch(reject)

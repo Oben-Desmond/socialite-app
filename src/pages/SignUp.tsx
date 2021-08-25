@@ -1,23 +1,35 @@
 // @flow strict
 import { IonButton, IonCard, IonCardHeader, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonLoading, IonNote, IonPage, IonRadio, IonRadioGroup, IonSelect, IonSelectOption, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
 import { arrowForward, bagOutline, lockClosedOutline, logoWhatsapp, mailOpenOutline, peopleOutline, personOutline } from 'ionicons/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { hideTabBar } from '../App';
 import FlipMove from 'react-flip-move';
 import './style/Login.css';
 import { UserInterface } from '../interfaces/users';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector  } from 'react-redux';
 import { updateUser } from '../states/action-creators/users';
 import { auth, fstore } from '../Firebase/Firebase';
 import { Dialog } from "@capacitor/dialog";
 import { Storage } from "@capacitor/storage";
+import { countryListNumeric, getCountryCodeFromName } from '../components/text formaters/countryNumberCdes';
+import { selectCountry } from '../states/reducers/countryReducer';
+import { countryInfoInterface } from '../interfaces/country';
 
 const SignUp: React.FC = () => {
 
     const [businessAcc, setbusinessAcc] = useState(false)
     const [acctype, setacctype] = useState(`0`)
     const [loading, setloading]  = useState(false)
+    const [countryCode, setcountryCode] = useState<string>(`+1`)
+    let countryInfo:countryInfoInterface=useSelector(selectCountry)  
+     
+    useEffect(()=>{
+       if(countryInfo){
+           setcountryCode(getCountryCodeFromName(countryInfo.name))
+       }
+    },[countryInfo])
+
     function modifyAccountType(value: string) {
         setacctype(value)
         setbusinessAcc(value === `1` ? true : false)
@@ -37,6 +49,7 @@ const SignUp: React.FC = () => {
                 return data[key] = data[key].value
             }
         })
+        data[`tel`]=countryCode+data.tel
         console.log(data)
         if(!(data.email && data.name && data.tel &&data.pass)) {
             Dialog.alert({message:`you have some missen fields`,title:`Authentication error`});
@@ -46,7 +59,7 @@ const SignUp: React.FC = () => {
             bio: ``,
             domain: data.domain||``,
             email: data.email,
-            location: ``,
+            location: countryInfo.name,
             photoUrl: ``,
             tel:data.tel
         }
@@ -67,6 +80,7 @@ const SignUp: React.FC = () => {
         dispatch(updateUser(user))
 
     }
+    
     return (
         <IonPage>
             {/* <IonHeader>
@@ -98,8 +112,13 @@ const SignUp: React.FC = () => {
                                     <IonIcon icon={mailOpenOutline}></IonIcon>
                                     <IonInput name={`email`} placeholder={`Enter email`} required></IonInput>
                                 </IonItem>
-                                <IonItem key={`3`} lines={`inset`}>
+                                <IonItem   key={`3`} lines={`inset`}>
                                     <IonIcon icon={logoWhatsapp}></IonIcon>
+                                    <IonSelect value={countryCode} >
+                                        {
+                                            countryListNumeric.map(item=><IonSelectOption value={item.code}>{item.code}</IonSelectOption>)
+                                        }
+                                    </IonSelect>
                                     <IonInput name={`tel`} placeholder={`Enter phone number`} required></IonInput>
                                 </IonItem>
                                 <IonItem key={`8`} lines={`inset`}>

@@ -27,8 +27,12 @@ import React from 'react';
 import { updateCountry } from '../states/action-creators/country';
 import { countryInfoInterface } from '../interfaces/country';
 import LetteredAvatar from './LetterAvatar';
-import {Storage} from '@capacitor/storage';
+import { Storage } from '@capacitor/storage';
 import { updateUser } from '../states/action-creators/users';
+import { init_favorites, update_favorites } from '../states/reducers/favoritesReducer';
+import { auth } from '../Firebase/Firebase';
+import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -80,48 +84,59 @@ const Menu: React.FC = () => {
   const rootState: any = (useSelector(state => state))
   const user: UserInterface = rootState.userReducer;
   const dispatch = useDispatch()
-  const countryInfo:countryInfoInterface|undefined=  rootState.countryReducer
-  const history= useHistory()
+  const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
+  const history = useHistory()
   useEffect(() => {
- 
+
     fetch(`https://get.geojs.io/v1/ip/country.json`).then(async res => {
       const country: countryInfoInterface | undefined = (await res.json())
       if (country) {
         dispatch(updateCountry(country))
       }
     }).catch(console.log)
+    Storage.get({ key: `favorites` }).then((res) => {
+      if (res.value) {
+        dispatch(init_favorites(JSON.parse(res.value)))
+      }
+    })
 
-   initUser()
+    initUser()
 
   }, [])
 
 
- async  function initUser(){
-   const userStr=( await  Storage.get({key:`user`})).value
-   if(userStr){
-     const user = JSON.parse(userStr)
-     dispatch(updateUser(user))
-     history.push(`/home`)
+  async function initUser() {
+    const userStr = (await Storage.get({ key: `user` })).value
+    if (userStr) {
+      const user = JSON.parse(userStr)
+      dispatch(updateUser(user))
 
-   }
+      if (Capacitor.isNativePlatform())  history.push(`/home`);
+
+    }
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        history.push(`/login`)
+      }
+    })
   }
   return (
     <IonMenu className={`menu`} contentId="main" type="overlay">
       <IonToolbar color={`none`}>
         <div className={`country-flag`}>
-          <IonImg src={user?.photoUrl|| Pictures.bg} />
+          <IonImg src={user?.photoUrl || Pictures.bg} />
         </div>
         <IonToolbar className={`dp`} color={`none`} style={{ marginTop: `-20px` }}>
-       {countryInfo?.country&& <img style={{marginBottom:`-20px`}} src={`https://www.countryflags.io/${countryInfo?.country}/shiny/64.png`}/>}
-          {user.photoUrl&&<IonAvatar slot={`end`}  >
+          {countryInfo?.country && <img style={{ marginBottom: `-20px` }} src={`https://www.countryflags.io/${countryInfo?.country}/shiny/64.png`} />}
+          {user.photoUrl && <IonAvatar slot={`end`}  >
             <IonImg src={user.photoUrl} />
           </IonAvatar>}
           {
-            !user.photoUrl&& user.name&& <IonButtons slot={`end`}>
+            !user.photoUrl && user.name && <IonButtons slot={`end`}>
               <LetteredAvatar size={60} backgroundColor={`var(--ion-color-secondary)`} name={user?.name[0]} />
             </IonButtons>
-                              
-           }
+
+          }
         </IonToolbar>
       </IonToolbar>
       <IonContent>

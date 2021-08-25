@@ -14,7 +14,6 @@ const actions: any = {
     }
 }
 const locationReducer = (state = initstate, action: { type: string, payload: any }) => {
-    console.log(action.type)
     switch (action.type) {
         case `update_location`:return reducers[action.type](action.payload);
         default:

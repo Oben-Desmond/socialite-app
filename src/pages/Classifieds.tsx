@@ -14,6 +14,7 @@ import SkeletonHome from '../components/top stories/dummy';
 import { fstore } from '../Firebase/Firebase';
 import { classifiedItemInterface } from '../interfaces/classifiedItems';
 import { UserInterface } from '../interfaces/users';
+import { selectFavorites } from '../states/reducers/favoritesReducer';
 import { selectLocation, update_location } from '../states/reducers/location-reducer';
 import { selectUser } from '../states/reducers/userReducers';
 import { Pictures } from './images/images';
@@ -26,13 +27,14 @@ const Classifieds: React.FC = () => {
     const [showMenu, setshowMenu] = useState(false)
     const [startSearch, setstartSearch] = useState(false)
     const [uploadItem, setuploadItem] = useState(false)
-    const [searchResults, setsearchResults] = useState(false)
+    const [searchTabText, setsearchTabText] = useState(``)
     const [classifiedList, setclassifiedList] = useState<classifiedItemInterface[]>()
     const [loading, setloading] = useState(false)
     const [notFound, setnotFound] = useState(false)
     const [selectedTab, setselectedTab] = useState(categoryData[1].name)
     const user_location = useSelector(selectLocation)
     const user: UserInterface = useSelector(selectUser)
+    const favorites = useSelector(selectFavorites)
 
     const dispatch = useDispatch()
     function openUploadItem() {
@@ -62,36 +64,34 @@ const Classifieds: React.FC = () => {
     function sendAlert(val: any) {
         alert(JSON.stringify(val))
     }
-    useEffect(() => {
-
-
-        //   fstore.collection(`classified`).get().then((res)=>{
-        //            const docs:any= res.docs.map(doc=>doc.data())
-        //            let queries:any[]=[]
-        //            for(let i in docs){
-        //                const doc:classifiedItemInterface=docs[i]
-        //                db.ref(`indices`)
-        //            }
-        //   })
-
-    }, [])
 
     useEffect(() => {
 
         const category = selectedTab
         console.log(selectedTab)
         setloading(true)
-        setsearchResults(false)
-        const unsub = fstore.collection(`classified`).where(`item_category`, `==`, category.toLowerCase()).onSnapshot(res => {
-            const docs: any[] = res.docs.map((doc) => doc.data())
-            console.log(docs)
-            setclassifiedList(docs)
-            setnotFound(docs.length <= 0)
-            setloading(false)
+        setsearchTabText(``)
+        if (selectedTab == `latest`) {
+            fstore.collection(`classified`).orderBy(`timestamp`, `desc`).limit(20).get().then(res => {
+                const docs: any[] = res.docs.map((doc) => doc.data())
+                console.log(docs)
+                setclassifiedList(docs)
+                setnotFound(docs.length <= 0)
+                setloading(false)
 
-        })
+            })
 
-        return (() => unsub())
+        } else {
+            const unsub = fstore.collection(`classified`).where(`item_category`, `==`, category.toLowerCase()).limit(20).get().then(res => {
+                const docs: any[] = res.docs.map((doc) => doc.data())
+                console.log(docs)
+                setclassifiedList(docs)
+                setnotFound(docs.length <= 0)
+                setloading(false)
+
+            })
+        }
+        // return (() => unsub())
 
     }, [selectedTab])
 
@@ -125,18 +125,25 @@ const Classifieds: React.FC = () => {
         const items = await getItemsMatching(text, user_location)
         if (items.length > 0) {
             setclassifiedList([...items])
-            setsearchResults(true)
+            setsearchTabText(`Search Results`)
         } else {
             setnotFound(true)
         }
         setloading(false)
 
     }
+    function getFavorites() {
+        setclassifiedList(favorites || [])
+        if (favorites.length < 0)
+            setnotFound(true)
+        setshowMenu(false)
+        setsearchTabText(`Your Favorites`)
+    }
     return (
         <IonPage className={`classifieds`}>
             <SelectedTabContext.Provider value={[selectedTab, setselectedTab]}>
-              <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
-              { loading&&   <IonProgressBar  color={`secondary`} type={`indeterminate`}></IonProgressBar>}
+                <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
+                {loading && <IonProgressBar color={`secondary`} type={`indeterminate`}></IonProgressBar>}
                 <div className={`header`} style={{ background: `white` }}>
                     <div className="title">
                         <IonLabel>Classifieds</IonLabel>
@@ -146,18 +153,18 @@ const Classifieds: React.FC = () => {
                             </IonButton>
                         </div>
                     </div>
-                   <IonSearchbar onClick={() => setstartSearch(true)} mode={`ios`} placeholder={`search`}></IonSearchbar>
-                   
+                    <IonSearchbar onClick={() => setstartSearch(true)} mode={`ios`} placeholder={`search`}></IonSearchbar>
+
                 </div>
                 <IonContent >
                     <IonContent scrollY={false} style={{ height: `45px`, width: `100%` }} scrollX className={`category-tab`}>
-                        <div style={{ width: `250vw` }}>
+                        <div style={{ width: `350vw` }}>
                             <Categories getClassified={getClassified}></Categories>
                         </div>
                     </IonContent>
                     {loading && <SkeletonHome></SkeletonHome>}
                     {notFound && <div className={`ion-padding`}><IonImg src={Pictures.notfound} /> <IonLabel>NOT FOUND</IonLabel></div>}
-                    {searchResults && <IonToolbar>
+                    {searchTabText && <IonToolbar style={{textAlign:`center`}}>
                         <IonText>
                             Search Results
                         </IonText>
@@ -180,7 +187,7 @@ const Classifieds: React.FC = () => {
                             <IonCol size={`6`}>
                                 {
                                     classifiedList?.map((item: classifiedItemInterface, index: number) => {
-                                        if (!!(index % 2)  && item) return (
+                                        if (!!(index % 2) && item) return (
                                             <ClassifiedItem key={index} item={item}></ClassifiedItem>
                                         )
                                     })
@@ -220,7 +227,7 @@ const Classifieds: React.FC = () => {
                             <IonIcon slot={`start`} icon={shirtOutline} />
                             <IonLabel>My Items</IonLabel>
                         </IonItem>
-                        <IonItem button >
+                        <IonItem onClick={() => getFavorites()} button >
                             <IonIcon slot={`start`} icon={heartOutline} />
                             <IonLabel>favorites</IonLabel>
                         </IonItem>
@@ -278,6 +285,11 @@ function CategoryChip(props: { category: { name: string, url: string, color: str
 }
 
 const categoryData: { name: string, url: string, color: string }[] = [
+    {
+        name: `latest`,
+        url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROAyavRmHuN1Kz4nLmBi770dykPjAho9QNkw&usqp=CAU`,
+        color: `dark`
+    },
     {
         name: `clothing`,
         url: `https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8c2hpcnR8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`,

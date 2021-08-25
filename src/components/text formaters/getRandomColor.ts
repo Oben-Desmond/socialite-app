@@ -1,7 +1,7 @@
 export const  getRandomColor=(word:string)=>{
     const colors = [`primary`, `secondary`, `danger`, `success`, `warning`, `tertiary`, `dark`, `medium`]
     const alpha = `abcdefghijklmnopqrstuvwxyz`;
-    const randomColor = (colors[getColorIndex(word)] )
+    const randomColor = colors[getColorIndex(word.trim())] 
 
     function getColorIndex(word: string) {
         let num = 0

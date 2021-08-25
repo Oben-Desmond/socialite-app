@@ -42,23 +42,19 @@ const Events: React.FC = function () {
             <PageHeader></PageHeader>
             <IonContent>
                 {events.length <= 0 && !noData&& <SkeletonHome></SkeletonHome>}
-                <FlipMove>
-                    {
-                        events.map((post, index) => {
+                    <>{
+                         events.map((post, index) => {
                             return (
                                 <EventCard key={post.id} post={post}></EventCard>
                             )
                         })
-                    }
-                </FlipMove>
-                <FlipMove>
-                    {
+                    }</>
+                     {
                         events.length <= 0 && noData&& <IonToolbar style={{ textAlign: `center`, paddingTop: `10vh` }}><IonImg src={Pictures.notfound} />
                             <IonCardSubtitle>NO EVENTS YET </IonCardSubtitle>
                         </IonToolbar>
                     }
-                </FlipMove>
-            </IonContent>
+               </IonContent>
             <IonFab vertical={`bottom`} horizontal={`end`} >
                 <IonFabButton onClick={() => setaddEvent(true)} color={`secondary`}>
                     <IonIcon icon={add} />

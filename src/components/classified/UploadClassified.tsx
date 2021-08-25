@@ -1,6 +1,6 @@
 
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-import { IonModal, IonHeader, IonContent, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonThumbnail, IonImg, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonSelect, IonSelectOption, IonButton, IonBackdrop, IonLoading, IonCardSubtitle, IonProgressBar } from "@ionic/react";
+import { IonModal, IonHeader, IonContent, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonThumbnail, IonImg, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonSelect, IonSelectOption, IonButton, IonBackdrop, IonLoading, IonCardSubtitle, IonProgressBar, IonGrid, IonCol, IonRow } from "@ionic/react";
 import { addOutline, cameraOutline, removeCircle, removeCircleOutline, shirt, shirtOutline, trashOutline } from "ionicons/icons";
 import React, { useContext, useRef, useState } from "react";
 import { PostInterface } from "../../interfaces/posts";
@@ -17,7 +17,7 @@ import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from "../Photo
 import { UploadPublicNotice } from "../public-notice/firebase-functions";
 import { UploadClassifiedItem } from "./uploadClassifiedToDB";
 import { SelectedTabContext } from "../../pages/Classifieds";
-import { Dialog} from "@capacitor/dialog";
+import { Dialog } from "@capacitor/dialog";
 import { selectLocation } from "../../states/reducers/location-reducer";
 
 
@@ -31,42 +31,51 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
     const [images, setimages] = useState<any[]>([]);
     const [features, setfeatures] = useState<string[]>([])
     const [PhotoOptions, setPhotoOptions] = useState(false)
+    const [category, setcategory] = useState(``)
+    const [currency, setcurrency] = useState(countryInfo.country == `CM` ? `FCFA` : countryInfo.country == `SA` ? `R` : `$`)
+    const [newcategory, setnewcategory] = useState(``)
     const [selectedTab, setselectedTab] = useContext(SelectedTabContext)
-    const location:{long:number, lat:number} = useSelector(selectLocation)
+    const location: { long: number, lat: number } = useSelector(selectLocation)
+    const nameRef = useRef<HTMLDivElement>(null), descRef = useRef<HTMLDivElement>(null), costRef = useRef<HTMLDivElement>(null), otherRef = useRef<HTMLDivElement>(null);
 
     const [loading, setloading] = useState(false)
     const [showImg, setshowImg] = useState<number | undefined>()
     const addPost = function (e: any) {
         e.preventDefault()
         let { name, desc, category, cost } = e.target
-        let data: any = { name, desc, category, cost }
+        let data: any = { name, desc, category, cost, }
+     
         Object.keys(data).map(key => {
             if (data[key]) {
                 return data[key] = data[key].value
             }
         })
+        data={...data,category: data.category == `other` ? newcategory : data.category, cost: getcostwithCurrency(data.cost)}
 
-
+        function getcostwithCurrency(cost: number) {
+            if (currency == `XFA` || currency == `FCFA`) {
+                return cost + ` ` + currency
+            }
+            return currency + cost;
+        }
 
 
         if (user.email) {
             setloading(true)
-            UploadClassifiedItem(data, images, user, countryInfo, features,location).then(() => {
-                 Dialog.alert({message:`your classified has been posted`,title:`Post sucessful`})
+            UploadClassifiedItem(data, images, user, countryInfo, features, location).then(() => {
+                Dialog.alert({ message: `your classified has been posted`, title: `Post sucessful` })
                 Toast.show({ text: `post has been sent` })
                 onDidDismiss()
                 setselectedTab(data.category)
                 dropRef.current?.click()
                 fetch(`https://socialiteapp-backend.herokuapp.com/classified/upload-mail?email=${user.email}&name=${user.name}`, { mode: `cors` }).catch(console.log).finally(console.log)
-
-            }).catch(alert).finally(() => {
                 setimages([])
-                setloading(false)
                 e.target.name.value = ``
                 e.target.desc.value = ``
                 e.target.category.value = ``
                 e.target.cost.value = ``
-
+            }).catch(alert).finally(() => {
+                setloading(false)
             })
         }
     }
@@ -113,13 +122,13 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
 
         <IonHeader>
             <div className="header">
-                {!loading&&<div className="bar"></div>}
-                {loading&& <IonProgressBar color={`danger`} value={0.5} buffer={0.7}></IonProgressBar>}
+                {!loading && <div className="bar"></div>}
+                {loading && <IonProgressBar color={`danger`} value={0.5} buffer={0.7}></IonProgressBar>}
             </div>
         </IonHeader>
-       
+
         <IonContent>
-           
+
             <IonCardContent mode={`md`}>
                 <IonToolbar className={`ion-padding`} >
                     <IonIcon color={`secondary`} size={`large`} slot={`start`} icon={shirtOutline} />
@@ -144,32 +153,63 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                                 <IonLabel className={`ion-padding-start`}> add images of Item</IonLabel>
                             </IonItem>
                         </div>
-                        <div className="input">
+                        <div onClick={() => nameRef.current?.scrollIntoView({ behavior: `smooth` })} ref={nameRef} className="input">
                             <IonInput required name={`name`} placeholder={`Enter name of item`}></IonInput>
                         </div>
-                        <div style={{ whiteSpace: `pre-wrap` }} className="input">
+                        <div onClick={() => descRef.current?.scrollIntoView({ behavior: `smooth` })} ref={descRef} style={{ whiteSpace: `pre-wrap` }} className="input">
                             <IonTextarea required name={`desc`} placeholder={`Enter Description of Item`}></IonTextarea>
                         </div>
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
-                                <IonSelect name={`category`} >
-                                    <IonSelectOption value={`clothing`}>clothing</IonSelectOption>
-                                    <IonSelectOption value={`food`}>food stuff</IonSelectOption>
-                                    <IonSelectOption value={`electronics`}>Electronics</IonSelectOption>
-                                    <IonSelectOption value={`cars`}>cars</IonSelectOption>
-                                    <IonSelectOption value={`books`}>book</IonSelectOption>
+                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category} name={`category`} >
                                     <IonSelectOption value={`apartment`}>apartment</IonSelectOption>
+                                    <IonSelectOption value={`books`}>book</IonSelectOption>
+                                    <IonSelectOption value={`cars`}>cars</IonSelectOption>
+                                    <IonSelectOption value={`clothing`}>clothing</IonSelectOption>
+                                    <IonSelectOption value={`electronics`}>Electronics</IonSelectOption>
+                                    <IonSelectOption value={`food`}>food stuff</IonSelectOption>
                                     <IonSelectOption value={`pets`}>pets</IonSelectOption>
-                                    {/* <IonSelectOption value={`politics`}>Politics</IonSelectOption>
-                                    <IonSelectOption value={`religion`}>Religion</IonSelectOption>
-                                    <IonSelectOption value={`science`}>Science</IonSelectOption> */}
+                                    <IonSelectOption value={`job`}>job</IonSelectOption>
+                                    <IonSelectOption value={`service`}>service</IonSelectOption>
+                                    <IonSelectOption value={`other`}>other</IonSelectOption>
                                 </IonSelect>
                             </IonItem >
                         </div>
-                        <div className="input">
-                            <IonInput required name={`cost`} placeholder={`cost e.g $35`}></IonInput>
-                        </div>
+                        {category == `other` && <div onClick={() => otherRef.current?.scrollIntoView({ behavior: `smooth` })} ref={otherRef} className="input">
+                            <IonInput onIonChange={e => setnewcategory(e.detail.value || ``)} value={newcategory} required name={`other`} placeholder={`Give  the category of this classified`}></IonInput>
+                        </div>}
+                        <IonGrid>
+                            <IonRow>
+                                <IonCol >
+                                    <div ref={costRef} onClick={() => costRef.current?.scrollIntoView({ behavior: `smooth` })} className="input">
+                                        <IonInput type={`number`} required name={`cost`} placeholder={`cost e.g 350`}></IonInput>
+                                    </div>
+                                </IonCol>
+                                <IonCol size={`5`}>
+                                    <div className="input">
+                                        <IonItem lines={`none`} color={`none`}>
+                                            <IonSelect onIonChange={e => setcurrency(e.detail.value)} value={currency} name={`currency`} >
+                                                <IonSelectOption value={`R`}>R</IonSelectOption>
+                                                <IonSelectOption value={`XFA`}>XFA</IonSelectOption>
+                                                <IonSelectOption value={`FCFA`}>FCFA</IonSelectOption>
+                                                <IonSelectOption value={`$`}>$</IonSelectOption>
+                                                <IonSelectOption value={`¥`}>¥</IonSelectOption>
+                                                <IonSelectOption value={`₹`}>₹</IonSelectOption>
+                                                <IonSelectOption value={`﷼`}>﷼</IonSelectOption>
+                                                <IonSelectOption value={`€`}>€</IonSelectOption>
+                                                <IonSelectOption value={`£`}>£</IonSelectOption>
+                                                <IonSelectOption value={`₩`}>₩</IonSelectOption>
+
+                                                {/* <IonSelectOption value={`politics`}>Politics</IonSelectOption>
+                                    <IonSelectOption value={`religion`}>Religion</IonSelectOption>
+                                    <IonSelectOption value={`science`}>Science</IonSelectOption> */}
+                                            </IonSelect>
+                                        </IonItem >
+                                    </div>
+                                </IonCol>
+                            </IonRow>
+                        </IonGrid>
                         {features.length > 0 && <IonCardSubtitle>
                             Features
                         </IonCardSubtitle>}
@@ -199,6 +239,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                         </IonToolbar>
                     </form>
                 </IonCardContent>
+                <IonToolbar style={{ height: `80px` }}></IonToolbar>
             </IonCardContent>
             {false && <div >
                 <IonBackdrop ref={dropRef}></IonBackdrop>

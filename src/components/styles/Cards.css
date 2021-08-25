@@ -69,3 +69,8 @@
 .comment-field  ion-col{
     margin-right: 10px;
 }
+
+.card img{
+    max-height: 36vh;
+    object-fit: cover;
+}
