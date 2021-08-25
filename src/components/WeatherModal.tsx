@@ -20,14 +20,7 @@ const WeatherModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void }> = ({
     const country: countryInfoInterface | undefined = root.countryReducer
     const [coords, setcoords] = React.useState<Geolocation.Position>()
     const [loading, setloading] = useState(false)
-    React.useEffect(() => {
-         setloading(true)
-        Geolocation.Geolocation.getCurrentPosition().then(pos => {
-            if (pos)
-                setcoords(pos);
-                setloading(false)
-        })
-    }, [])
+     
     return (
         <IonModal swipeToClose cssClass={`weather-modal`} onDidDismiss={onDidDismiss} isOpen={isOpen}>
             <IonHeader>

@@ -15,10 +15,10 @@ const actions: any = {
 }
 const locationReducer = (state = initstate, action: { type: string, payload: any }) => {
     switch (action.type) {
-        case `update_location`:return reducers[action.type](action.payload);
+        case `update_location`:return reducers[action.type](action.payload); break;
         default:
            return state
-    }
+    } 
 }
 
 

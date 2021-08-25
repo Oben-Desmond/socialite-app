@@ -78,8 +78,8 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
                 dispatch(group_update_reviews(reviews))
                 console.log(reviews)
 
-                setreviewItems([...reviews.filter(item => item.id != user.email)])
-                const usersReviews = reviews.filter(item => item.id == user.email)
+                setreviewItems([...reviews.filter(item => item.email != user.email)])
+                const usersReviews = reviews.filter(item => item.email == user.email)
                 if (usersReviews.length > 0) {
                     setmyreview(usersReviews[0])
                 } else {
@@ -239,7 +239,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
                     </IonItemDivider>
 
                     {addReview && <FlipMove>
-                        {addReview && <ReviewInput reviewSent={() => setaddReview(false)}>
+                        {addReview && <ReviewInput item={item} reviewSent={() => setaddReview(false)}>
                         </ReviewInput>}
                     </FlipMove>}
                     {
@@ -247,6 +247,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
                     }
                     {
                         reviewItems.map((review, index) => {
+                            if(review.email==user.email) return <></>
                             return <ReviewItem key={index} data={review}></ReviewItem>
                         })
                     }

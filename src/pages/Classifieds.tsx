@@ -41,25 +41,7 @@ const Classifieds: React.FC = () => {
         setuploadItem(true)
         setshowMenu(false)
     }
-    useIonViewDidEnter(() => {
-        Geolocation.checkPermissions().then((res) => {
-            if (res.location == `granted`)
-                Geolocation.getCurrentPosition().then(data => {
-                    dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
-                })
-            else {
-                Geolocation.requestPermissions().then((res) => {
-                    if (res.location == `granted`) {
-                        Geolocation.getCurrentPosition().then(data => {
-                            dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
-                        })
-                    }
-                })
-
-            }
-        }).catch(sendAlert)
-
-    })
+    
 
     function sendAlert(val: any) {
         alert(JSON.stringify(val))

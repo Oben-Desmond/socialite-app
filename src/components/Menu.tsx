@@ -33,6 +33,9 @@ import { init_favorites, update_favorites } from '../states/reducers/favoritesRe
 import { auth } from '../Firebase/Firebase';
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
+import { Geolocation } from '@capacitor/geolocation';
+import { update_location } from '../states/reducers/location-reducer';
+import { Dialog } from '@capacitor/dialog';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -99,7 +102,7 @@ const Menu: React.FC = () => {
         dispatch(init_favorites(JSON.parse(res.value)))
       }
     })
-
+    initLocation()
     initUser()
 
   }, [])
@@ -111,7 +114,7 @@ const Menu: React.FC = () => {
       const user = JSON.parse(userStr)
       dispatch(updateUser(user))
 
-      if (Capacitor.isNativePlatform())  history.push(`/home`);
+      if (Capacitor.isNativePlatform()) history.push(`/home`);
 
     }
     auth.onAuthStateChanged((user) => {
@@ -119,6 +122,35 @@ const Menu: React.FC = () => {
         history.push(`/login`)
       }
     })
+  }
+
+
+  async function initLocation() {
+
+    Geolocation.checkPermissions().then((res) => {
+      if (res.location == `granted`)
+        Geolocation.getCurrentPosition().then(data => {
+          dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
+          alert({ long: data.coords.longitude, lat: data.coords.latitude })
+        })
+      else {
+        Geolocation.requestPermissions().then(async (res) => {
+          const ans = await Dialog.confirm({ message: `In Order for us to provide you relevant content we will require your current location`, title: `Location Required`, okButtonTitle: `Proceed`, cancelButtonTitle: `Deny` })
+         
+          if (!ans.value) return;
+
+          if (res.location == `granted`) {
+            Geolocation.getCurrentPosition().then(data => {
+              dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
+            })
+          }
+        })
+
+      }
+    })
+
+
+
   }
   return (
     <IonMenu className={`menu`} contentId="main" type="overlay">

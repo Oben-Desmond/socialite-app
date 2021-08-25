@@ -9,9 +9,9 @@ import { fstore } from '../../Firebase/Firebase';
 import { UserInterface } from '../../interfaces/users';
 import { selectUser } from '../../states/reducers/userReducers';
 import * as uuid from "uuid";
-import { ReviewItemInterface } from '../../interfaces/classifiedItems';
+import { classifiedItemInterface, ReviewItemInterface } from '../../interfaces/classifiedItems';
 
-const ReviewInput: React.FC<{ reviewSent: () => void }> = function ({ reviewSent }) {
+const ReviewInput: React.FC<{ reviewSent: () => void,item:classifiedItemInterface }> = function ({ reviewSent,item }) {
 
     const [stars, setstars] = React.useState<number[]>([1, 1, 1, 0, 0])
     const [starCount, setstarCount] = React.useState(3)
@@ -39,13 +39,13 @@ const ReviewInput: React.FC<{ reviewSent: () => void }> = function ({ reviewSent
             timestamp: Date.now(),
             username: user.name
         }
-        fstore.collection(`users`).doc(user.email).collection(`classified_reviews`).doc(reviewId).set(review).then(console.log).catch(console.log);
+        fstore.collection(`users`).doc(item.item_contact.user_email).collection(`classified_reviews`).doc(reviewId).set(review).then(console.log).catch(console.log);
         setsendExperience(true)
     }
 
     async function uploadDescription() {
         setloading(true)
-        await fstore.collection(`users`).doc(user.email).collection(`classified_reviews`).doc(reviewId).update({ text: descText }).then(console.log).catch(console.log);
+          await fstore.collection(`users`).doc(item.item_contact.user_email).collection(`classified_reviews`).doc(reviewId).update({ text: descText }).then(console.log).catch(console.log);
         reviewSent();
         setsendExperience(false)
     }
