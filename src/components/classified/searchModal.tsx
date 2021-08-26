@@ -1,7 +1,7 @@
 
 import { IonButton, IonContent, IonModal, IonSearchbar, IonToolbar, IonList, IonIcon, IonItem, IonLabel, IonFab, IonFabButton, IonProgressBar } from '@ionic/react';
 import { search, searchOutline } from 'ionicons/icons';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { fstore } from '../../Firebase/Firebase';
 import { searchKeys } from './uploadClassifiedToDB';
 import '../styles/searchModal.css';
@@ -12,6 +12,14 @@ const SearchModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, searchF
     const [recommendText, setrecommendText] = useState<string[]>([])
     const [loading, setloading] = useState<boolean>(false)
     const searchRef= useRef<HTMLIonSearchbarElement>(null)
+
+    useEffect(()=>{
+        searchRef.current?.addEventListener(`keyup`,e=>{
+            if(e.key.toLowerCase()==`enter` || e.key.toLowerCase()==`\n`){
+                searchText(searchRef.current?.value||``)
+            }
+        })
+    },[])
 
     async function searchText(text: string | undefined) {
         setloading(true)
@@ -60,7 +68,7 @@ const SearchModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, searchF
                     </FlipMove>
                 </IonList>
             </IonContent>
-           {searchRef.current?.value&&<IonFab onClick={() => searchFor(searchRef.current?.value || ``)}  className={`search-fab`} horizontal={`end`} vertical={`bottom`}>
+           {searchRef.current?.value&&<IonFab onClick={() => searchFor(searchRef.current?.value || ``)}  className={`search-fab`} horizontal={`end`} vertical={`center`}>
                 <IonFabButton >
                     <IonIcon icon={search} />
                 </IonFabButton>

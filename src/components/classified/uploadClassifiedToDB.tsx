@@ -150,19 +150,26 @@ export async function getItemsMatching(text: string,location:{long:number,lat:nu
         const key = keys[i]
         query = [...query, queryFirestoreDoc(key)]
     }
-    if (keys.length < 20) {
-        query = [...query, getLast20ClassifiedsNotIn(keys)]
-    }
+    // if (keys.length < 20) {
+    //     query = [...query, getLast20ClassifiedsNotIn(keys)]
+    // }
     return (
         Promise.all(query).then(res=>{
-            let result:any[]=res.filter((el,index)=>(index<res.length-1))
-            result=[...result, ...res[res.length-1]]
-             console.log(result)
-             result.sort((a,b)=>{
+            
+            try{let result:any[]=(res||[])
+            
+                result.sort((a,b)=>{
                  const {long,lat}=a.item_location
                  return(CalculateDistanceKm({long,lat},location)-CalculateDistanceKm(b.item_location,location))
              })
-             return result
+            return result;
+
+            }catch(err){
+                alert(JSON.stringify(err))
+                alert(JSON.stringify(`shaj9899898989hj`))
+            }
+             return []
+            //  return result
         })
     )
 

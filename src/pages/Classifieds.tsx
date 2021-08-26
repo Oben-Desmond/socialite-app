@@ -41,7 +41,7 @@ const Classifieds: React.FC = () => {
         setuploadItem(true)
         setshowMenu(false)
     }
-    
+
 
     function sendAlert(val: any) {
         alert(JSON.stringify(val))
@@ -145,8 +145,8 @@ const Classifieds: React.FC = () => {
                         </div>
                     </IonContent>
                     {loading && <SkeletonHome></SkeletonHome>}
-                    {notFound && <div className={`ion-padding`}><IonImg src={Pictures.notfound} /> <IonLabel>NOT FOUND</IonLabel></div>}
-                    {searchTabText && <IonToolbar style={{textAlign:`center`}}>
+                    {notFound && (classifiedList || [])?.length <= 0 && <div className={`ion-padding`}><IonImg src={Pictures.notfound} /> <IonLabel>NOT FOUND</IonLabel></div>}
+                    {searchTabText && <IonToolbar style={{ textAlign: `center` }}>
                         <IonText>
                             Search Results
                         </IonText>
@@ -266,7 +266,7 @@ function CategoryChip(props: { category: { name: string, url: string, color: str
     )
 }
 
-const categoryData: { name: string, url: string, color: string }[] = [
+export const categoryData: { name: string, url: string, color: string }[] = [
     {
         name: `latest`,
         url: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROAyavRmHuN1Kz4nLmBi770dykPjAho9QNkw&usqp=CAU`,
@@ -315,3 +315,87 @@ const categoryData: { name: string, url: string, color: string }[] = [
         , color: `success`
     }
 ]
+
+export const maincategories: any = [
+    {
+        name: `Vehicles`,
+        url: `https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Y2Fyc3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`,
+        color: `danger`,
+
+    },
+    {
+
+    }
+]
+//about adding sub catgories to classifieds page
+export const subcategories: any = {
+    Vehicles: [`Cars & Batteries`,
+        `Car Parts & Accessories`,
+        `Motorcycles & Scooters`,
+        `Trucks & Commercial Vehicles`,
+        `Caravans & Trailers`,
+        `Boats & Aviation`
+    ],
+    'Cell Phones': [
+        'TV,Audio & Visual',
+        'Computers & Laptops',
+        'Gaming',
+        'Hardware & Accessories',
+        'Cameras',
+        'Tablets',
+    ],
+    'Home, Garden & Tools': [
+        `Furniture & Decor`,
+        `Homeware & Appliances`,
+        `Tools & DIY`,
+        `Garden & Braai`,
+    ],
+
+    'Property': [
+        `Houses & Flats for rent`,
+        `Rooms for rent & Shared`,
+        `Houses & Flats for sale`,
+        `Land`,
+        `Offices, Shops & Commercial`,
+        `B & B`
+    ],
+    'Sports & Outdoors': [
+        `Outdoor Equipment`,
+        `Bicycles`,
+        `Gym & Fitness`,
+        `Sports Equipment`
+    ],
+    'Hobbies & Interests': [
+        `Toys & Games`,
+        `Musical Instruments`,
+        `Art & Rare Items`,
+        `Books`
+    ],
+    'Fashion & Beauty': [
+        `Clothing & Shoes`,
+        `Jewellery & Accessories`,
+        `Health, Beauty & Cosmetics`,
+    ],
+    'Farming': [
+        `Farming Equipment & Vehicles`,
+        `Livestock`,
+        `Industrial Equipment`,
+        `Feeds, Supplements & Seeds`,
+    ],
+    'Construction': [
+        `Other Services`,
+        `Event Planning`,
+        `Transport`,
+        `Installations & Repairs`,
+        `Babysitters`,
+        `Home Improvement`,
+        `Domestic worker & Cleaning`
+    ],
+
+    ' Jobs & Work': [
+        `Available Jobs`,
+        `Work needed`
+    ]
+
+
+}

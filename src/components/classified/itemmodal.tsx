@@ -37,6 +37,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
     const dispatch = useDispatch()
     const mapRef = useRef<HTMLDivElement>(null)
     const favorites: classifiedItemInterface[] = useSelector(selectFavorites)
+    const [averageRating,setaverageRating] = useState(0)
      console.log(favorites)
     const [isAfavorite, setisAfavorite] = useState(false)
 
@@ -80,6 +81,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
 
                 setreviewItems([...reviews.filter(item => item.email != user.email)])
                 const usersReviews = reviews.filter(item => item.email == user.email)
+               calculateRating(reviews)
                 if (usersReviews.length > 0) {
                     setmyreview(usersReviews[0])
                 } else {
@@ -108,6 +110,17 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
         Storage.set({key:`favorites`,value:JSON.stringify(favorites)})
 
     },[isAfavorite])
+
+    function calculateRating(reviews:ReviewItemInterface[]){
+        let rating=0;
+        if(reviews.length>0){
+             reviews.map(review=>{
+                 rating+=review.rating
+             })
+             rating=rating/reviews.length
+        }
+        setaverageRating(rating);
+    }
     return (
         <IonModal cssClass={`classified-modal`} onDidDismiss={onDidDismiss} isOpen={isOpen}>
             <IonContent ref={contentRef}>
@@ -189,7 +202,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
                             </IonCol>
                             <IonCol>
                                 <div className="name">{item.item_contact.user_name}</div>
-                                <StarReview value={3.3}></StarReview>
+                                <StarReview value={averageRating}></StarReview>
                                 <IonRow onClick={contactSeller} className={`contact-fabs`}>
                                     <IonCol>
                                         <IonFabButton href={`https://wa.me/${item.item_contact.user_tel}`} color={`success`}>

@@ -50,8 +50,11 @@ const App: React.FC = () => {
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: true }).catch(console.log)
     // initializePushNotification()
+    
   }, [])
+  
   return (
+    
     <IonApp>
       <IonReactRouter>
         {/* <IonSplitPane contentId="main"> */}
