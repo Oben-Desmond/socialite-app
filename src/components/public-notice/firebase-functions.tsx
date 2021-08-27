@@ -11,7 +11,6 @@ export async function UploadPublicNotice(data: { category: string, title: string
 
     const country_name = country?.name || `South Africa`;
     const post: PostInterface = {
-        category: data.category,
         images: images,
         location: country_name,
         timestamp: Date.now(),

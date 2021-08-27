@@ -66,7 +66,6 @@ export default EditEventsFab
 const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface,commentTitle:string }> = ({ onDidDismiss, isOpen, post, commentTitle }) => {
     const [loading, setloading] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
-     const [category, setcategory] = useState(`${post.category}`)
     const [showImg, setshowImg] = useState<number>()
     const [images, setimages] = useState<string[]>(post.images)
     const [input, setinput] = useState({ title: post.title, description: post.description })
@@ -84,7 +83,7 @@ const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, pos
         if (user.email) {
             setloading(true)
             if (countryInfo) {
-                UpdatePost(data, category, post, countryInfo).then(() => {
+                UpdatePost(data,   post, countryInfo).then(() => {
                     Dialog.alert({ message: `post has been updated`, title: `sucessful` })
                     Toast.show({ text: `post has been updated` })
                     onDidDismiss()
@@ -158,7 +157,7 @@ const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, pos
                             <div ref={descRef} onClick={() => descRef.current?.scrollIntoView({ behavior: `smooth` })} style={{ whiteSpace: `pre-wrap` }} className="input">
                                 <IonTextarea value={input.description} onIonChange={e => setinput({ ...input, description: (e.detail.value || ``) })} required name={`description`} placeholder={`Enter post detail`}></IonTextarea>
                             </div>
-                            <div className={`input`}>
+                            {/* <div className={`input`}>
                                 <IonItem lines={`none`} color={`none`}>
                                     <IonLabel color={`secondary`}>category</IonLabel>
                                     <IonSelect value={category} name={`category`} onIonChange={e=>setcategory(e.detail.value || ``)}>
@@ -174,7 +173,7 @@ const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, pos
                                         <IonSelectOption value={`technology`}>Technology</IonSelectOption>
                                     </IonSelect>
                                 </IonItem >
-                            </div>
+                            </div> */}
                             <IonToolbar className={`ion-padding-top`} style={{ textAlign: `center` }}>
                                 <IonButton type={"submit"}>
                                     save changes</IonButton>
@@ -202,11 +201,11 @@ function DeleteItemFromDB(post: PostInterface, comments: commentInterface[],comm
     return (Promise.all(queryParam))
 }
 
-function UpdatePost(data: { title: string, description: string }, category: string, post: PostInterface, countryInfo: countryInfoInterface) {
+function UpdatePost(data: { title: string, description: string },  post: PostInterface, countryInfo: countryInfoInterface) {
 
     return (new Promise(async (resolve, reject) => {
         const { title, description } = data
-        const newPost: PostInterface = { ...post, ...data, location: countryInfo.name, category }
+        const newPost: PostInterface = { ...post, ...data, location: countryInfo.name }
 
         fstore.collection(`posts/${post.location}/events`).doc(post.id).set(newPost)
             .then(async () => {

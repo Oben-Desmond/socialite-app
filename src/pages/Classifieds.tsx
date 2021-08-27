@@ -260,7 +260,7 @@ function Categories(props: { getClassified: (cat: string) => void }) {
 
         </>
     )
-}
+} 
 
 export interface categoryPayloadInterface {
     cat: string,

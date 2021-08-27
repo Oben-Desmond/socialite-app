@@ -55,8 +55,7 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
                 setloading(false)
                 e.target.title.value = ``
                 e.target.story.value = ``
-                e.target.category.value = ``
-                onDidDismiss()
+                  onDidDismiss()
 
             })
         }
@@ -123,7 +122,7 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
                         <div onClick={() => storyRef.current?.scrollIntoView({ behavior: `smooth` })} ref={storyRef} style={{ whiteSpace: `pre-wrap` }} className="input">
                             <IonTextarea required name={`story`} placeholder={`Enter Public Notice`}></IonTextarea>
                         </div>
-                        <div className={`input`}>
+                        {/* <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
                                 <IonSelect name={`category`} value={`sports`}>
@@ -138,7 +137,7 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
                                     <IonSelectOption value={`science`}>Science</IonSelectOption>
                                 </IonSelect>
                             </IonItem >
-                        </div>
+                        </div> */}
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
                                 Post</IonButton>

@@ -7,7 +7,6 @@ export async function UploadContent(data: { category: string, title: string, sto
 
     const country_name = country?.name || `South Africa`;
     const post: PostInterface = {
-        category: data.category,
         images: images,
         location: country_name,
         timestamp: Date.now(),
@@ -60,7 +59,6 @@ export async function UploadEventContent(data: { category: string, title: string
     const country_name = country?.name || `South Africa`;
     const post: PostInterface = {
 
-        category: data.category,
         images: images,
         location: country_name,
         timestamp: Date.now(),

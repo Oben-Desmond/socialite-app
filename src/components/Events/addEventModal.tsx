@@ -46,8 +46,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
             }).finally(() => {
                 e.target.title.value = ``
                 e.target.story.value = ``
-                e.target.category.value = ``
-                setimages([])
+                  setimages([])
                 setloading(false)
 
             })
@@ -102,7 +101,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
                         <div onClick={()=>descRef.current?.scrollIntoView({behavior:`smooth`})} ref={descRef} style={{ whiteSpace: `pre-wrap` }} className="input">
                             <IonTextarea required name={`story`} placeholder={`add event description`}></IonTextarea>
                         </div>
-                        <div className={`input`}>
+                        {/* <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>add category</IonLabel>
                                 <IonSelect onIonChange={e=>setcategory(e.detail.value || ``)} value={category} name={`category`} >
@@ -118,7 +117,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
                                     <IonSelectOption value={`technology`}>Technology</IonSelectOption>
                                 </IonSelect>
                             </IonItem >
-                        </div>
+                        </div> */}
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
                                 Post Event</IonButton>

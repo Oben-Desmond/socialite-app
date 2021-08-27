@@ -159,8 +159,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                         </IonLabel>
                     </div>
 
-                    <IonChip outline color={getRandomColor(post.category)}>{post.category}</IonChip>
-                    <p style={{ whiteSpace: `pre-line` }}> {post.description}</p>
+                    
                 </IonToolbar>
                 <IonToolbar>
                     <IonSlides options={{ slidesPerView: 2 }}>
