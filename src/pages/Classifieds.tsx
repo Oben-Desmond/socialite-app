@@ -1,10 +1,11 @@
 // @flow strict
 
 import { Geolocation } from '@capacitor/geolocation';
-import { IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRow, IonSearchbar, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { IonActionSheet, IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline } from 'ionicons/icons';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { maincategories, subcategories } from '../components/classified/categories-data';
 import ClassifiedItem from '../components/classified/ClassifiedItem';
 import { fetchMyItems } from '../components/classified/classifieds-fetch';
 import SearchModal from '../components/classified/searchModal';
@@ -31,7 +32,7 @@ const Classifieds: React.FC = () => {
     const [classifiedList, setclassifiedList] = useState<classifiedItemInterface[]>()
     const [loading, setloading] = useState(false)
     const [notFound, setnotFound] = useState(false)
-    const [selectedTab, setselectedTab] = useState(categoryData[1].name)
+    const [selectedTab, setselectedTab] = useState<categoryPayloadInterface>({ cat: `latest`, subcat: subcategories[maincategories[0].name] || `other` })
     const user_location = useSelector(selectLocation)
     const user: UserInterface = useSelector(selectUser)
     const favorites = useSelector(selectFavorites)
@@ -52,8 +53,9 @@ const Classifieds: React.FC = () => {
         const category = selectedTab
         console.log(selectedTab)
         setloading(true)
+        console.log(category)
         setsearchTabText(``)
-        if (selectedTab == `latest`) {
+        if (selectedTab.cat == `latest`) {
             fstore.collection(`classified`).orderBy(`timestamp`, `desc`).limit(20).get().then(res => {
                 const docs: any[] = res.docs.map((doc) => doc.data())
                 console.log(docs)
@@ -64,14 +66,29 @@ const Classifieds: React.FC = () => {
             })
 
         } else {
-            const unsub = fstore.collection(`classified`).where(`item_category`, `==`, category.toLowerCase()).limit(20).get().then(res => {
-                const docs: any[] = res.docs.map((doc) => doc.data())
-                console.log(docs)
-                setclassifiedList(docs)
-                setnotFound(docs.length <= 0)
-                setloading(false)
+            if (category.subcat && category.subcat!=`order`) {
+                console.log();
+                
+                const unsub = fstore.collection(`classified`)
+                    .where(`sub_category`, `==`, category.subcat).limit(20).get().then(res => {
+                        const docs: any[] = res.docs.map((doc) => doc.data())
+                        console.log(docs)
+                        setclassifiedList(docs)
+                        setnotFound(docs.length <= 0)
+                        setloading(false)
 
-            })
+                    })
+            } else if(category.cat) {
+                const unsub = fstore.collection(`classified`)
+                .where(`sub_category`, `==`, category.subcat).limit(20).get().then(res => {
+                    const docs: any[] = res.docs.map((doc) => doc.data())
+                    console.log(docs)
+                    setclassifiedList(docs)
+                    setnotFound(docs.length <= 0)
+                    setloading(false)
+
+                })
+            }
         }
         // return (() => unsub())
 
@@ -140,7 +157,7 @@ const Classifieds: React.FC = () => {
                 </div>
                 <IonContent >
                     <IonContent scrollY={false} style={{ height: `45px`, width: `100%` }} scrollX className={`category-tab`}>
-                        <div style={{ width: `350vw` }}>
+                        <div style={{ width: `600vw` }}>
                             <Categories getClassified={getClassified}></Categories>
                         </div>
                     </IonContent>
@@ -231,11 +248,13 @@ function Categories(props: { getClassified: (cat: string) => void }) {
     const [selectedTab, setselectedTab] = useContext(SelectedTabContext)
     //    const [selectedTab,setselectedTab]=useState(categoryData[1].name)
     const { getClassified } = props
+    const colors = [`secondary`, `dark`, `tertiary`, `medium`, `success`, `danger`, `primary`, `warning`]
     return (
         <>
             {
-                categoryData.map((category, index) => {
-                    return (<CategoryChip key={index} selected={category.name == selectedTab} selectedTab={() => { setselectedTab(category.name); getClassified(category.name) }} category={category}></CategoryChip>)
+                maincategories.map((category, index) => {
+                    const color = colors[index % colors.length]
+                    return (<CategoryChip key={index} selected={category.name == selectedTab.cat} selectedTab={(categoryPayload) => { setselectedTab(categoryPayload); getClassified(category.name) }} category={{ ...category, color: color }}></CategoryChip>)
                 })
             }
 
@@ -243,28 +262,52 @@ function Categories(props: { getClassified: (cat: string) => void }) {
     )
 }
 
+export interface categoryPayloadInterface {
+    cat: string,
+    subcat: string,
+}
 
-function CategoryChip(props: { category: { name: string, url: string, color: string }, selected: boolean, selectedTab: () => void }) {
+function CategoryChip(props: { category: { name: string, url: string, color: string }, selected: boolean, selectedTab: (val: categoryPayloadInterface) => void }) {
     const { category, selected, selectedTab } = props
     const [init, setinit] = useState(false)
+    const [openActions, setopenActions] = useState(false)
+    const [listActions, setlistActions] = useState<string[]>((subcategories[category.name] || []))
 
-
-    function switchTab() {
-
-        selectedTab()
+    function switchTab(categoryPayload: categoryPayloadInterface) {
+        selectedTab(categoryPayload)
         setinit(true)
     }
 
+    async function openSubCat() {
+        setopenActions(true)
+
+    }
+    // style={{ border: selected ? `2px solid var(--ion-color-dark)` : `none` }}
     return (
 
-        <IonChip style={{ border: selected ? `2px solid var(--ion-color-dark)` : `none` }} onClick={() => switchTab()} color={category.color}>
+        <IonChip outline={selected} onClick={() => openSubCat()} color={category.color}>
             <IonAvatar>
-                <img src={category.url}  ></img>
+                <img src={category.url}  ></img>maincategories[0].name
             </IonAvatar>
             <IonLabel>{category.name}</IonLabel>
+            <IonActionSheet header={`Select Subcategory`} buttons={[...listActions.map((action) => ({ text: action, handler: () => switchTab({ cat: category.name, subcat: action }) })), { text: `other`, handler: () => { } }]} onDidDismiss={() => setopenActions(false)} isOpen={openActions}></IonActionSheet>
+            {/* <IonSelect>
+                {
+                    (subcategories[category.name] || []).map((subcat:string)=>{
+                        return(
+                            <IonSelectOption>
+                                {subcat}
+                            </IonSelectOption>
+                        )
+                    })
+                }
+            </IonSelect> */}
         </IonChip>
     )
 }
+
+
+
 
 export const categoryData: { name: string, url: string, color: string }[] = [
     {
@@ -315,87 +358,3 @@ export const categoryData: { name: string, url: string, color: string }[] = [
         , color: `success`
     }
 ]
-
-export const maincategories: any = [
-    {
-        name: `Vehicles`,
-        url: `https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Y2Fyc3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`,
-        color: `danger`,
-
-    },
-    {
-
-    }
-]
-//about adding sub catgories to classifieds page
-export const subcategories: any = {
-    Vehicles: [`Cars & Batteries`,
-        `Car Parts & Accessories`,
-        `Motorcycles & Scooters`,
-        `Trucks & Commercial Vehicles`,
-        `Caravans & Trailers`,
-        `Boats & Aviation`
-    ],
-    'Cell Phones': [
-        'TV,Audio & Visual',
-        'Computers & Laptops',
-        'Gaming',
-        'Hardware & Accessories',
-        'Cameras',
-        'Tablets',
-    ],
-    'Home, Garden & Tools': [
-        `Furniture & Decor`,
-        `Homeware & Appliances`,
-        `Tools & DIY`,
-        `Garden & Braai`,
-    ],
-
-    'Property': [
-        `Houses & Flats for rent`,
-        `Rooms for rent & Shared`,
-        `Houses & Flats for sale`,
-        `Land`,
-        `Offices, Shops & Commercial`,
-        `B & B`
-    ],
-    'Sports & Outdoors': [
-        `Outdoor Equipment`,
-        `Bicycles`,
-        `Gym & Fitness`,
-        `Sports Equipment`
-    ],
-    'Hobbies & Interests': [
-        `Toys & Games`,
-        `Musical Instruments`,
-        `Art & Rare Items`,
-        `Books`
-    ],
-    'Fashion & Beauty': [
-        `Clothing & Shoes`,
-        `Jewellery & Accessories`,
-        `Health, Beauty & Cosmetics`,
-    ],
-    'Farming': [
-        `Farming Equipment & Vehicles`,
-        `Livestock`,
-        `Industrial Equipment`,
-        `Feeds, Supplements & Seeds`,
-    ],
-    'Construction': [
-        `Other Services`,
-        `Event Planning`,
-        `Transport`,
-        `Installations & Repairs`,
-        `Babysitters`,
-        `Home Improvement`,
-        `Domestic worker & Cleaning`
-    ],
-
-    ' Jobs & Work': [
-        `Available Jobs`,
-        `Work needed`
-    ]
-
-
-}

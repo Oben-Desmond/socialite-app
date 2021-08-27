@@ -6,7 +6,7 @@ import { PostInterface } from "../../interfaces/posts";
 import { UserInterface } from "../../interfaces/users";
 import { CalculateDistanceKm } from "./itemmodal";
 
-interface dataInterface { category: string, name: string, desc: string, cost: string };
+export interface dataInterface { category: string, name: string, desc: string, cost: string, subcategory:string };
 
 export async function UploadClassifiedItem(data: dataInterface, images: string[], user: UserInterface, country: countryInfoInterface | undefined, features: string[],location:{long:number,lat:number}) {
 
@@ -29,6 +29,7 @@ export async function UploadClassifiedItem(data: dataInterface, images: string[]
         item_features: features,
         country_code: country?.country || `SA`,
         item_views: 0,
+        sub_category:data.subcategory
     }
 
     return (new Promise(async (resolve, reject) => {
@@ -63,7 +64,7 @@ export async function UploadClassifiedItem(data: dataInterface, images: string[]
 
                         for (let i in keywords) {
                             const word = keywords[i];
-                            const text = [post.item_name, ...post.item_features, post.item_desc.substr(0, 30)]
+                            const text = [post.item_name, ...post.item_features, post.item_desc.substr(0, 50), post.item_category, post.sub_category]
                             const index = (+i)%text.length
                             db.ref(`indices`).child(word).child(item_id).set(text[index]).catch(console.log)
                         }

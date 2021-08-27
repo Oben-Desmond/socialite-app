@@ -109,9 +109,13 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         }
     }
     function handleKeyBoard() {
-        Keyboard.addListener(`keyboardDidHide`, () => {
-            setmoveInputUp(false)
-        })
+        try{
+            Keyboard.addListener(`keyboardDidHide`, () => {
+                setmoveInputUp(false)
+            })
+          }catch(err){
+              console.log(err)
+          }
     }
 
     return (

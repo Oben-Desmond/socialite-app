@@ -14,6 +14,7 @@ export interface classifiedItemInterface{
       item_images:string[],
       item_cost:string,
       country_code:string,
+      sub_category:string,
 }
 
 

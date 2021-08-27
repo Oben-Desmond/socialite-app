@@ -19,6 +19,7 @@ import { UploadClassifiedItem } from "./uploadClassifiedToDB";
 import { SelectedTabContext } from "../../pages/Classifieds";
 import { Dialog } from "@capacitor/dialog";
 import { selectLocation } from "../../states/reducers/location-reducer";
+import { maincategories, subcategories } from "./categories-data";
 
 
 
@@ -34,6 +35,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
     const [category, setcategory] = useState(``)
     const [currency, setcurrency] = useState(countryInfo.country == `CM` ? `FCFA` : countryInfo.country == `SA` ? `R` : `$`)
     const [newcategory, setnewcategory] = useState(``)
+    const [subcategory, setsubcategory] = useState(``)
     const [selectedTab, setselectedTab] = useContext(SelectedTabContext)
     const location: { long: number, lat: number } = useSelector(selectLocation)
     const nameRef = useRef<HTMLDivElement>(null), descRef = useRef<HTMLDivElement>(null), costRef = useRef<HTMLDivElement>(null), otherRef = useRef<HTMLDivElement>(null);
@@ -44,13 +46,13 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
         e.preventDefault()
         let { name, desc, category, cost } = e.target
         let data: any = { name, desc, category, cost, }
-     
+
         Object.keys(data).map(key => {
             if (data[key]) {
                 return data[key] = data[key].value
             }
         })
-        data={...data,category: data.category == `other` ? newcategory : data.category, cost: getcostwithCurrency(data.cost)}
+        data = { ...data, category: data.category == `other` ? newcategory : data.category, cost: getcostwithCurrency(data.cost), subcategory:subcategory||`other` }
 
         function getcostwithCurrency(cost: number) {
             if (currency == `XFA` || currency == `FCFA`) {
@@ -63,11 +65,9 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
         if (user.email) {
             setloading(true)
             UploadClassifiedItem(data, images, user, countryInfo, features, location).then(() => {
-                Dialog.alert({ message: `your classified has been posted`, title: `Post sucessful` })
-                Toast.show({ text: `post has been sent` })
+                Toast.show({ text: `post has been sent`, position:`center`})
                 onDidDismiss()
-                setselectedTab(data.category)
-                dropRef.current?.click()
+                setselectedTab({cat:data.category, subcat:subcategory})
                 fetch(`https://socialiteapp-backend.herokuapp.com/classified/upload-mail?email=${user.email}&name=${user.name}`, { mode: `cors` }).catch(console.log).finally(console.log)
                 setimages([])
                 e.target.name.value = ``
@@ -163,22 +163,36 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
                                 <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category} name={`category`} >
-                                    <IonSelectOption value={`apartment`}>apartment</IonSelectOption>
-                                    <IonSelectOption value={`books`}>book</IonSelectOption>
-                                    <IonSelectOption value={`cars`}>cars</IonSelectOption>
-                                    <IonSelectOption value={`clothing`}>clothing</IonSelectOption>
-                                    <IonSelectOption value={`electronics`}>Electronics</IonSelectOption>
-                                    <IonSelectOption value={`food`}>food stuff</IonSelectOption>
-                                    <IonSelectOption value={`pets`}>pets</IonSelectOption>
-                                    <IonSelectOption value={`job`}>job</IonSelectOption>
-                                    <IonSelectOption value={`service`}>service</IonSelectOption>
-                                    <IonSelectOption value={`other`}>other</IonSelectOption>
+
+                                    {
+                                        [...maincategories,{name:`other`,url:``}].map(data => {
+                                            return (
+                                                <IonSelectOption key={data.name} value={data.name}>{data.name}</IonSelectOption>
+                                            )
+                                        })
+                                    }
                                 </IonSelect>
                             </IonItem >
                         </div>
+                      {category && category!=`other`  && category.length>1&& <div className={`input`}>
+                            <IonItem lines={`none`} color={`none`}>
+                                <IonLabel color={`secondary`}>sub category</IonLabel>
+                                <IonSelect onIonChange={(e) => setsubcategory(e.detail.value)} value={subcategory} name={`subcategory`} >
+
+                                    {
+                                        (subcategories[category] || []).map((data:string) => {
+                                            return (
+                                                <IonSelectOption key={data} value={data}>{data}</IonSelectOption>
+                                            )
+                                        })
+                                    }
+                                </IonSelect>
+                            </IonItem >
+                        </div>}
                         {category == `other` && <div onClick={() => otherRef.current?.scrollIntoView({ behavior: `smooth` })} ref={otherRef} className="input">
                             <IonInput onIonChange={e => setnewcategory(e.detail.value || ``)} value={newcategory} required name={`other`} placeholder={`Give  the category of this classified`}></IonInput>
                         </div>}
+
                         <IonGrid>
                             <IonRow>
                                 <IonCol >
