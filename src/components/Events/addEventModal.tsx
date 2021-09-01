@@ -1,6 +1,7 @@
 // @flow strict
 
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Dialog } from '@capacitor/dialog';
 import { Toast } from '@capacitor/toast';
 import { IonModal, IonHeader, IonContent, IonLoading, IonCardContent, IonToolbar, IonCardTitle, IonItem, IonIcon, IonLabel, IonInput, IonTextarea, IonSelect, IonSelectOption, IonButton, IonBackdrop, IonProgressBar } from '@ionic/react';
 import { cameraOutline } from 'ionicons/icons';
@@ -12,29 +13,34 @@ import { countryInfoInterface } from '../../interfaces/country';
 import { StoreStateInteface } from '../../interfaces/redux';
 import { UserInterface } from '../../interfaces/users';
 import ImageSlide from '../image slides';
+import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../PhotoOptionsModal';
 
 
 const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = function ({ isOpen, onDidDismiss }) {
     const rootState: StoreStateInteface | any = useSelector(state => state)
-    const [category, setcategory] = useState(``)
     const dropRef = useRef<HTMLIonBackdropElement>(null)
     const user: UserInterface = rootState.userReducer;
     const countryInfo: countryInfoInterface = rootState.countryReducer
     const [images, setimages] = useState<any[]>([]);
-    const titleRef= useRef<HTMLDivElement>(null), descRef= useRef<HTMLDivElement>(null);
+    const titleRef = useRef<HTMLDivElement>(null), descRef = useRef<HTMLDivElement>(null);
+    const [PhotoOptions, setPhotoOptions] = useState(false)
 
     const [loading, setloading] = useState(false)
     const [showImg, setshowImg] = useState<number | undefined>()
     const addPost = function (e: any) {
         e.preventDefault()
-        let { title, story, category } = e.target
-        let data: any = { title, story, category }
+        let { title, story, } = e.target
+        let data: any = { title, story }
         Object.keys(data).map(key => {
             if (data[key]) {
                 return data[key] = data[key].value
             }
         })
-
+        if (images.length <= 0) {
+            Dialog.alert({ message: `Please add an image so people can clearly understand what the classified is about`, title: `Image is Missen` })
+            setPhotoOptions(true)
+            return;
+        }
 
 
         if (user.email) {
@@ -42,11 +48,11 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
 
             UploadEventContent(data, images, user, countryInfo).then(() => {
                 Toast.show({ text: `Event has been posted` })
-                dropRef.current?.click()
+                onDidDismiss()
             }).finally(() => {
                 e.target.title.value = ``
                 e.target.story.value = ``
-                  setimages([])
+                setimages([])
                 setloading(false)
 
             })
@@ -56,6 +62,22 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
         const imgs = images
         imgs.splice(item, 1)
         setimages([...imgs])
+    }
+    function takePicture() {
+
+        photosFromCamera().then((data: any) => {
+            if (data)
+                setimages([...images, data])
+
+        })
+    }
+
+
+    function galleryPhotos() {
+        photosFromGallery().then((data: any) => {
+            if (data)
+                setimages([...images, data])
+        })
     }
     return <IonModal onDidDismiss={onDidDismiss} swipeToClose cssClass={`add-modal`} mode={`ios`} isOpen={isOpen}>
 
@@ -86,19 +108,15 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
                         </FlipMove>
                         {/* </IonItem> */}
                         <div className="input">
-                            <IonItem lines={`none`} color={`none`} onClick={() => {
-                                Camera.getPhoto({ resultType: CameraResultType.DataUrl, source: CameraSource.Photos }).then((res) => {
-                                    setimages([...images, res.dataUrl])
-                                })
-                            }} button>
+                            <IonItem lines={`none`} color={`none`} onClick={() =>setPhotoOptions(true)} button>
                                 <IonIcon icon={cameraOutline}></IonIcon>
                                 <IonLabel className={`ion-padding-start`}> Take photos</IonLabel>
                             </IonItem>
                         </div>
-                        <div onClick={()=>titleRef.current?.scrollIntoView({behavior:`smooth`})} ref={titleRef} className="input">
+                        <div onClick={() => titleRef.current?.scrollIntoView({ behavior: `smooth` })} ref={titleRef} className="input">
                             <IonInput required name={`title`} placeholder={`add title of Event`}></IonInput>
                         </div>
-                        <div onClick={()=>descRef.current?.scrollIntoView({behavior:`smooth`})} ref={descRef} style={{ whiteSpace: `pre-wrap` }} className="input">
+                        <div onClick={() => descRef.current?.scrollIntoView({ behavior: `smooth` })} ref={descRef} style={{ whiteSpace: `pre-wrap` }} className="input">
                             <IonTextarea required name={`story`} placeholder={`add event description`}></IonTextarea>
                         </div>
                         {/* <div className={`input`}>
@@ -118,17 +136,19 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
                                 </IonSelect>
                             </IonItem >
                         </div> */}
+                        <IonToolbar style={{ height: `40px` }}></IonToolbar>
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
                                 Post Event</IonButton>
                         </IonToolbar>
                     </form>
                 </IonCardContent>
-                <IonToolbar style={{height:`80px`}}></IonToolbar>
+                <IonToolbar style={{ height: `80px` }}></IonToolbar>
             </IonCardContent>
             {false && <div >
                 <IonBackdrop ref={dropRef}></IonBackdrop>
             </div>}
+            <PhotoOptionsModal fromPhotos={galleryPhotos} fromCamera={takePicture} onDidDismiss={() => { setPhotoOptions(false) }} isOpen={PhotoOptions}></PhotoOptionsModal>
         </IonContent>
 
     </IonModal>

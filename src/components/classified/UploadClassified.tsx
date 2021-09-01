@@ -47,12 +47,18 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
         let { name, desc, category, cost } = e.target
         let data: any = { name, desc, category, cost, }
 
+        if(images.length<=0){
+             Dialog.alert({message:`Please add an image so people can clearly understand what the classified is about`,title:`Image is Missen`})
+             setPhotoOptions(true)
+             return ;
+        }
+
         Object.keys(data).map(key => {
             if (data[key]) {
                 return data[key] = data[key].value
             }
         })
-        data = { ...data, category: data.category == `other` ? newcategory : data.category, cost: getcostwithCurrency(data.cost), subcategory:subcategory||`other` }
+        data = { ...data, category: data.category == `other` ? newcategory : data.category || `other`, cost: getcostwithCurrency(data.cost), subcategory:subcategory||`other` }
 
         function getcostwithCurrency(cost: number) {
             if (currency == `XFA` || currency == `FCFA`) {

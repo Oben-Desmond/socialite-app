@@ -289,7 +289,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
                             </IonRow>
                         </IonGrid>
                     </div> */}
-
+              
                 </IonCardContent>
 
             </IonContent>

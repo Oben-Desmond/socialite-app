@@ -1,0 +1,5 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target" : { "namespace": "android_app", "package_name": "com.socionet",
+                 "sha256_cert_fingerprints": ["D4:35:34:54:9A:03:3F:C2:CF:8F:9E:DA:71:08:00:CF:EB:46:78:CB:14:E0:AD:94:88:23:80:CE:51:40:55:38"] }
+  }]

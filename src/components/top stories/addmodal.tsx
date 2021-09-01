@@ -50,7 +50,6 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
             }).finally(() => {
                 e.target.title.value = ``
                 e.target.story.value = ``
-                e.target.category.value = ``
                 setimages([])
                 setloading(false)
 
@@ -127,7 +126,7 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
                         <div style={{ whiteSpace: `pre-wrap` }} className="input">
                             <IonTextarea onClick={scrollDown} required name={`story`} placeholder={`Enter story`}></IonTextarea>
                         </div>
-                        <div className={`input`}>
+                        {/* <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
                                 <IonSelect name={`category`} value={`sports`}>
@@ -144,7 +143,9 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
                                     <IonSelectOption value={`technology`}>Technology</IonSelectOption>
                                 </IonSelect>
                             </IonItem >
-                        </div>
+                        </div> */}
+                        <IonToolbar style={{height:`40px`}}></IonToolbar>
+
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
                                 Post</IonButton>

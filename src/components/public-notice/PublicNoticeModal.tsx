@@ -159,7 +159,6 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                         <IonLabel className={`card-title`}>{post.title}
                         </IonLabel>
                     </div>
-                    <IonChip outline color={getRandomColor(post.category)}>{post.category}</IonChip>
                     <p style={{ whiteSpace: `pre-line` }}> {post.description}</p>
                 </IonToolbar>
                 <IonToolbar>

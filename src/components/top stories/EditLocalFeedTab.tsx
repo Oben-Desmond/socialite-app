@@ -162,7 +162,7 @@ const EditClassifiedModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean,
                             <div ref={descRef} onClick={()=>descRef.current?.scrollIntoView({behavior:`smooth`})} style={{ whiteSpace: `pre-wrap` }} className="input">
                                 <IonTextarea value={input.description} onIonChange={e => setinput({ ...input, description: (e.detail.value || ``) })} required name={`description`} placeholder={`Enter post detail`}></IonTextarea>
                             </div>
-                            <div className={`input`}>
+                            {/* <div className={`input`}>
                                 <IonItem lines={`none`} color={`none`}>
                                     <IonLabel color={`secondary`}>category</IonLabel>
                                     <IonSelect name={`category`} value={`sports`}>
@@ -178,7 +178,9 @@ const EditClassifiedModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean,
                                         <IonSelectOption value={`technology`}>Technology</IonSelectOption>
                                     </IonSelect>
                                 </IonItem >
-                            </div>
+                            </div> */}
+                        <IonToolbar style={{height:`40px`}}></IonToolbar>
+
                             <IonToolbar className={`ion-padding-top`} style={{ textAlign: `center` }}>
                                 <IonButton type={"submit"}>
                                     save changes</IonButton>

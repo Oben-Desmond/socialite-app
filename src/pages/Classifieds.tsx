@@ -290,7 +290,7 @@ function CategoryChip(props: { category: { name: string, url: string, color: str
                 <img src={category.url}  ></img>maincategories[0].name
             </IonAvatar>
             <IonLabel>{category.name}</IonLabel>
-            <IonActionSheet header={`Select Subcategory`} buttons={[...listActions.map((action) => ({ text: action, handler: () => switchTab({ cat: category.name, subcat: action }) })), { text: `other`, handler: () => { } }]} onDidDismiss={() => setopenActions(false)} isOpen={openActions}></IonActionSheet>
+            <IonActionSheet header={`Select Subcategory`} buttons={[...listActions.map((action) => ({ text: action, handler: () => switchTab({ cat: category.name, subcat: action }) })), { text: `other`, handler: () => switchTab({ cat: category.name, subcat: `other` }) }]} onDidDismiss={() => setopenActions(false)} isOpen={openActions}></IonActionSheet>
             {/* <IonSelect>
                 {
                     (subcategories[category.name] || []).map((subcat:string)=>{

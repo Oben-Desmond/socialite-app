@@ -34,8 +34,8 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
     const [showImg, setshowImg] = useState<number | undefined>()
     const addPost = function (e: any) {
         e.preventDefault()
-        let { title, story, category } = e.target
-        let data: any = { title, story, category }
+        let { title, story } = e.target
+        let data: any = { title, story }
         Object.keys(data).map(key => {
             if (data[key]) {
                 return data[key] = data[key].value
@@ -47,9 +47,8 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
         if (user.email) {
             setloading(true)
             UploadPublicNotice(data, images, user, countryInfo).then(() => {
-                alert(`posted`)
                 Toast.show({ text: `post has been sent` })
-                dropRef.current?.click()
+                onDidDismiss()
             }).finally(() => {
                 setimages([])
                 setloading(false)
@@ -138,6 +137,8 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
                                 </IonSelect>
                             </IonItem >
                         </div> */}
+                        <IonToolbar style={{height:`40px`}}></IonToolbar>
+
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
                                 Post</IonButton>

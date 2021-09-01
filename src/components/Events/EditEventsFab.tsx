@@ -174,6 +174,8 @@ const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, pos
                                     </IonSelect>
                                 </IonItem >
                             </div> */}
+                        <IonToolbar style={{height:`40px`}}></IonToolbar>
+
                             <IonToolbar className={`ion-padding-top`} style={{ textAlign: `center` }}>
                                 <IonButton type={"submit"}>
                                     save changes</IonButton>

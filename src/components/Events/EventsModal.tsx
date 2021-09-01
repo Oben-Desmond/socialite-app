@@ -159,7 +159,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                         </IonLabel>
                     </div>
 
-                    
+                    <p style={{ whiteSpace: `pre-line` }}> {post.description}</p>
                 </IonToolbar>
                 <IonToolbar>
                     <IonSlides options={{ slidesPerView: 2 }}>
