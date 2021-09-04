@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { UserAvatar } from './reportCard'
 
   const ViewReportModal:React.FC<{isOpen:boolean, onDidDismiss:()=>void}> = function({isOpen, onDidDismiss}) {
-      const [maploaded, setmaploaded] = useState(false)
+      const [maploaded, setmaploaded] = useState(true)
     return (
         <IonModal isOpen={isOpen} onDidDismiss={onDidDismiss}>
         <IonHeader>
@@ -76,10 +76,12 @@ import { UserAvatar } from './reportCard'
                                 Muea security Police
                             </IonLabel>
                         </IonItem>
+                        <div style={{height:`50px`}}></div>
                        { maploaded&&<div>
-                            <iframe onLoad={()=>setmaploaded(true)} src={`http://maps.google.com/maps?q=9.45, 9.5&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
+                            <IonLabel color={`secondary`}>Location of Incident</IonLabel>
+                            <iframe  onLoadStart={()=>setmaploaded(false)} onLoadedData={()=>setmaploaded(true)} onLoad={()=>setmaploaded(true)} src={`http://maps.google.com/maps?q=9.45, 9.5&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
                         </div>}
-                       {!maploaded&& <IonGrid >
+                       {!maploaded && <IonGrid >
                             <IonRow>
                                 <IonCol></IonCol>
                                 <IonCol style={{textAlign:`center`, padding:`30px`}}>

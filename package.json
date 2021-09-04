@@ -34,6 +34,7 @@
     "native-run": "^1.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-donut": "^1.1.4",
     "react-flip-move": "^3.0.4",
     "react-lettered-avatar": "^1.0.2",
     "react-redux": "^7.2.4",

@@ -3,6 +3,7 @@ import { close, people, peopleOutline } from "ionicons/icons";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import LetterAvatar from "../LetterAvatar";
+import ReportStatistics from "./report-statistics";
 import ViewReportModal from "./ViewReportModal";
 
 
@@ -53,6 +54,7 @@ const ReportCard: React.FC = () => {
                 </IonGrid>
             </IonItem>
            <ViewReportModal onDidDismiss={() => setviewReport(false)} isOpen={viewReport}></ViewReportModal>
+           <ReportStatistics></ReportStatistics>
         </div>
     )
 }
