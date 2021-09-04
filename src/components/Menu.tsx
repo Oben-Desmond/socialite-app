@@ -16,7 +16,7 @@ import {
 } from '@ionic/react';
 
 import { useHistory, useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exitOutline, flagOutline, heart, heartOutline, heartSharp, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 import { Pictures } from '../pages/images/images';
 import { useEffect, useState } from 'react';
@@ -47,17 +47,23 @@ interface AppPage {
 
 const appPages: AppPage[] = [
   {
+    title: 'Home',
+    url: '/home',
+    iosIcon: homeOutline,
+    mdIcon: homeOutline
+  },
+  {
     title: 'Notifications',
     url: '/notifications',
     iosIcon: notificationsOutline,
     mdIcon: notificationsOutline
   },
-  {
-    title: 'Countries',
-    url: '/page/Outbox',
-    iosIcon: flagOutline,
-    mdIcon: flagOutline
-  },
+  // {
+  //   title: 'Countries',
+  //   url: '/page/Outbox',
+  //   iosIcon: flagOutline,
+  //   mdIcon: flagOutline
+  // },
   {
     title: 'Settings',
     url: '/settings',
@@ -70,12 +76,7 @@ const appPages: AppPage[] = [
     iosIcon: cashOutline,
     mdIcon: cashOutline
   },
-  {
-    title: 'Logout',
-    url: '/login',
-    iosIcon: exitOutline,
-    mdIcon: exitOutline
-  },
+  
 
 ];
 
@@ -131,12 +132,11 @@ const Menu: React.FC = () => {
       if (res.location == `granted`)
         Geolocation.getCurrentPosition().then(data => {
           dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
-          alert({ long: data.coords.longitude, lat: data.coords.latitude })
         })
       else {
         Geolocation.requestPermissions().then(async (res) => {
           const ans = await Dialog.confirm({ message: `In Order for us to provide you relevant content we will require your current location`, title: `Location Required`, okButtonTitle: `Proceed`, cancelButtonTitle: `Deny` })
-         
+
           if (!ans.value) return;
 
           if (res.location == `granted`) {
@@ -158,7 +158,7 @@ const Menu: React.FC = () => {
         <div className={`country-flag`}>
           <IonImg src={user?.photoUrl || Pictures.bg} />
         </div>
-        <IonToolbar className={`dp`} color={`none`} style={{ marginTop: `-20px` }}>
+        <IonToolbar className={`dp`} color={`none`} style={{ marginTop: `-6px`, paddingBottom:`30px` }}>
           {countryInfo?.country && <img style={{ marginBottom: `-20px` }} src={`https://www.countryflags.io/${countryInfo?.country}/shiny/64.png`} />}
           {user.photoUrl && <IonAvatar slot={`end`}  >
             <IonImg src={user.photoUrl} />
@@ -175,47 +175,55 @@ const Menu: React.FC = () => {
 
         <div className={`list`}>
           {appPages.map((appPage, index) => {
-            if (appPage.title === `Countries`) {
-              return (
-                <React.Fragment key={index}>
-                  <FlipMove>
-                    <IonItem onClick={() => setshowCountries(!showCountries)} color={`dark`} className={location.pathname === appPage.url ? 'selected' : ''} lines={`full`} detail={false}>
-                      <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                      <IonLabel>{appPage.title}</IonLabel>
-                      <IonButtons slot={`end`}>
-                        <IonButton>
-                          <IonIcon icon={showCountries ? chevronUp : chevronDown} />
-                        </IonButton>
-                      </IonButtons>
-                    </IonItem>
+            // if (appPage.title === `Countries`) {
+            //   return (
+            //     <React.Fragment key={index}>
+            //       <FlipMove>
+            //         <IonItem onClick={() => setshowCountries(!showCountries)} color={`dark`} className={location.pathname === appPage.url ? 'selected' : ''} lines={`full`} detail={false}>
+            //           <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+            //           <IonLabel>{appPage.title}</IonLabel>
+            //           <IonButtons slot={`end`}>
+            //             <IonButton>
+            //               <IonIcon icon={showCountries ? chevronUp : chevronDown} />
+            //             </IonButton>
+            //           </IonButtons>
+            //         </IonItem>
 
 
-                    {
-                      showCountries && countries.map((country, index) => {
-                        return (
-                          <IonMenuToggle color={`primary`} key={index} autoHide={false}>
-                            <IonItem color={`primary`} className={location.pathname === appPage.url ? 'selected' : ''} lines={`full`} detail={false}>
-                              {country}
-                            </IonItem>
-                          </IonMenuToggle>
-                        )
-                      })
+            //         {
+            //           showCountries && countries.map((country, index) => {
+            //             return (
+            //               <IonMenuToggle color={`primary`} key={index} autoHide={false}>
+            //                 <IonItem color={`primary`} className={location.pathname === appPage.url ? 'selected' : ''} lines={`full`} detail={false}>
+            //                   {country}
+            //                 </IonItem>
+            //               </IonMenuToggle>
+            //             )
+            //           })
 
-                    }</FlipMove>
+            //         }
+            //       </FlipMove>
 
-                </React.Fragment>
-              )
-            }
+            //     </React.Fragment>
+            //   )
+            // }
             return (
               <IonMenuToggle color={`dark`} key={index} autoHide={false}>
-                <IonItem color={`dark`} className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="forward" lines={`full`} detail={false}>
-                  <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
+                <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
+                  <IonIcon color={ location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon}  md={appPage.mdIcon} />
+                  <IonLabel color={`dark`} style={{ color : location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white'}} >{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );
           })}
+          <IonMenuToggle onClick={()=>auth.signOut()} color={`dark`}  autoHide={false}>
+            <IonItem color={`dark`} className={location.pathname === `/login` ? 'selected' : ''} routerLink={`/login`} routerDirection="forward" lines={`full`} detail={false}>
+              <IonIcon slot="start" ios={exit} md={exitOutline} />
+              <IonLabel>Logout</IonLabel>
+            </IonItem>
+          </IonMenuToggle>
         </div>
+
 
 
       </IonContent>

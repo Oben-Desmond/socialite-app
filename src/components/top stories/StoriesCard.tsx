@@ -21,6 +21,7 @@ import { selectCountry } from '../../states/reducers/countryReducer';
 import { countryInfoInterface } from '../../interfaces/country';
 import { Keyboard } from '@capacitor/keyboard';
 import EditLocalFeedFab from './EditLocalFeedTab';
+import { Share } from '@capacitor/share';
 
 
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
@@ -73,7 +74,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     const commentItemRef=useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const unsub = fstore.collection(`posts/${countryInfo.name || `South Africa`}/${commentTitle}-reactions`).doc(`${post.id}`).collection(`comments`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
+        const unsub = fstore.collection(`posts/${countryInfo.name || `South Africa`}/${commentTitle}-reactions`).doc(`${post.id}`).collection(`comments`).orderBy(`timestamp`, `asc`).onSnapshot((res) => {
             const dataArray: commentInterface[] | undefined | any[] = res.docs.map(doc => doc.data())
             if (dataArray)
                 setcomments(dataArray)
@@ -152,6 +153,10 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
           }
     }
 
+    const sharePost=()=>{
+        Share.share({dialogTitle:`share post with friends`,url:`https://socionet.co.za/${post.id}`})
+    }
+
     return (
         <IonModal cssClass={`story-modal`} onDidPresent={getReactions} onDidDismiss={onDidDismiss} isOpen={isOpen}>
             <IonHeader>
@@ -218,7 +223,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                                 </IonButton>
                             </IonCol>
                             <IonCol>
-                                <IonButton fill={`clear`}>
+                                <IonButton onClick={sharePost} fill={`clear`}>
                                     <IonIcon icon={shareSocialOutline} />
                                 </IonButton>
                             </IonCol>

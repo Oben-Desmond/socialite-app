@@ -37,7 +37,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
             }
         })
         if (images.length <= 0) {
-            Dialog.alert({ message: `Please add an image so people can clearly understand what the classified is about`, title: `Image is Missen` })
+            Dialog.alert({ message: `Please add an image so people can clearly understand what the Event is about`, title: `Image is Missen` })
             setPhotoOptions(true)
             return;
         }
@@ -143,7 +143,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
                         </IonToolbar>
                     </form>
                 </IonCardContent>
-                <IonToolbar style={{ height: `80px` }}></IonToolbar>
+                <IonToolbar style={{ height: `40vh` }}></IonToolbar>
             </IonCardContent>
             {false && <div >
                 <IonBackdrop ref={dropRef}></IonBackdrop>

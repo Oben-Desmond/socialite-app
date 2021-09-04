@@ -182,7 +182,7 @@ const EditEventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, pos
                             </IonToolbar>
                         </form>
                     </IonCardContent>
-                    <IonToolbar style={{ height: `80px` }}></IonToolbar>
+                    <IonToolbar style={{ height: `40vh` }}></IonToolbar>
                 </IonCardContent>
                 <PhotoOptionsModal fromPhotos={galleryPhotos} fromCamera={takePicture} onDidDismiss={() => { setPhotoOptions(false) }} isOpen={PhotoOptions}></PhotoOptionsModal>
             </IonContent>

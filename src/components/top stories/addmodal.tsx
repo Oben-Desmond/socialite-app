@@ -13,6 +13,7 @@ import { UploadContent } from "../../Firebase/pages/top pages";
 import { StoreStateInteface } from "../../interfaces/redux";
 import { countryInfoInterface } from "../../interfaces/country";
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from "../PhotoOptionsModal";
+import { Dialog } from "@capacitor/dialog";
 
 
 
@@ -37,7 +38,11 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
                 return data[key] = data[key].value
             }
         })
-
+        if (images.length <= 0) {
+            Dialog.alert({ message: `Please add an image so people can clearly understand what the Story is about`, title: `Image is Missen` })
+            setPhotoOptions(true)
+            return;
+        }
       
 
         if (user.email) {

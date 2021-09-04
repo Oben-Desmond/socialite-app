@@ -1,3 +1,4 @@
+import { Dialog } from "@capacitor/dialog";
 import { countryInfoInterface } from "../../interfaces/country"
 import { PostInterface } from "../../interfaces/posts"
 import { UserInterface } from "../../interfaces/users"
@@ -107,6 +108,19 @@ export async function UploadEventContent(data: { category: string, title: string
 }
 
 
-
+export function fetchPostById(id:string, country:string, callBack: (val:PostInterface|any)=>void){
+     
+        fstore.collection(`posts`).doc(country).collection(`feed`).doc(id)
+        .get().then(snapshot=>{
+            if(snapshot.data()){
+                callBack(snapshot.data());
+                return
+            }
+            Dialog.alert({title:`Error getting Post`,message:`Post does not Exist. it may have been deleted`})
+        }).catch((err)=>{
+            Dialog.alert({title:`Error getting Post`,message:err.message||err||``})
+        })
+     
+}
 
 export { };

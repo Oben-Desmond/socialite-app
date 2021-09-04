@@ -50,7 +50,8 @@ export const subcategories: any = {
         `Caravans & Trailers`,
         `Boats & Aviation`
     ],
-    'Cell Phones': [
+    'Electronics': [
+        `Cell Phones`,
         'TV,Audio & Visual',
         'Computers & Laptops',
         'Gaming',
@@ -96,8 +97,8 @@ export const subcategories: any = {
         `Industrial Equipment`,
         `Feeds, Supplements & Seeds`,
     ],
-    'Construction': [
-        `Other Services`,
+    'Other Services': [
+        `Construction`,
         `Event Planning`,
         `Transport`,
         `Installations & Repairs`,

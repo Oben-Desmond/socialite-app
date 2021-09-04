@@ -220,7 +220,6 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                                                 <IonSelectOption value={`€`}>€</IonSelectOption>
                                                 <IonSelectOption value={`£`}>£</IonSelectOption>
                                                 <IonSelectOption value={`₩`}>₩</IonSelectOption>
-
                                                 {/* <IonSelectOption value={`politics`}>Politics</IonSelectOption>
                                     <IonSelectOption value={`religion`}>Religion</IonSelectOption>
                                     <IonSelectOption value={`science`}>Science</IonSelectOption> */}
@@ -259,7 +258,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                         </IonToolbar>
                     </form>
                 </IonCardContent>
-                <IonToolbar style={{ height: `80px` }}></IonToolbar>
+                <IonToolbar style={{ height: `50vh` }}></IonToolbar>
             </IonCardContent>
             {false && <div >
                 <IonBackdrop ref={dropRef}></IonBackdrop>

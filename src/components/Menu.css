@@ -4,9 +4,12 @@ ion-menu ion-content {
 }
 div.country-flag{
   background-color: black;
+  /* height: 30vh; */
 }
 div.country-flag>ion-img{
-   opacity: 0.6;
+   opacity: 0.8;
+   transform: scale(1.4);
+   /* height:30vh */
 }
 ion-toolbar.dp{
   padding-right: 10px;

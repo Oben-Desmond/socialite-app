@@ -39,7 +39,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
     const commentItemRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const unsub = fstore.collection(`posts/${countryInfo.name || `South Africa`}/${commentTitle}-reactions`).doc(`${post.id}`).collection(`comments`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
+        const unsub = fstore.collection(`posts/${countryInfo.name || `South Africa`}/${commentTitle}-reactions`).doc(`${post.id}`).collection(`comments`).orderBy(`timestamp`, `asc`).onSnapshot((res) => {
             const dataArray: commentInterface[] | undefined | any[] = res.docs.map(doc => doc.data())
             if (dataArray)
                 setcomments(dataArray)

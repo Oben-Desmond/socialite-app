@@ -10,10 +10,7 @@ const config: CapacitorConfig = {
       "presentationOptions": ["badge", "sound", "alert"]
     }
   },
-  "server": {
-    "url": "http://192.168.43.123:8100",
-    "cleartext": true
-  }
+ 
 };
 
 export default config;

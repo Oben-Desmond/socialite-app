@@ -2,7 +2,6 @@ import { IonApp, IonBadge, IonIcon, IonLabel, IonRouterOutlet, IonSplitPane, Ion
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 import Menu from './components/Menu';
-import Page from './pages/Page';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -44,6 +43,7 @@ import {
   PushNotifications,
   Token,
 } from '@capacitor/push-notifications';
+import AppUrlListener from './components/deep-linking/AppUrlListener';
 
 const App: React.FC = () => {
 
@@ -59,8 +59,7 @@ const App: React.FC = () => {
       <IonReactRouter>
         {/* <IonSplitPane contentId="main"> */}
         <Menu />
-        
-
+        <AppUrlListener></AppUrlListener>
         <IonTabs>
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
@@ -70,14 +69,14 @@ const App: React.FC = () => {
             <Route path="/jobs" component={Jobs} exact={true} />
             <Route path="/settings" component={Settings} exact={true} />
             <Route path="/incident-report" component={IncidentReport} exact={true} />
-            <Route path="/home" component={Home} exact={true} />
+            <Route path="/home/:postid" component={Home} exact={true} />
             <Route path="/events" component={Events} exact={true} />
             <Route path="/classifieds" component={Classifieds} exact={true} />
             <Route path="/public-notice" component={PublicNotice} exact={true} />
 
           </IonRouterOutlet>
           <IonTabBar id={`tabbar`} color={`primary`} slot={`bottom`}>
-            <IonTabButton tab={`home`} href={`/home`}>
+            <IonTabButton tab={`home`} href={`/home/default`}>
               <IonIcon icon={documentOutline} />
               <IonLabel >Local Feed</IonLabel>
             </IonTabButton>

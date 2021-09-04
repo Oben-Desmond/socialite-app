@@ -1,9 +1,11 @@
-ion-tab-bar{
-    --color:var(--ion-color-secondary);
-     
+ 
+.view-img {
+  --background: rgba(0, 0, 0, 0.886);
 }
 
-
-.view-img{
-    --background:rgba(0, 0, 0, 0.886);
+ion-tab-bar ion-tab-button{
+    --color-selected: var(--ion-color-secondary);
+    /* --color-focused:red;
+    --color:red;
+    --background-focused:blue; */
 }
