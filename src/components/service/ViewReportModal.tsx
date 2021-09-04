@@ -1,4 +1,4 @@
-import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem } from '@ionic/react'
+import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner } from '@ionic/react'
 import { peopleOutline, close } from 'ionicons/icons'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -76,9 +76,18 @@ import { UserAvatar } from './reportCard'
                                 Muea security Police
                             </IonLabel>
                         </IonItem>
-                        <div>
+                       { maploaded&&<div>
                             <iframe onLoad={()=>setmaploaded(true)} src={`http://maps.google.com/maps?q=9.45, 9.5&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
-                        </div>
+                        </div>}
+                       {!maploaded&& <IonGrid >
+                            <IonRow>
+                                <IonCol></IonCol>
+                                <IonCol style={{textAlign:`center`, padding:`30px`}}>
+                                    <IonSpinner color={`secondary`}></IonSpinner>
+                                </IonCol>
+                                <IonCol></IonCol>
+                            </IonRow>
+                        </IonGrid>}
                     </IonList>
                 </IonToolbar>
             </IonCardContent>
