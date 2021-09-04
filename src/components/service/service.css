@@ -1,0 +1,17 @@
+.report-statistics .card{
+    padding: 20px 10px;
+    text-align: center;
+
+}
+
+.report-statistics .card ion-text{
+    font-size: 25px;
+}
+
+.report-statistics  ion-content{
+    --background: rgb(252, 252, 252);
+}
+
+.report-statistics .card.people ion-icon{
+    transform: scale(2);
+}

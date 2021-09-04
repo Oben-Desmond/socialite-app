@@ -1,59 +1,58 @@
 
 
-import { IonCard, IonCol, IonContent, IonGrid, IonModal, IonRow, IonToolbar } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonLabel, IonModal, IonRow, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { people, peopleOutline, star } from 'ionicons/icons';
 import React, { FC } from 'react';
-import Donut from 'react-donut';
+import "./service.css";
+
 
 const ReportStatistics: FC<{}> = function () {
     return (
-        <IonModal isOpen={true}>
-            <IonToolbar>
-                Report Statistic
-           </IonToolbar>
+        <IonModal cssClass={`report-statistics`} isOpen={true}>
+            <IonHeader>
+                <IonToolbar >
+                    <IonTitle>Report Statistic</IonTitle>
+                </IonToolbar>
+            </IonHeader>
             <IonContent>
                 <IonGrid>
                     <IonRow>
                         <IonCol>
-                            <IonCard>
-                                Donut
-                                <Donut
-                                    chartRadiusRange={[]}
-                                    chartData={[
-                                        { name: 'Black Panther', data: 30 },
-                                        { name: 'Avengers', data: 50 },
-                                        { name: 'Antman', data: 20 },
-                                    ]}
-                                    chartWidth={300}
-                                    chartHeight={500}
-                                    title="Marvel movies that were popular this year"
-                                    chartThemeConfig={{
-                                        series: {
-                                            colors: ['#ffe0bd', '#670303', '#6cbfce'],
-                                        },
-                                    }}
-                                />
+                            <IonCard className={`card`}>
+                                <IonText color={`secondary`}>50%</IonText>
+                                <IonCardHeader>
+                                    <IonLabel color={`primary`}>attended cases</IonLabel>
+                                </IonCardHeader>
                             </IonCard>
                         </IonCol>
-                        <IonCol></IonCol>
+                        <IonCol>
+                            <IonCard className={`card`}>
+                                <IonText color={`secondary`}>40k</IonText>
+                                <IonCardHeader>
+                                    <IonLabel color={`primary`}>Reports this Month</IonLabel>
+                                </IonCardHeader>
+                            </IonCard>
+                        </IonCol>
+                    </IonRow>
+                    <IonRow>
+                        <IonCol>
+                            <IonCard className={`card`}>
+                                <IonText color={`primary`}>4 <IonIcon  size={`small`} color={`warning`} icon={star} /> </IonText>
+                                <IonCardHeader>
+                                    <IonLabel color={`primary`}>user rating</IonLabel>
+                                </IonCardHeader>
+                            </IonCard>
+                        </IonCol>
+                        <IonCol>
+                            <IonCard className={`card people`}>
+                                <IonIcon   icon={peopleOutline}/>
+                                <IonCardHeader>
+                                    <IonLabel color={`primary`}>5 service coworkers</IonLabel>
+                                </IonCardHeader>
+                            </IonCard>
+                        </IonCol>
                     </IonRow>
                 </IonGrid>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sapiente veritatis, ipsum adipisci fuga rerum dignissimos quis minus omnis blanditiis, officia unde eius aspernatur error? Esse earum at velit ipsum similique?
-                <Donut
-                    chartRadiusRange={[]}
-                    chartData={[
-                        { name: 'Black Panther', data: 30 },
-                        { name: 'Avengers', data: 50 },
-                        { name: 'Antman', data: 20 },
-                    ]}
-                    chartWidth={300}
-                    chartHeight={500}
-                    title="Marvel movies that were popular this year"
-                    chartThemeConfig={{
-                        series: {
-                            colors: ['#ffe0bd', '#670303', '#6cbfce'],
-                        },
-                    }}
-                />
             </IonContent>
         </IonModal>
     );

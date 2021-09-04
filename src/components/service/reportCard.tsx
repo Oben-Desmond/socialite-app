@@ -1,5 +1,5 @@
-import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFabButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonItemDivider, IonLabel, IonList, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonText, IonToolbar } from "@ionic/react";
-import { close, people, peopleOutline } from "ionicons/icons";
+import { IonAvatar, IonBackdrop, IonBadge, IonButton, IonButtons, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonItemDivider, IonLabel, IonList, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonText, IonToolbar } from "@ionic/react";
+import { add, close, people, peopleOutline } from "ionicons/icons";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import LetterAvatar from "../LetterAvatar";
@@ -47,14 +47,26 @@ const ReportCard: React.FC = () => {
                                 </IonNote>
                             </IonRow>
                         </IonCol>
-                        <IonCol className={`ion-align-self-end`}>
-                            <IonNote color={`secondary`}>2:00PM</IonNote>
+                        <IonCol className={`ion-align-self-center`}>
+                            <IonRow style={{ textAlign: `center` }}>
+                                <IonCol>
+                                    <IonBadge color={`success`}><div style={{ width: `4px`, height: `4px` }}></div> </IonBadge>
+                                </IonCol>
+                            </IonRow>
+                            <IonRow >
+                                <IonNote style={{ textAlign: `center` }} color={`secondary`}>2:00PM</IonNote>
+                            </IonRow>
                         </IonCol>
                     </IonRow>
                 </IonGrid>
             </IonItem>
-           <ViewReportModal onDidDismiss={() => setviewReport(false)} isOpen={viewReport}></ViewReportModal>
-           <ReportStatistics></ReportStatistics>
+            <IonFab>
+                <IonFabButton>
+                    <IonIcon icon={add} />
+                </IonFabButton>
+            </IonFab>
+            <ViewReportModal onDidDismiss={() => setviewReport(false)} isOpen={viewReport}></ViewReportModal>
+            {/* <ReportStatistics></ReportStatistics> */}
         </div>
     )
 }
