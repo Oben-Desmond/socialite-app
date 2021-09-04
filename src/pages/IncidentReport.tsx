@@ -56,6 +56,11 @@ const IncidentReport: React.FC = () => {
                 <ReportCard></ReportCard>
 
             </IonContent>
+            <IonFab horizontal={`end`} vertical={`bottom`}>
+                <IonFabButton>
+                    <IonIcon icon={add} />
+                </IonFabButton>
+            </IonFab>
         </IonPage>
     );
 };
