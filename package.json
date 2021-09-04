@@ -28,6 +28,7 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "firebase": "^8.8.0",
+    "ionic-text-avatar": "^1.1.0",
     "ionicons": "^5.4.0",
     "javascript-time-ago": "^2.3.8",
     "native-run": "^1.4.0",

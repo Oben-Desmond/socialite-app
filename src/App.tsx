@@ -50,11 +50,11 @@ const App: React.FC = () => {
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: true }).catch(console.log)
     // initializePushNotification()
-    
+
   }, [])
-  
+
   return (
-    
+
     <IonApp>
       <IonReactRouter>
         {/* <IonSplitPane contentId="main"> */}
@@ -68,7 +68,6 @@ const App: React.FC = () => {
             <Route path="/notifications" component={Notifications} exact={true} />
             <Route path="/jobs" component={Jobs} exact={true} />
             <Route path="/settings" component={Settings} exact={true} />
-            <Route path="/incident-report" component={IncidentReport} exact={true} />
             <Route path="/home/:postid" component={Home} exact={true} />
             <Route path="/events" component={Events} exact={true} />
             <Route path="/classifieds" component={Classifieds} exact={true} />
@@ -82,7 +81,7 @@ const App: React.FC = () => {
             </IonTabButton>
             <IonTabButton tab={`notice`} href={`/public-notice`}>
               <IonIcon icon={alertCircleOutline} />
-              
+
               <IonLabel>Public Notice</IonLabel>
             </IonTabButton>
             <IonTabButton tab={`events`} href={`/events`}>
@@ -98,6 +97,8 @@ const App: React.FC = () => {
         </IonTabs>
         <Route path="/Login" component={Login} exact={true} />
         <Route path="/signup" component={SignUp} exact={true} />
+        <Route path="/incident-report" component={IncidentReport} exact={true} />
+
       </IonReactRouter>
     </IonApp>
   );
@@ -118,7 +119,7 @@ export function hideTabBar(value = true) {
 
 
 
-export function initializePushNotification(){
+export function initializePushNotification() {
   PushNotifications.requestPermissions().then(result => {
     if (result.receive === 'granted') {
       // Register with Apple / Google to receive push via APNS/FCM
@@ -156,4 +157,4 @@ export function initializePushNotification(){
   //   }
   // );
 }
- 
+
