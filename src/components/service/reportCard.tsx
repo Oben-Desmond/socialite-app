@@ -1,11 +1,12 @@
 import { IonAvatar, IonBackdrop, IonBadge, IonButton, IonButtons, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonItemDivider, IonLabel, IonList, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonText, IonToolbar } from "@ionic/react";
 import { add, checkmarkDone, close, people, peopleOutline } from "ionicons/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LetterAvatar from "../LetterAvatar";
 import ReportStatistics from "./report-statistics";
 import ViewReportModal from "./ViewReportModal";
 import TimeAgo from '../timeago';
+import { reportInterface } from "../../interfaces/reportTypes";
 
 
 
@@ -23,39 +24,47 @@ const styles: stylesInterface = {
 }
 
 
-const ReportCard: React.FC = () => {
+const ReportCard: React.FC<{report:reportInterface}> = ({report}) => {
     const [viewReport, setviewReport] = useState(false);
+    const [seen, setseen] = useState(false)
     const [time] = useState(Date.now())
-
+    useEffect(() => {
+         setseen((report.seenBy || []).indexOf(`010001`)>=0)
+    }, [report])
+  
     return (
         <div>
             <IonItem onClick={() => setviewReport(true)}>
                 <IonGrid>
                     <IonRow>
                         <IonCol className={`ion-align-self-start`}>
-                            <UserAvatar ></UserAvatar>
+                           {report.photoUrl&& <IonAvatar>
+                                <IonImg src={report.photoUrl} />
+                            </IonAvatar>}
+                           {!report.photoUrl&& <UserAvatar name={report.author} ></UserAvatar>}
                         </IonCol>
                         <IonCol className={`ion-align-self-center`} >
                             <IonRow>
                                 <div >
-                                    <IonLabel>Buma Federic</IonLabel>
+                                    <IonLabel>{report.author}</IonLabel>
                                 </div>
+                                <div style={{height:`30px`}}></div>
                                 <div>
-                                    <IonLabel>Fire Accident in Calaban</IonLabel>
+                                    <IonLabel>{report.category}</IonLabel>
                                 </div>
                             </IonRow>
                             <IonRow>
                                 <IonNote>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, eveniet?
+                                   {report.description}
                                 </IonNote>
                             </IonRow>
                         </IonCol>
                         <IonCol className={`ion-align-self-center`}>
                             <IonRow style={{ textAlign: `center` }}>
-                                <IonCol>
+                               {!seen&& <IonCol>
                                     <IonBadge color={`success`}><div style={{ width: `4px`, height: `4px` }}></div> </IonBadge>
                                     {/* <IonIcon color={`success`} icon={checkmarkDone}></IonIcon> */}
-                                </IonCol>
+                                </IonCol>}
                             </IonRow>
                             <IonRow >
                                 <IonNote style={{ textAlign: `center` }} color={`secondary`}>
@@ -66,7 +75,7 @@ const ReportCard: React.FC = () => {
                     </IonRow>
                 </IonGrid>
             </IonItem>
-            <ViewReportModal onDidDismiss={() => setviewReport(false)} isOpen={viewReport}></ViewReportModal>
+            <ViewReportModal report={report} onDidDismiss={() => setviewReport(false)} isOpen={viewReport}></ViewReportModal>
             {/* <ReportStatistics></ReportStatistics> */}
         </div>
     )
@@ -75,7 +84,7 @@ const ReportCard: React.FC = () => {
 
 export default ReportCard
 
-export const UserAvatar: React.FC = () => {
+export const UserAvatar: React.FC<{name:string}> = ({name}) => {
 
     const arrayWithColors = [
         '#2ecc71',
@@ -89,7 +98,7 @@ export const UserAvatar: React.FC = () => {
 
     return (
         <LetterAvatar
-            name="Lettered Avatar"
+            name={name.trim()[0]}
             size={57}
             // radius={20}
             color="#fff"

@@ -12,11 +12,15 @@ export interface reportInterface {
     },
     sentTo:string[],
     seenBy:string[],
-    country:string
+    country:string,
+    photoUrl:string
 }
 
 export interface serviceProvider{
-    code:number,
+    code:string,
     name:string,
     country:string,
+    allowed:string[],
+    emergency__contact:string,
+    rating:number 
 }
