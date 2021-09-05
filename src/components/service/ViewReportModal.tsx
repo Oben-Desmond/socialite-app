@@ -61,9 +61,9 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                         </p>
 
                         <IonList className={`ion-padding-top ion-margin-top`}>
-                            <IonItemDivider>
+                            {report.seenBy.length > 0 && <IonItemDivider>
                                 View by
-                    </IonItemDivider>
+                    </IonItemDivider>}
                             {
                                 report.seenBy.map((seenby, index) => {
                                     return (
