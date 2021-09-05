@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import LetterAvatar from "../LetterAvatar";
 import ReportStatistics from "./report-statistics";
 import ViewReportModal from "./ViewReportModal";
+import TimeAgo from '../timeago';
+
 
 
 interface stylesInterface {
@@ -23,6 +25,7 @@ const styles: stylesInterface = {
 
 const ReportCard: React.FC = () => {
     const [viewReport, setviewReport] = useState(false);
+    const [time] = useState(Date.now())
 
     return (
         <div>
@@ -55,7 +58,9 @@ const ReportCard: React.FC = () => {
                                 </IonCol>
                             </IonRow>
                             <IonRow >
-                                <IonNote style={{ textAlign: `center` }} color={`secondary`}>2:00PM</IonNote>
+                                <IonNote style={{ textAlign: `center` }} color={`secondary`}>
+                                    <TimeAgo timestamp={time}></TimeAgo>
+                                </IonNote>
                             </IonRow>
                         </IonCol>
                     </IonRow>

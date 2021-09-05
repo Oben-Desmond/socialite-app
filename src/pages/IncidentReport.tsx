@@ -5,7 +5,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Toast } from '@capacitor/toast';
 import { StatusBar } from '@capacitor/status-bar';
 import { IonBackdrop, IonButton, IonButtons, IonCardContent, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonSlide, IonSlides, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
-import { add, arrowBack, cameraOutline, close, images, trashOutline } from 'ionicons/icons';
+import { add, arrowBack, cameraOutline, close, images,   statsChart, statsChartOutline, trashOutline } from 'ionicons/icons';
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { hideTabBar } from '../App';
@@ -58,6 +58,15 @@ const IncidentReport: React.FC = () => {
             </IonContent>
             <IonFab horizontal={`end`} vertical={`bottom`}>
                 <IonFabButton>
+                    <IonIcon icon={add} />
+                </IonFabButton>
+            </IonFab>
+            <IonFab horizontal={`end`} vertical={`bottom`}>
+                <IonFabButton color={`secondary`}>
+                    <IonIcon icon={statsChart} />
+                </IonFabButton>
+                <div style={{height:`10px`}}></div>
+                  <IonFabButton color={`primary`}>
                     <IonIcon icon={add} />
                 </IonFabButton>
             </IonFab>

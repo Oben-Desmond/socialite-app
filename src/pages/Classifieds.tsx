@@ -1,8 +1,8 @@
 // @flow strict
 
 import { Geolocation } from '@capacitor/geolocation';
-import { IonActionSheet, IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
-import { addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline } from 'ionicons/icons';
+import { IonActionSheet, IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { add, addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline } from 'ionicons/icons';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { maincategories, subcategories } from '../components/classified/categories-data';
@@ -207,7 +207,12 @@ const Classifieds: React.FC = () => {
                     </IonGrid>
 
                 </IonContent>
-
+                <IonFab vertical={`bottom`} horizontal={`end`}>
+                    <IonFabButton onClick={()=>setshowMenu(true)}>
+                        <IonIcon icon={add}></IonIcon>
+                    </IonFabButton>
+                </IonFab>
+ 
 
                 <IonPopover onDidDismiss={() => setshowMenu(false)} isOpen={showMenu}>
                     <IonItem lines={`none`}>
