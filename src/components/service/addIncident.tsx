@@ -23,7 +23,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
     const dropRef = useRef<HTMLIonBackdropElement>(null)
     const user: UserInterface = rootState.userReducer;
     const countryInfo: countryInfoInterface = rootState.countryReducer
-    const [images, setimages] = useState<any[]>([...parentImages]);
+    const [images, setimages] = useState<any[]>(parentImages);
     const contentRef = useRef<HTMLIonContentElement>(null)
 
     const [loading, setloading] = useState(false)
