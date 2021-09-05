@@ -1,5 +1,5 @@
 import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg } from '@ionic/react'
-import { peopleOutline, close } from 'ionicons/icons'
+import { peopleOutline, close, checkmark } from 'ionicons/icons'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { reportInterface } from '../../interfaces/reportTypes'
@@ -17,9 +17,11 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                             <IonIcon icon={close} />
                         </IonButton>
                     </IonButtons>
-                    <IonLabel>
-                        Report Info
+                    <div className={`ion-text-capitalize ion-text-capitalize`}>
+                        <IonLabel style={{textTransform:`capitalize`}} >
+                            Report Info
                </IonLabel>
+                    </div>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
@@ -30,7 +32,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                                 <IonCol className={`ion-align-self-start`}>
                                     <UserAvatar name={`oBEN`}></UserAvatar>
                                 </IonCol>
-                                <IonCol className={`ion-align-self-center`}>
+                                <IonCol className={`ion-align-self-center `}>
                                     <IonLabel color={`secondary`}>
                                         Report by <Link to={`#`}>@{report.author}</Link>
                                     </IonLabel>
@@ -63,7 +65,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
 
                         <IonList className={`ion-padding-top ion-margin-top`}>
                             {report.sentTo.length > 0 && <IonItemDivider>
-                                Sent To 
+                                Sent To
                     </IonItemDivider>}
                             {
                                 report.sentTo.map((sento, index) => {
@@ -77,9 +79,9 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                                     )
                                 })
                             }
-                          <div style={{height:`30px`}}></div>
+                            <div style={{ height: `30px` }}></div>
                             {report.seenBy.length > 0 && <IonItemDivider>
-                                View by
+                                Viewed by
                     </IonItemDivider>}
                             {
                                 report.seenBy.map((seenby, index) => {
@@ -89,6 +91,9 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                                             <IonLabel>
                                                 {seenby}
                                             </IonLabel>
+                                            <IonButton fill={`clear`} color={`success`}>
+                                                <IonIcon icon={checkmark}/>
+                                            </IonButton>
                                         </IonItem>
                                     )
                                 })

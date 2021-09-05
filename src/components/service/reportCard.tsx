@@ -67,7 +67,7 @@ const ReportCard: React.FC<{report:reportInterface}> = ({report}) => {
                                 </IonCol>}
                             </IonRow>
                             <IonRow >
-                                <IonNote style={{ textAlign: `center` }} color={`secondary`}>
+                                <IonNote className={`ion-text-center`} style={{ textAlign: `center` }} color={`secondary`}>
                                     <TimeAgo timestamp={time}></TimeAgo>
                                 </IonNote>
                             </IonRow>
