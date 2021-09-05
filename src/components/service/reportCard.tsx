@@ -1,5 +1,5 @@
 import { IonAvatar, IonBackdrop, IonBadge, IonButton, IonButtons, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonItemDivider, IonLabel, IonList, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonText, IonToolbar } from "@ionic/react";
-import { add, checkmarkDone, close, people, peopleOutline } from "ionicons/icons";
+import { add, banOutline, checkmarkDone, close, people, peopleOutline } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LetterAvatar from "../LetterAvatar";
@@ -24,51 +24,54 @@ const styles: stylesInterface = {
 }
 
 
-const ReportCard: React.FC<{report:reportInterface}> = ({report}) => {
+const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
     const [viewReport, setviewReport] = useState(false);
     const [seen, setseen] = useState(false)
-    const [time] = useState(Date.now())
     useEffect(() => {
-         setseen((report.seenBy || []).indexOf(`010001`)>=0)
+        setseen((report.seenBy || []).indexOf(`010001`) >= 0)
     }, [report])
-  
+
     return (
         <div>
-            <IonItem onClick={() => setviewReport(true)}>
+            <IonItem disabled={!report.location && !report.author && report.images.length<=0} onClick={() => setviewReport(true)}>
                 <IonGrid>
                     <IonRow>
-                        <IonCol className={`ion-align-self-start`}>
-                           {report.photoUrl&& <IonAvatar>
-                                <IonImg src={report.photoUrl} />
-                            </IonAvatar>}
-                           {!report.photoUrl&& <UserAvatar name={report.author} ></UserAvatar>}
+                        <IonCol className={`ion-align-self-center`}>
+                            {report.author&& <>
+                                {report.photoUrl && <IonAvatar>
+                                    <IonImg src={report.photoUrl} />
+                                </IonAvatar>}
+                                {!report.photoUrl && <UserAvatar name={report.author} ></UserAvatar>}</>}
+                                {
+                                   !report.author&&<IonIcon size={`large`} icon={banOutline}/>
+                                }
                         </IonCol>
                         <IonCol className={`ion-align-self-center ion-text-capitalize`} >
                             <IonRow>
                                 <div >
                                     <IonLabel>{report.author}</IonLabel>
                                 </div>
-                                <div style={{height:`30px`}}></div>
+                                <div style={{ height: `30px` }}></div>
                                 <div>
                                     <IonLabel>{report.category}</IonLabel>
                                 </div>
                             </IonRow>
                             <IonRow>
                                 <IonNote>
-                                   {report.description}
+                                    {report.description}
                                 </IonNote>
                             </IonRow>
                         </IonCol>
                         <IonCol className={`ion-align-self-center ion-text-center`}>
                             <IonRow style={{ textAlign: `center` }}>
-                               {!seen&& <IonCol>
+                                {!seen && <IonCol>
                                     <IonBadge color={`success`}><div style={{ width: `4px`, height: `4px` }}></div> </IonBadge>
                                     {/* <IonIcon color={`success`} icon={checkmarkDone}></IonIcon> */}
                                 </IonCol>}
                             </IonRow>
-                            <IonRow   className={`ion-text-center`}>
+                            <IonRow className={`ion-text-center`}>
                                 <IonNote className={`ion-text-center`} style={{ textAlign: `center` }} color={`secondary`}>
-                                    <TimeAgo timestamp={time}></TimeAgo>
+                                    <TimeAgo timestamp={report.timestamp}></TimeAgo>
                                 </IonNote>
                             </IonRow>
                         </IonCol>
@@ -84,7 +87,7 @@ const ReportCard: React.FC<{report:reportInterface}> = ({report}) => {
 
 export default ReportCard
 
-export const UserAvatar: React.FC<{name:string}> = ({name}) => {
+export const UserAvatar: React.FC<{ name: string }> = ({ name }) => {
 
     const arrayWithColors = [
         '#2ecc71',

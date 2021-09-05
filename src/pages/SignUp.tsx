@@ -61,14 +61,16 @@ const SignUp: React.FC = () => {
             email: data.email,
             location: countryInfo.name,
             photoUrl: ``,
-            tel:data.tel
+            tel:data.tel,
+            domainCode:undefined,
         }
         setloading(true)
         
-        auth.createUserWithEmailAndPassword(data.email,data.pass).then(()=>{
+        auth.createUserWithEmailAndPassword(data.email,data.pass).then(async ()=>{
        
            fstore.collection(`users`).doc(data.email).set(user).catch(err=>Dialog.alert({message:`${err.message}`,title:`Authentication Error`}))
            location.push(`/home/default`)
+          
            Dialog.alert({message:`Account has been successfully created`,title:`Successful`})
            Storage.set({key:`user`,value:JSON.stringify(user)});
         }).catch(async(err)=>{

@@ -1,3 +1,4 @@
+import { Toast } from '@capacitor/toast'
 import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg } from '@ionic/react'
 import { peopleOutline, close, checkmark, trash, trashOutline, share, shareSocial } from 'ionicons/icons'
 import React, { useState } from 'react'
@@ -16,15 +17,14 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
     const country: countryInfoInterface = useSelector(selectCountry);
     const user: UserInterface = useSelector(selectUser);
 
-    function deleteReport() {
-        const reportData: reportInterface = {
-            author: report.author,
+    async function deleteReport() {
+        const reportData = {
+            author: ``,
             category: ``,
             images: [],
             country: report.country,
-            description: `Report deleted by ${user.name} | (${user.email}) | ${user.tel}`,
+            description: `Report id ${report.id} deleted  by ${user.name} | (${user.email}) from ${report.author}`,
             id: report.id,
-            location: undefined,
             photoUrl: ``,
             seenBy: [],
             sentTo: [],
@@ -32,8 +32,8 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
 
         }
         onDidDismiss()
-        fstore.collection(`reports`).doc(`${country.name || `South Africa`}-${user.domainCode || `010001`}`).collection(`reports`).doc(report.id).set(reportData)
-
+        await fstore.collection(`reports`).doc(`${country.name || `South Africa`}-${user.domainCode || `010001`}`).collection(`reports`).doc(report.id).set(reportData)
+        Toast.show({ text: `deleted...` });
     }
     return (
         <IonModal isOpen={isOpen} onDidDismiss={onDidDismiss}>
@@ -51,10 +51,10 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                </IonLabel>
                     </div>
                     <IonButtons slot={`end`}>
-                        <IonButton>
-                            <IonIcon icon={trashOutline} />
-                        </IonButton>
                         <IonButton onClick={deleteReport}>
+                            <IonIcon  icon={trashOutline} />
+                        </IonButton>
+                        <IonButton >
                             <IonIcon icon={shareSocial} />
                         </IonButton>
                     </IonButtons>

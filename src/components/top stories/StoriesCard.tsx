@@ -140,7 +140,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         setviewProfile(true)
 
         if (email == post.email) {
-            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``) })
+            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``), domainCode:undefined })
         }
     }
     function handleKeyBoard() {

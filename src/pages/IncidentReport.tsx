@@ -4,7 +4,7 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Toast } from '@capacitor/toast';
 import { StatusBar } from '@capacitor/status-bar';
-import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCardContent, IonCol, IonContent, IonFab, IonFabButton, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonRow, IonSkeletonText, IonSlide, IonSlides, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
+import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCardContent, IonCol, IonContent, IonFab, IonFabButton, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonItemDivider, IonLabel, IonList, IonModal, IonPage, IonRow, IonSkeletonText, IonSlide, IonSlides, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
 import { add, arrowBack, cameraOutline, close, images, statsChart, statsChartOutline, trashOutline } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -19,6 +19,8 @@ import { reportInterface, serviceProvider } from '../interfaces/reportTypes';
 import { UserInterface } from '../interfaces/users';
 import { selectUser } from '../states/reducers/userReducers';
 import { useSelector } from 'react-redux';
+import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../components/PhotoOptionsModal';
+import AddIncident from '../components/service/addIncident';
 
 
 const IncidentReport: React.FC = () => {
@@ -26,6 +28,8 @@ const IncidentReport: React.FC = () => {
     const [serviceReports, setserviceReports] = useState<reportInterface[]>([])
     const user: UserInterface = useSelector(selectUser);
     const [noData, setnoData] = useState(false)
+    const [PhotoOptions, setPhotoOptions] = useState(false)
+    const [uploadIncident, setuploadIncident] = useState(false)
 
     const history = useHistory()
     function goBack() {
@@ -35,6 +39,7 @@ const IncidentReport: React.FC = () => {
     function getPhotos() {
         Camera.getPhoto({ resultType: CameraResultType.DataUrl, source: CameraSource.Photos }).then((res: any) => {
             setimages([...images, res.dataUrl]);
+            setuploadIncident(true)
         })
     }
     function deleteItem(item: number) {
@@ -53,11 +58,30 @@ const IncidentReport: React.FC = () => {
             const docs: any[] = snapshot.docs.map(doc => doc.data());
             setserviceReports([...docs]);
             console.log(docs)
-            if(docs.length<=0) setnoData(true)
+            if (docs.length <= 0) setnoData(true)
         })
 
     }, [])
+    function takePicture() {
+        setPhotoOptions(false)
+        photosFromCamera().then((data: any) => {
+            if (data)
+                setimages([...images, data])
+            setuploadIncident(true)
 
+
+        })
+    }
+
+    function galleryPhotos() {
+        setPhotoOptions(false)
+        photosFromGallery().then((data: any) => {
+            if (data)
+                setimages([...images, data])
+            setuploadIncident(true)
+
+        })
+    }
     return (
         <IonPage>
             <IonHeader>
@@ -75,7 +99,7 @@ const IncidentReport: React.FC = () => {
             </IonHeader>
             <IonContent>
                 <IonList>
-                    {!noData && serviceReports.length<=0&& <div>
+                    {!noData && serviceReports.length <= 0 && <div>
                         <ReportSkeleton></ReportSkeleton>
                         <ReportSkeleton></ReportSkeleton>
                         <ReportSkeleton></ReportSkeleton>
@@ -83,24 +107,53 @@ const IncidentReport: React.FC = () => {
                     </div>}
                     {
                         serviceReports.map((report, index) => {
+                            if (serviceReports.length > 0 && index > 0) {
+                                if ((Date.now() - report.timestamp) / (1000 * 60 * 60 * 24) > 1 && (Date.now() - serviceReports[index - 1].timestamp) / (1000 * 60 * 60 * 24) <= 1) {
+                                    return (
+                                        <>
+                                            <IonItemDivider>
+                                                <IonLabel>yesterday</IonLabel>
+                                            </IonItemDivider>
+                                            <ReportCard report={report}></ReportCard>
+                                        </>
+                                    )
+                                }
+                                if ((Date.now() - report.timestamp) / (1000 * 60 * 60 * 24) > 2 && (Date.now() - serviceReports[index - 1].timestamp) / (1000 * 60 * 60 * 24) <= 2) {
+                                    return (
+                                        <>
+                                            <IonItemDivider>
+                                                <IonLabel>Earlier</IonLabel>
+                                            </IonItemDivider>
+                                            <ReportCard report={report}></ReportCard>
+                                        </>
+                                    )
+                                }
+                            }
+                            if (index == 0 && ((Date.now() - report.timestamp) / (1000 * 60 * 60 * 24)) < 1) {
+                                return (<>
+                                    <IonItemDivider>
+                                        <IonLabel>
+                                            Today
+                                    </IonLabel>
+                                    </IonItemDivider>
+                                    <ReportCard report={report}></ReportCard>
+                                </>)
+                            }
                             return (
                                 <ReportCard report={report}></ReportCard>
                             )
                         })
                     }
                 </IonList>
+                <PhotoOptionsModal fromPhotos={galleryPhotos} fromCamera={takePicture} onDidDismiss={() => { setPhotoOptions(false) }} isOpen={PhotoOptions}></PhotoOptionsModal>
             </IonContent>
-            <IonFab horizontal={`end`} vertical={`bottom`}>
-                <IonFabButton>
-                    <IonIcon icon={add} />
-                </IonFabButton>
-            </IonFab>
+            <AddIncident isOpen={uploadIncident} parentImages={images} onDidDismiss={() => { setuploadIncident(false) }} />
             <IonFab horizontal={`end`} vertical={`bottom`}>
                 <IonFabButton color={`secondary`}>
                     <IonIcon icon={statsChart} />
                 </IonFabButton>
                 <div style={{ height: `10px` }}></div>
-                <IonFabButton color={`primary`}>
+                <IonFabButton onClick={() => setPhotoOptions(true)} color={`primary`}>
                     <IonIcon icon={add} />
                 </IonFabButton>
             </IonFab>
@@ -131,3 +184,4 @@ const ReportSkeleton: React.FC = () => {
         </IonItem>
     )
 }
+
