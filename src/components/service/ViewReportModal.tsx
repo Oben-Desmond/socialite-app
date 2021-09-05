@@ -60,7 +60,24 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                             {report.description}
                         </p>
 
+
                         <IonList className={`ion-padding-top ion-margin-top`}>
+                            {report.sentTo.length > 0 && <IonItemDivider>
+                                Sent To 
+                    </IonItemDivider>}
+                            {
+                                report.sentTo.map((sento, index) => {
+                                    return (
+                                        <IonItem key={index}>
+                                            <IonIcon icon={peopleOutline} slot={`start`} />
+                                            <IonLabel>
+                                                {sento}
+                                            </IonLabel>
+                                        </IonItem>
+                                    )
+                                })
+                            }
+
                             {report.seenBy.length > 0 && <IonItemDivider>
                                 View by
                     </IonItemDivider>}
