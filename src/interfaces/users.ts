@@ -6,6 +6,7 @@ export interface UserInterface{
     email:string,
     location:string
     domain:string | `medic` | `police` | `firefighter` | `company` | undefined,
+    domainCode:string|undefined,
     tel:string
 
 }

@@ -9,11 +9,12 @@ export interface reportInterface {
     location:{
         long:number,
         lat:number
-    },
+    }|undefined,
     sentTo:string[],
     seenBy:string[],
     country:string,
-    photoUrl:string
+    photoUrl:string,
+    id:string,
 }
 
 export interface serviceProvider{

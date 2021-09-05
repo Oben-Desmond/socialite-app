@@ -1,12 +1,40 @@
 import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg } from '@ionic/react'
-import { peopleOutline, close, checkmark } from 'ionicons/icons'
+import { peopleOutline, close, checkmark, trash, trashOutline, share, shareSocial } from 'ionicons/icons'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { fstore } from '../../Firebase/Firebase'
+import { countryInfoInterface } from '../../interfaces/country'
 import { reportInterface } from '../../interfaces/reportTypes'
+import { UserInterface } from '../../interfaces/users'
+import { selectCountry } from '../../states/reducers/countryReducer'
+import { selectUser } from '../../states/reducers/userReducers'
 import { UserAvatar } from './reportCard'
 
 const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, report: reportInterface }> = function ({ isOpen, onDidDismiss, report }) {
     const [maploaded, setmaploaded] = useState(true)
+    const country: countryInfoInterface = useSelector(selectCountry);
+    const user: UserInterface = useSelector(selectUser);
+
+    function deleteReport() {
+        const reportData: reportInterface = {
+            author: report.author,
+            category: ``,
+            images: [],
+            country: report.country,
+            description: `Report deleted by ${user.name} | (${user.email}) | ${user.tel}`,
+            id: report.id,
+            location: undefined,
+            photoUrl: ``,
+            seenBy: [],
+            sentTo: [],
+            timestamp: Date.now()
+
+        }
+        onDidDismiss()
+        fstore.collection(`reports`).doc(`${country.name || `South Africa`}-${user.domainCode || `010001`}`).collection(`reports`).doc(report.id).set(reportData)
+
+    }
     return (
         <IonModal isOpen={isOpen} onDidDismiss={onDidDismiss}>
             <IonHeader>
@@ -18,10 +46,18 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                         </IonButton>
                     </IonButtons>
                     <div className={`ion-text-capitalize ion-text-capitalize`}>
-                        <IonLabel style={{textTransform:`capitalize`}} >
+                        <IonLabel style={{ textTransform: `capitalize` }} >
                             Report Info
                </IonLabel>
                     </div>
+                    <IonButtons slot={`end`}>
+                        <IonButton>
+                            <IonIcon icon={trashOutline} />
+                        </IonButton>
+                        <IonButton onClick={deleteReport}>
+                            <IonIcon icon={shareSocial} />
+                        </IonButton>
+                    </IonButtons>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
@@ -92,7 +128,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                                                 {seenby}
                                             </IonLabel>
                                             <IonButton fill={`clear`} color={`success`}>
-                                                <IonIcon icon={checkmark}/>
+                                                <IonIcon icon={checkmark} />
                                             </IonButton>
                                         </IonItem>
                                     )
@@ -102,7 +138,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                             <div style={{ height: `50px` }}></div>
                             {maploaded && <div>
                                 <IonLabel color={`secondary`}>Location of Incident</IonLabel>
-                                <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=${report.location.lat}, ${report.location}&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
+                                {report?.location && <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=${report.location.lat}, ${report.location}&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>}
                             </div>}
                             {!maploaded && <IonGrid >
                                 <IonRow>

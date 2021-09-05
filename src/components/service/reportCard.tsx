@@ -43,7 +43,7 @@ const ReportCard: React.FC<{report:reportInterface}> = ({report}) => {
                             </IonAvatar>}
                            {!report.photoUrl&& <UserAvatar name={report.author} ></UserAvatar>}
                         </IonCol>
-                        <IonCol className={`ion-align-self-center`} >
+                        <IonCol className={`ion-align-self-center ion-text-capitalize`} >
                             <IonRow>
                                 <div >
                                     <IonLabel>{report.author}</IonLabel>
@@ -59,14 +59,14 @@ const ReportCard: React.FC<{report:reportInterface}> = ({report}) => {
                                 </IonNote>
                             </IonRow>
                         </IonCol>
-                        <IonCol className={`ion-align-self-center`}>
+                        <IonCol className={`ion-align-self-center ion-text-center`}>
                             <IonRow style={{ textAlign: `center` }}>
                                {!seen&& <IonCol>
                                     <IonBadge color={`success`}><div style={{ width: `4px`, height: `4px` }}></div> </IonBadge>
                                     {/* <IonIcon color={`success`} icon={checkmarkDone}></IonIcon> */}
                                 </IonCol>}
                             </IonRow>
-                            <IonRow >
+                            <IonRow   className={`ion-text-center`}>
                                 <IonNote className={`ion-text-center`} style={{ textAlign: `center` }} color={`secondary`}>
                                     <TimeAgo timestamp={time}></TimeAgo>
                                 </IonNote>

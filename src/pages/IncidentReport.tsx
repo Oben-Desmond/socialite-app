@@ -4,7 +4,7 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Toast } from '@capacitor/toast';
 import { StatusBar } from '@capacitor/status-bar';
-import { IonBackdrop, IonButton, IonButtons, IonCardContent, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonSlide, IonSlides, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
+import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCardContent, IonCol, IonContent, IonFab, IonFabButton, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonRow, IonSkeletonText, IonSlide, IonSlides, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
 import { add, arrowBack, cameraOutline, close, images, statsChart, statsChartOutline, trashOutline } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -25,6 +25,7 @@ const IncidentReport: React.FC = () => {
     const [images, setimages] = useState<string[]>([])
     const [serviceReports, setserviceReports] = useState<reportInterface[]>([])
     const user: UserInterface = useSelector(selectUser);
+    const [noData, setnoData] = useState(false)
 
     const history = useHistory()
     function goBack() {
@@ -43,15 +44,17 @@ const IncidentReport: React.FC = () => {
     }
 
     React.useEffect(() => {
-       
-        const id = Date.now() + (user.email ||``)
 
-            fstore.collection(`reports`).doc(`Cameroon-010001`).collection(`reports`).onSnapshot((snapshot)=>{
+        const id = Date.now() + (user.email || ``)
 
-                const docs:any[]= snapshot.docs.map(doc=>doc.data());
-                setserviceReports([...docs]);
-                console.log(docs)
-            })
+        setnoData(false)
+        fstore.collection(`reports`).doc(`Cameroon-010001`).collection(`reports`).onSnapshot((snapshot) => {
+
+            const docs: any[] = snapshot.docs.map(doc => doc.data());
+            setserviceReports([...docs]);
+            console.log(docs)
+            if(docs.length<=0) setnoData(true)
+        })
 
     }, [])
 
@@ -72,12 +75,18 @@ const IncidentReport: React.FC = () => {
             </IonHeader>
             <IonContent>
                 <IonList>
+                    {!noData && serviceReports.length<=0&& <div>
+                        <ReportSkeleton></ReportSkeleton>
+                        <ReportSkeleton></ReportSkeleton>
+                        <ReportSkeleton></ReportSkeleton>
+                        <ReportSkeleton></ReportSkeleton>
+                    </div>}
                     {
-                      serviceReports.map((report,index)=>{
-                          return(
-                              <ReportCard report={report}></ReportCard>
-                          )
-                      })
+                        serviceReports.map((report, index) => {
+                            return (
+                                <ReportCard report={report}></ReportCard>
+                            )
+                        })
                     }
                 </IonList>
             </IonContent>
@@ -101,3 +110,24 @@ const IncidentReport: React.FC = () => {
 
 export default IncidentReport;
 
+
+const ReportSkeleton: React.FC = () => {
+    return (
+        <IonItem>
+            <IonGrid>
+                <IonRow className={`ion-justify-content-center ion-align-items-center`} >
+                    <IonCol size={`3`}>
+                        <IonAvatar>
+                            <IonSkeletonText animated></IonSkeletonText>
+                        </IonAvatar>
+                    </IonCol>
+                    <IonCol>
+                        <IonSkeletonText></IonSkeletonText>
+                        <IonSkeletonText></IonSkeletonText>
+                        <IonSkeletonText></IonSkeletonText>
+                    </IonCol>
+                </IonRow>
+            </IonGrid>
+        </IonItem>
+    )
+}
