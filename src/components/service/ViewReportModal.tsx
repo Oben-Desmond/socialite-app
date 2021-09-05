@@ -54,7 +54,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                     {/* </IonToolbar> */}
                     <IonToolbar className={`ion-padding-vertical`}>
                         <IonCardHeader>
-                            <IonCardTitle >
+                            <IonCardTitle className={`ion-text-capitalize`} >
                                 {report.category}
                             </IonCardTitle>
                         </IonCardHeader>
@@ -102,7 +102,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                             <div style={{ height: `50px` }}></div>
                             {maploaded && <div>
                                 <IonLabel color={`secondary`}>Location of Incident</IonLabel>
-                                <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=9.45, 9.5&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
+                                <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=${report.location.lat}, ${report.location}&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
                             </div>}
                             {!maploaded && <IonGrid >
                                 <IonRow>
