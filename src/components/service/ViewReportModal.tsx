@@ -77,7 +77,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                                     )
                                 })
                             }
-
+                          <div style={{height:`30px`}}></div>
                             {report.seenBy.length > 0 && <IonItemDivider>
                                 View by
                     </IonItemDivider>}
