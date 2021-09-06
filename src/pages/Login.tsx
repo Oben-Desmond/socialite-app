@@ -32,7 +32,7 @@ const Login: React.FC = () => {
                     if (user?.email) {
                         dispatch(updateUser(user))
                         Storage.set({ key: `user`, value: JSON.stringify(user) })
-                       history.push(`/home/default`)
+                       history.push(`/feed/default`)
                     }
                 }).catch(err => Dialog.alert({ message: `${err.message}`, title: `Authentication Error` }))
                     .finally(() => setloading(false))

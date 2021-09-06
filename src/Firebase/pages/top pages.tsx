@@ -108,7 +108,7 @@ export async function UploadEventContent(data: { category: string, title: string
 }
 
 
-export function fetchPostById(id:string, country:string, callBack: (val:PostInterface|any)=>void){
+export function fetchPostById(id:string, country:string, callBack: (val:PostInterface|any)=>void, failed:(err:any)=>void){
      
         fstore.collection(`posts`).doc(country).collection(`feed`).doc(id)
         .get().then(snapshot=>{
@@ -116,9 +116,11 @@ export function fetchPostById(id:string, country:string, callBack: (val:PostInte
                 callBack(snapshot.data());
                 return
             }
+            failed({message:`no data`})
             Dialog.alert({title:`Error getting Post`,message:`Post does not Exist. it may have been deleted`})
         }).catch((err)=>{
             Dialog.alert({title:`Error getting Post`,message:err.message||err||``})
+            failed(err)
         })
      
 }

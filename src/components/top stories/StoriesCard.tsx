@@ -154,7 +154,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     }
 
     const sharePost=()=>{
-        Share.share({dialogTitle:`share post with friends`,url:`https://socionet.co.za/${post.id}`})
+        Share.share({dialogTitle:`share post with friends`,url:`https://socionet.co.za/feed/${post.id}`})
     }
 
     return (
