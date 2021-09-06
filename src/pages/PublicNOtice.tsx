@@ -4,10 +4,11 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, 
 import { add, sunnyOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 import PageHeader from '../components/PageHeader';
 import AddNoticeModal from '../components/public-notice/AddNoticeModal';
+import { fetchNoticeById } from '../components/public-notice/firebase-functions';
 import PublicNoticeModal from '../components/public-notice/PublicNoticeModal';
-import Addmodal from '../components/top stories/addmodal';
 import SkeletonHome from '../components/top stories/dummy';
 import { GetHoursAgo, StoryModal } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
@@ -23,6 +24,24 @@ const PublicNotice: React.FC = function () {
     const [notices, setnotices] = useState<PostInterface[]>([])
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const [ noData, setnoData] = useState(false)
+    const params: { postid: string } = useParams()
+
+    useEffect(() => {
+        if (params.postid == `default` || !params.postid) return;
+        getPost(params.postid)
+
+    }, [params])
+    function getPost(postid: string) {
+        setnotices([])
+        fetchNoticeById(postid, countryinfo.name, (post: PostInterface) => {
+            setnotices([post, ...notices])
+            if([post, ...notices].length<=0){
+                setnoData(true)
+            }
+        }, ()=>{
+            setnoData(true)
+        })
+    }
 
     useEffect(() => {
         console.log(`fetching...`)

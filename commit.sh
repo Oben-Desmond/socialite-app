@@ -1,1 +1,1 @@
-git add . && git commit -m  "deeplinking" && git push -u origin main
+git add . && git commit -m  "deeplinking public notice page" && git push -u origin main
