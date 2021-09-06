@@ -1,1 +1,1 @@
-git add . && git commit -m  "added ui widget for addition of incident" && git push -u origin main
+git add . && git commit -m  "deeplinking" && git push -u origin main

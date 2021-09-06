@@ -68,27 +68,27 @@ const App: React.FC = () => {
             <Route path="/notifications" component={Notifications} exact={true} />
             <Route path="/jobs" component={Jobs} exact={true} />
             <Route path="/settings" component={Settings} exact={true} />
-            <Route path="/home/:postid" component={Home} exact={true} />
-            <Route path="/events" component={Events} exact={true} />
-            <Route path="/classifieds" component={Classifieds} exact={true} />
-            <Route path="/public-notice" component={PublicNotice} exact={true} />
+            <Route path="/feed/:postid" component={Home} exact={true} />
+            <Route path="/events/:postid" component={Events} exact={true} />
+            <Route path="/classifieds/:postid" component={Classifieds} exact={true} />
+            <Route path="/public-notice/:postid" component={PublicNotice} exact={true} />
 
           </IonRouterOutlet>
           <IonTabBar id={`tabbar`} color={`primary`} slot={`bottom`}>
-            <IonTabButton tab={`home`} href={`/home/default`}>
+            <IonTabButton tab={`home`} href={`/feed/default`}>
               <IonIcon icon={documentOutline} />
               <IonLabel >Local Feed</IonLabel>
             </IonTabButton>
-            <IonTabButton tab={`notice`} href={`/public-notice`}>
+            <IonTabButton tab={`notice`} href={`/public-notice/default`}>
               <IonIcon icon={alertCircleOutline} />
 
               <IonLabel>Public Notice</IonLabel>
             </IonTabButton>
-            <IonTabButton tab={`events`} href={`/events`}>
+            <IonTabButton tab={`events`} href={`/events/default`}>
               <IonIcon icon={wineOutline} />
               <IonLabel>Events</IonLabel>
             </IonTabButton>
-            <IonTabButton tab={`classifieds`} href={`/classifieds`}>
+            <IonTabButton tab={`classifieds`} href={`/classifieds/default`}>
               <IonIcon icon={shirtOutline} />
               <IonBadge color={`danger`}>3</IonBadge>
               <IonLabel>Classifieds</IonLabel>
