@@ -21,6 +21,7 @@ import { countryInfoInterface } from '../../interfaces/country';
 import { Keyboard } from '@capacitor/keyboard';
 import EditNoticeFab from './EditNoticeFab';
 import { getRandomColor } from '../text formaters/getRandomColor';
+import { Share } from '@capacitor/share';
 
 
 const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface, title: string }> = function ({ isOpen, onDidDismiss, post, title }) {
@@ -117,6 +118,9 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
               console.log(err)
           }
     }
+    function sharePost(){
+        Share.share({dialogTitle:`check out this public notice`,url:`https://soionet.co.za/notice/${post.id}`})
+    }
 
     return (
         <IonModal cssClass={`story-modal`} onDidPresent={getReactions} onDidDismiss={onDidDismiss} isOpen={isOpen}>
@@ -184,7 +188,7 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                                 </IonButton>
                             </IonCol>
                             <IonCol>
-                                <IonButton fill={`clear`}>
+                                <IonButton onClick={sharePost} fill={`clear`}>
                                     <IonIcon icon={shareSocialOutline} />
                                 </IonButton>
                             </IonCol>
