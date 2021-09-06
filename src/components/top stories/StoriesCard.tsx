@@ -171,7 +171,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                 </IonToolbar>
             </IonHeader>
             <IonContent ref={contentRef} >
-                <div className="background hero-img">
+                <div className="background  k hero-img">
                     <img width={`100%`} src={post.images[0]}></img>
                 </div>
                 <IonToolbar className={`story-card`}>
