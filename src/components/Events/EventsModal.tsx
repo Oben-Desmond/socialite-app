@@ -21,6 +21,7 @@ import { countryInfoInterface } from '../../interfaces/country';
 import { Keyboard } from '@capacitor/keyboard';
 import EditEventsFab from './EditEventsFab';
 import { getRandomColor } from '../text formaters/getRandomColor';
+import { Share } from '@capacitor/share';
 
 
 const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface }> = function ({ isOpen, onDidDismiss, post }) {
@@ -116,6 +117,15 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
           console.log(err)
       }
     }
+    async function sharePost() {
+
+        await Share.share({
+            title: `check out post`,
+            text: `Checkout post from Socialite app`,
+            url: `https://socionet.co.za/classified/${post.id}`,
+            dialogTitle: 'Share with friends and Family',
+        });
+    }
 
     return (
         <IonModal cssClass={`story-modal`} onDidPresent={getReactions} onDidDismiss={onDidDismiss} isOpen={isOpen}>
@@ -184,7 +194,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                                 </IonButton>
                             </IonCol>
                             <IonCol>
-                                <IonButton fill={`clear`}>
+                                <IonButton onClick={sharePost} fill={`clear`}>
                                     <IonIcon icon={shareSocialOutline} />
                                 </IonButton>
                             </IonCol>
