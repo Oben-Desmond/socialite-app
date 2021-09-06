@@ -1,17 +1,14 @@
-import { IonCardSubtitle, IonContent, IonFab, IonFabButton, IonIcon, IonImg, IonLabel, IonPage, IonToolbar } from '@ionic/react';
+import { IonCardSubtitle, IonContent, IonFab, IonFabButton, IonIcon, IonImg, IonLabel, IonPage, IonRefresher, IonRefresherContent, IonToolbar } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import React, { useEffect, useState } from 'react';
-import FlipMove from 'react-flip-move';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import AddEventModal from '../components/Events/addEventModal';
 import { fetchEventById } from '../components/Events/event-functions';
 import EventsModal from '../components/Events/EventsModal';
 import PageHeader from '../components/PageHeader';
-import ProfileModal from '../components/ProfileModal';
-import Addmodal from '../components/top stories/addmodal';
 import SkeletonHome from '../components/top stories/dummy';
-import { GetHoursAgo, StoryModal } from '../components/top stories/StoriesCard';
+import { GetHoursAgo } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
 import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
@@ -25,6 +22,7 @@ const Events: React.FC = function () {
     const [events, setevents] = useState<PostInterface[]>([])
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const params: { postid: string } = useParams()
+    const refresherRef = useRef<HTMLIonRefresherElement>(null)
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
@@ -47,22 +45,31 @@ const Events: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         if (countryinfo) {
-            setnoData(false)
-            const country_name = countryinfo.name || `South Africa`
-            fstore.collection(`posts/${country_name}/events`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
-                const data: any[] = res.docs.map(doc => {
-                    return doc.data()
-                })
-                if (data.length <= 0) setnoData(true)
-                setevents([...data])
-            })
+           getEvent(()=>{})
         }
 
     }, [countryinfo])
+
+    function getEvent(callback:()=>void){
+        setnoData(false)
+        setevents([])
+        const country_name = countryinfo.name || `South Africa`
+        fstore.collection(`posts/${country_name}/events`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
+            const data: any[] = res.docs.map(doc => {
+                return doc.data()
+            })
+            if (data.length <= 0) setnoData(true)
+            setevents([...data])
+            callback()
+        })
+    }
     return (
         <IonPage>
             <PageHeader></PageHeader>
             <IonContent>
+            <IonRefresher ref={refresherRef} onIonRefresh={() => getEvent(() => refresherRef.current?.complete())} slot={`fixed`}>
+                    <IonRefresherContent></IonRefresherContent>
+                </IonRefresher>
                 {events.length <= 0 && !noData && <SkeletonHome></SkeletonHome>}
                 <>{
                     events.map((post, index) => {

@@ -1,16 +1,12 @@
 
-import { Camera, CameraResultType } from "@capacitor/camera";
-import { IonModal, IonHeader, IonContent, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonThumbnail, IonImg, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonSelect, IonSelectOption, IonButton, IonBackdrop, IonLoading, IonProgressBar } from "@ionic/react";
+import { IonModal, IonHeader, IonContent, IonCardContent, IonCardTitle, IonItem, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonButton, IonProgressBar } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
 import React, { useRef, useState } from "react";
-import { PostInterface } from "../../interfaces/posts";
-import { fstore } from "../../Firebase/Firebase";
-import { DefaultRootState, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { UserInterface } from "../../interfaces/users";
 import { Toast } from "@capacitor/toast";
 import FlipMove from "react-flip-move";
 import ImageSlide from "../image slides";
-import { UploadContent } from "../../Firebase/pages/top pages";
 import { StoreStateInteface } from "../../interfaces/redux";
 import { countryInfoInterface } from "../../interfaces/country";
 import { UploadPublicNotice } from "./firebase-functions";

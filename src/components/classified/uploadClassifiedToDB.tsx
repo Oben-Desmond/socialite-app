@@ -1,3 +1,4 @@
+import { Dialog } from "@capacitor/dialog";
 import { Geolocation } from "@capacitor/geolocation";
 import { storage, fstore, db } from "../../Firebase/Firebase";
 import { classifiedItemInterface } from "../../interfaces/classifiedItems";
@@ -6,30 +7,30 @@ import { PostInterface } from "../../interfaces/posts";
 import { UserInterface } from "../../interfaces/users";
 import { CalculateDistanceKm } from "./itemmodal";
 
-export interface dataInterface { category: string, name: string, desc: string, cost: string, subcategory:string };
+export interface dataInterface { category: string, name: string, desc: string, cost: string, subcategory: string };
 
-export async function UploadClassifiedItem(data: dataInterface, images: string[], user: UserInterface, country: countryInfoInterface | undefined, features: string[],location:{long:number,lat:number}) {
+export async function UploadClassifiedItem(data: dataInterface, images: string[], user: UserInterface, country: countryInfoInterface | undefined, features: string[], location: { long: number, lat: number }) {
 
-    
-     
+
+
     console.log(location)
     const country_name = country?.name || `South Africa`;
-    const item_id = Date.now() + removeOccurence(`${user.email}`,[`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`])
+    const item_id = Date.now() + removeOccurence(`${user.email}`, [`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`])
 
     const post: classifiedItemInterface = {
         item_category: data.category,
         item_images: images,
-        item_location: location ?location : { long: 0, lat: 0 },
+        item_location: location ? location : { long: 0, lat: 0 },
         timestamp: Date.now(),
         item_name: data.name,
         item_desc: data.desc,
-        item_contact: { user_email: user.email, user_name: user.name, user_tel: user.tel||`677277277`, user_photo: `` },
+        item_contact: { user_email: user.email, user_name: user.name, user_tel: user.tel || `677277277`, user_photo: `` },
         item_id,
         item_cost: data.cost,
         item_features: features,
         country_code: country?.country || `SA`,
         item_views: 0,
-        sub_category:data.subcategory
+        sub_category: data.subcategory
     }
 
     return (new Promise(async (resolve, reject) => {
@@ -65,7 +66,7 @@ export async function UploadClassifiedItem(data: dataInterface, images: string[]
                         for (let i in keywords) {
                             const word = keywords[i];
                             const text = [post.item_name, ...post.item_features, post.item_desc.substr(0, 50), post.item_category, post.sub_category]
-                            const index = (+i)%text.length
+                            const index = (+i) % text.length
                             db.ref(`indices`).child(word).child(item_id).set(text[index]).catch(console.log)
                         }
 
@@ -86,11 +87,11 @@ function getKeyWords(data: dataInterface, user: UserInterface, country: countryI
 
     const words = [data.category.toLowerCase(), ...data.desc.toLowerCase().split(` `), data.name.toLowerCase(), ...user.name.toLowerCase().split(` `), user.email.replace(`.`, ``), country?.name?.toLowerCase() || `south africa`, ...features.map(feature => feature.toLowerCase())]
 
-    return words.map(word => removeOccurence(word, [`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`,` `])).filter((word, index) => (word.trim() != `` && (!(words.indexOf(word, index + 1) >= 0))));
+    return words.map(word => removeOccurence(word, [`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`, ` `])).filter((word, index) => (word.trim() != `` && (!(words.indexOf(word, index + 1) >= 0))));
 }
 
 function queryWord(word: string) {
-    word = removeOccurence(word,[`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`])
+    word = removeOccurence(word, [`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`])
     return ((new Promise((resolve, reject) => {
         db.ref(`indices`).child(word).once(`value`, snapshot => {
             const val = snapshot.val()
@@ -143,7 +144,7 @@ export function removeOccurence(str: string | undefined, litarray: string[]) {
 }
 
 
-export async function getItemsMatching(text: string,location:{long:number,lat:number}) {
+export async function getItemsMatching(text: string, location: { long: number, lat: number }) {
 
     const keys = await getValidIds(text)
     let query: any[] = []
@@ -155,21 +156,22 @@ export async function getItemsMatching(text: string,location:{long:number,lat:nu
     //     query = [...query, getLast20ClassifiedsNotIn(keys)]
     // }
     return (
-        Promise.all(query).then(res=>{
-            
-            try{let result:any[]=(res||[])
-            
-                result.sort((a,b)=>{
-                 const {long,lat}=a.item_location
-                 return(CalculateDistanceKm({long,lat},location)-CalculateDistanceKm(b.item_location,location))
-             })
-            return result;
+        Promise.all(query).then(res => {
 
-            }catch(err){
+            try {
+                let result: any[] = (res || [])
+
+                result.sort((a, b) => {
+                    const { long, lat } = a.item_location
+                    return (CalculateDistanceKm({ long, lat }, location) - CalculateDistanceKm(b.item_location, location))
+                })
+                return result;
+
+            } catch (err) {
                 alert(JSON.stringify(err))
                 alert(JSON.stringify(`shaj9899898989hj`))
             }
-             return []
+            return []
             //  return result
         })
     )
@@ -228,9 +230,30 @@ function getValidIds(text: string) {
 function getLast20ClassifiedsNotIn(keys: string[]) {
 
     return (new Promise((resolve, reject) => {
-        fstore.collection(`classified`).where(`item_id`,`not-in`,[...keys]).orderBy(`item_id`).limitToLast(20).get().then((snapshot) => {
+        fstore.collection(`classified`).where(`item_id`, `not-in`, [...keys]).orderBy(`item_id`).limitToLast(20).get().then((snapshot) => {
             const classifieds = snapshot.docs.map(doc => doc.data())
             resolve(classifieds)
         }).catch(reject)
     }))
+}
+
+
+
+
+
+export function fetchItemById(id: string, callBack: (val: PostInterface | any) => void, failed: (err: any) => void) {
+
+    fstore.collection(`classified`).doc(id)
+        .get().then(snapshot => {
+            if (snapshot.data()) {
+                callBack(snapshot.data());
+                return
+            }
+            failed({ message: `no data` })
+            Dialog.alert({ title: `Error getting Post`, message: `Post does not Exist. it may have been deleted` })
+        }).catch((err) => {
+            Dialog.alert({ title: `Error getting Post`, message: err.message || err || `` })
+            failed(err)
+        })
+
 }

@@ -1,8 +1,8 @@
 import { Dialog } from '@capacitor/dialog';
 import { Toast } from '@capacitor/toast';
-import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonLabel, IonPage, IonToolbar, IonGrid, IonRow, IonThumbnail, IonImg, IonCol, IonItem, useIonViewDidEnter, useIonViewDidLeave, IonIcon, IonNote, IonFab, IonFabButton, IonCardSubtitle } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonLabel, IonPage, IonToolbar, IonGrid, IonRow, IonThumbnail, IonImg, IonCol, IonItem, useIonViewDidEnter, useIonViewDidLeave, IonIcon, IonNote, IonFab, IonFabButton, IonCardSubtitle, IonRefresher, IonRefresherContent } from '@ionic/react';
 import { add, sunnyOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import PageHeader from '../components/PageHeader';
@@ -25,6 +25,8 @@ const PublicNotice: React.FC = function () {
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const [noData, setnoData] = useState(false)
     const params: { postid: string } = useParams()
+    const refresherRef = useRef<HTMLIonRefresherElement>(null)
+
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
@@ -48,25 +50,33 @@ const PublicNotice: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         if (countryinfo) {
-            const country_name = countryinfo.name || `South Africa`
-            setnoData(false)
-            fstore.collection(`posts/${country_name}/notice`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
-                const data: any[] = res.docs.map(doc => {
-                    return doc.data()
-                })
-                if (data.length <= 0) {
-                    setnoData(true)
-                }
-                console.log(data)
-                setnotices([...data])
-            })
+           getNotice(()=>{})
         }
 
     }, [countryinfo])
+
+    function getNotice(callback:()=>void){
+        const country_name = countryinfo.name || `South Africa`
+        setnoData(false)
+        fstore.collection(`posts/${country_name}/notice`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
+            const data: any[] = res.docs.map(doc => {
+                return doc.data()
+            })
+            if (data.length <= 0) {
+                setnoData(true)
+            }
+            console.log(data)
+            setnotices([...data])
+            callback()
+        })
+    }
     return (
         <IonPage>
             <PageHeader></PageHeader>
             <IonContent>
+                <IonRefresher ref={refresherRef} onIonRefresh={() => getNotice(() => refresherRef.current?.complete())} slot={`fixed`}>
+                    <IonRefresherContent></IonRefresherContent>
+                </IonRefresher>
                 {notices.length <= 0 && !noData && <SkeletonHome></SkeletonHome>}
                 <IonGrid >
                     {
@@ -125,3 +135,5 @@ const NoticeCard: React.FC<{ post: PostInterface }> = function ({ post }) {
         </IonRow>
     )
 }
+
+ 

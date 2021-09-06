@@ -6,7 +6,7 @@ export const maincategories: { name: string, url: string }[] = [
         url: `https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Y2Fyc3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`,
     },
     {
-        name: 'Cell Phones',
+        name: 'Electronics',
         url: `https://images.unsplash.com/photo-1569183091671-696402586b9c?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cGhvbmVzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`
     },
     {

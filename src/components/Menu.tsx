@@ -115,7 +115,7 @@ const Menu: React.FC = () => {
       const user = JSON.parse(userStr)
       dispatch(updateUser(user))
 
-      if (Capacitor.isNativePlatform()) history.push(`/home`);
+      if (Capacitor.isNativePlatform()) history.push(`/feed/default`);
 
     }
     auth.onAuthStateChanged((user) => {

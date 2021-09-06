@@ -122,7 +122,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
         await Share.share({
             title: `check out post`,
             text: `Checkout post from Socialite app`,
-            url: `https://socionet.co.za/classified/${post.id}`,
+            url: `https://socionet.co.za/events/${post.id}`,
             dialogTitle: 'Share with friends and Family',
         });
     }

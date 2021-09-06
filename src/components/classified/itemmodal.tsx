@@ -37,13 +37,14 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
     const dispatch = useDispatch()
     const mapRef = useRef<HTMLDivElement>(null)
     const favorites: classifiedItemInterface[] = useSelector(selectFavorites)
-    const [averageRating,setaverageRating] = useState(0)
-     console.log(favorites)
+    const [averageRating, setaverageRating] = useState(0)
+    console.log(favorites)
     const [isAfavorite, setisAfavorite] = useState(false)
 
+    
     useEffect(() => {
         getReviewData()
-        Storage.get({key:`favorites`}).then(res=>console.log(`favorites - -- --- --`,res.value))
+        Storage.get({ key: `favorites` }).then(res => console.log(`favorites - -- --- --`, res.value))
     }, [])
     function scrollToMap() {
         mapRef.current?.scrollIntoView({ behavior: `smooth` })
@@ -54,224 +55,223 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
         } else {
             setisAfavorite(false)
         }
-    }, [favorites,item])
+    }, [favorites, item])
     function contactSeller() {
         if (user?.email && user.name)
             fetch(`https://socialiteapp-backend.herokuapp.com/classified/contact-warning?email=${user.email}&name=${user.name}`).finally(console.log)
     }
 
     async function shareItem() {
-
-        await Share.share({
-            title: `${item.item_name}`,
-            text: `Checkout this cool item from Socialite app`,
-            url: `https://socionet.co.za/classified/${item.item_id}`,
-            dialogTitle: 'Share with friends and Family',
-        });
-    }
-
-    async function getReviewData() {
-
-        fstore.collection(`users`).doc(item.item_contact.user_email)
-            .collection(`classified_reviews`)
-             .onSnapshot((snapshot) => {
-                const reviews: ReviewItemInterface[] = snapshot.docs.map((doc: any) => doc.data())
-                dispatch(group_update_reviews(reviews))
-                console.log(reviews)
-
-                setreviewItems([...reviews.filter(item => item.email != user.email)])
-                const usersReviews = reviews.filter(item => item.email == user.email)
-               calculateRating(reviews)
-                if (usersReviews.length > 0) {
-                    setmyreview(usersReviews[0])
-                } else {
-                    getMyReview()
-                }
-            })
-
-    }
-
-    function getMyReview() {
-        fstore.collection(`users`).doc(item.item_contact.user_email)
-            .collection(`classified_reviews`)
-            .doc(user.email)
-            .onSnapshot((snapshot) => {
-                const review: any = snapshot.data()
-
-                if (review && snapshot.exists)
-                    setmyreview(review)
-            })
-    }
-    function addToFavorites() {
-        if (isAfavorite) dispatch(remove_from_favorites(item))
-          else  dispatch(update_favorites(item))
-    }
-    useEffect(()=>{
-        Storage.set({key:`favorites`,value:JSON.stringify(favorites)})
-
-    },[isAfavorite])
-
-    function calculateRating(reviews:ReviewItemInterface[]){
-        let rating=0;
-        if(reviews.length>0){
-             reviews.map(review=>{
-                 rating+=review.rating
-             })
-             rating=rating/reviews.length
+            await Share.share({
+                title: `${item.item_name}`,
+                text: `Checkout this cool item from Socialite app`,
+                url: `https://socionet.co.za/classified/${item.item_id}`,
+                dialogTitle: 'Share with friends and Family',
+            });
         }
-        setaverageRating(rating);
-    }
-    return (
-        <IonModal cssClass={`classified-modal`} onDidDismiss={onDidDismiss} isOpen={isOpen}>
-            <IonContent ref={contentRef}>
-                <div className="top-slide">
-                    <IonButton color={`light`} shape={`round`} className={`close-btn`} >
-                        <IonIcon icon={arrowBack} />
-                        <IonBackdrop></IonBackdrop>
-                    </IonButton>
-                    <IonSlides>
-                        {item.item_images.map((image, index) => <IonSlide key={index}>
-                            <img className={`main-img`} src={image} alt="" />
-                        </IonSlide>)}
-                    </IonSlides>
 
-                    {item.item_images.length > 1 && <div className="pager">
-                        <span></span>
-                        <span className={`pager-content`}>
-                            {
-                                item.item_images.map((img, index) => {
-                                    return (
-                                        <div ><div className={`circle ${index == 0 && `active`}`}></div></div>
-                                    )
-                                })
-                            }
-                        </span>
-                        <span></span>
-                    </div>}
-                </div>
-                <IonCardContent>
-                    <div className="name-price">
-                        <IonCardTitle className={`item-title`}>
-                            {item.item_name} <IonChip color={`danger`}>{item.item_category}</IonChip>
-                        </IonCardTitle>
-                        <div className={`item-price`} >{item.item_cost}</div>
+        async function getReviewData() {
+
+            fstore.collection(`users`).doc(item.item_contact.user_email)
+                .collection(`classified_reviews`)
+                .onSnapshot((snapshot) => {
+                    const reviews: ReviewItemInterface[] = snapshot.docs.map((doc: any) => doc.data())
+                    dispatch(group_update_reviews(reviews))
+                    console.log(reviews)
+
+                    setreviewItems([...reviews.filter(item => item.email != user.email)])
+                    const usersReviews = reviews.filter(item => item.email == user.email)
+                    calculateRating(reviews)
+                    if (usersReviews.length > 0) {
+                        setmyreview(usersReviews[0])
+                    } else {
+                        getMyReview()
+                    }
+                })
+
+        }
+
+        function getMyReview() {
+            fstore.collection(`users`).doc(item.item_contact.user_email)
+                .collection(`classified_reviews`)
+                .doc(user.email)
+                .onSnapshot((snapshot) => {
+                    const review: any = snapshot.data()
+
+                    if (review && snapshot.exists)
+                        setmyreview(review)
+                })
+        }
+        function addToFavorites() {
+            if (isAfavorite) dispatch(remove_from_favorites(item))
+            else dispatch(update_favorites(item))
+        }
+        useEffect(() => {
+            Storage.set({ key: `favorites`, value: JSON.stringify(favorites) })
+
+        }, [isAfavorite])
+
+        function calculateRating(reviews: ReviewItemInterface[]) {
+            let rating = 0;
+            if (reviews.length > 0) {
+                reviews.map(review => {
+                    rating += review.rating
+                })
+                rating = rating / reviews.length
+            }
+            setaverageRating(rating);
+        }
+        return (
+            <IonModal cssClass={`classified-modal`} onDidDismiss={onDidDismiss} isOpen={isOpen}>
+                <IonContent ref={contentRef}>
+                    <div className="top-slide">
+                        <IonButton color={`light`} shape={`round`} className={`close-btn`} >
+                            <IonIcon icon={arrowBack} />
+                            <IonBackdrop></IonBackdrop>
+                        </IonButton>
+                        <IonSlides>
+                            {item.item_images.map((image, index) => <IonSlide key={index}>
+                                <img className={`main-img`} src={image} alt="" />
+                            </IonSlide>)}
+                        </IonSlides>
+
+                        {item.item_images.length > 1 && <div className="pager">
+                            <span></span>
+                            <span className={`pager-content`}>
+                                {
+                                    item.item_images.map((img, index) => {
+                                        return (
+                                            <div ><div className={`circle ${index == 0 && `active`}`}></div></div>
+                                        )
+                                    })
+                                }
+                            </span>
+                            <span></span>
+                        </div>}
                     </div>
-                    <div className="reactions">
-                        <IonCardTitle className="sub-title">
-                        </IonCardTitle>
-                        <div className="react-grid">
-                            <div> <IonButton onClick={addToFavorites} fill={`clear`} className={`btn-react`} color={`dark`}>
-                                <IonIcon color={isAfavorite ? `danger` : `none`} icon={!isAfavorite ? heartOutline : heart}></IonIcon>
-                            </IonButton></div>
-                            <div>
-                                <IonButton onClick={shareItem} fill={`clear`} className={`btn-react`} color={`dark`}>
-                                    <IonIcon icon={shareSocialOutline}></IonIcon>
-                                </IonButton>
-                            </div>
-                            <div>
-                                <IonButton onClick={() => scrollToMap()} fill={`clear`} className={`btn-react`} color={`dark`}>
-                                    <IonIcon icon={locationOutline}></IonIcon>
-                                </IonButton>
+                    <IonCardContent>
+                        <div className="name-price">
+                            <IonCardTitle className={`item-title`}>
+                                {item.item_name} <IonChip color={`danger`}>{item.item_category}</IonChip>
+                            </IonCardTitle>
+                            <div className={`item-price`} >{item.item_cost}</div>
+                        </div>
+                        <div className="reactions">
+                            <IonCardTitle className="sub-title">
+                            </IonCardTitle>
+                            <div className="react-grid">
+                                <div> <IonButton onClick={addToFavorites} fill={`clear`} className={`btn-react`} color={`dark`}>
+                                    <IonIcon color={isAfavorite ? `danger` : `none`} icon={!isAfavorite ? heartOutline : heart}></IonIcon>
+                                </IonButton></div>
+                                <div>
+                                    <IonButton onClick={shareItem} fill={`clear`} className={`btn-react`} color={`dark`}>
+                                        <IonIcon icon={shareSocialOutline}></IonIcon>
+                                    </IonButton>
+                                </div>
+                                <div>
+                                    <IonButton onClick={() => scrollToMap()} fill={`clear`} className={`btn-react`} color={`dark`}>
+                                        <IonIcon icon={locationOutline}></IonIcon>
+                                    </IonButton>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <IonCardSubtitle className={`item-desc`}>
-                        {
-                            item.item_desc
-                        }
-                    </IonCardSubtitle>
-                    <IonCardTitle className="sub-title">
-                        Features
-                    </IonCardTitle>
-                    <div className="list">
-                        {
-                            item.item_features.map((feature) => (
-                                <IonItem key={feature}>
-                                    {feature}
-                                </IonItem>))
-                        }
-                    </div>
-                    <IonCardTitle className="sub-title">
-                        Contact Supplier
-                    </IonCardTitle>
-                    <IonGrid className={`contact-card`}>
-                        <IonRow>
-                            <IonCol size={`4`}>
-                                <LetteredAvatar size={80} backgroundColor={`var(--ion-color-primary)`} name={item.item_contact.user_name.substr(0, 1)} />
-
-                            </IonCol>
-                            <IonCol>
-                                <div className="name">{item.item_contact.user_name}</div>
-                                <StarReview value={averageRating}></StarReview>
-                                <IonRow onClick={contactSeller} className={`contact-fabs`}>
-                                    <IonCol>
-                                        <IonFabButton href={`https://wa.me/${item.item_contact.user_tel}`} color={`success`}>
-                                            <IonIcon icon={logoWhatsapp} />
-                                        </IonFabButton>
-                                    </IonCol>
-                                    <IonCol>
-                                        <IonFabButton href={`tel:${item.item_contact.user_tel}`} color={`tertiary`}>
-                                            <IonIcon icon={callOutline} />
-                                        </IonFabButton>
-                                    </IonCol>
-                                    <IonCol>
-                                        <IonFabButton href={`mailto:${item.item_contact.user_email}`} color={`danger`}>
-                                            <IonIcon icon={mailOutline} />
-                                        </IonFabButton>
-                                    </IonCol>
-                                </IonRow>
-                            </IonCol>
-                        </IonRow>
-                    </IonGrid>
-                    <IonCardTitle className={`sub-title`}>
-                        Location <br />
-                        <IonNote>
-                            {Math.floor(distance)} km from you
-                    </IonNote>
-                    </IonCardTitle>
-
-                    <div ref={mapRef}>
-                        <iframe src={`http://maps.google.com/maps?q=${item.item_location.lat}, ${item.item_location.long}&z=15&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
-                    </div>
-                    <IonItemDivider>
+                        <IonCardSubtitle className={`item-desc`}>
+                            {
+                                item.item_desc
+                            }
+                        </IonCardSubtitle>
                         <IonCardTitle className="sub-title">
-                            supplier's Reviews
+                            Features
                     </IonCardTitle>
-                        <IonButtons slot={`end`}>
-                            {myreview ? <FlipMove >{!addReview &&
-                                <IonButton onClick={() => setaddReview(true)} fill={`outline`}>
-                                    edit review
-                             </IonButton>}
-                            </FlipMove> :
-                                <FlipMove >{!addReview &&
+                        <div className="list">
+                            {
+                                item.item_features.map((feature) => (
+                                    <IonItem key={feature}>
+                                        {feature}
+                                    </IonItem>))
+                            }
+                        </div>
+                        <IonCardTitle className="sub-title">
+                            Contact Supplier
+                    </IonCardTitle>
+                        <IonGrid className={`contact-card`}>
+                            <IonRow>
+                                <IonCol size={`4`}>
+                                    <LetteredAvatar size={80} backgroundColor={`var(--ion-color-primary)`} name={item.item_contact.user_name.substr(0, 1)} />
+
+                                </IonCol>
+                                <IonCol>
+                                    <div className="name">{item.item_contact.user_name}</div>
+                                    <StarReview value={averageRating}></StarReview>
+                                    <IonRow onClick={contactSeller} className={`contact-fabs`}>
+                                        <IonCol>
+                                            <IonFabButton href={`https://wa.me/${item.item_contact.user_tel}`} color={`success`}>
+                                                <IonIcon icon={logoWhatsapp} />
+                                            </IonFabButton>
+                                        </IonCol>
+                                        <IonCol>
+                                            <IonFabButton href={`tel:${item.item_contact.user_tel}`} color={`tertiary`}>
+                                                <IonIcon icon={callOutline} />
+                                            </IonFabButton>
+                                        </IonCol>
+                                        <IonCol>
+                                            <IonFabButton href={`mailto:${item.item_contact.user_email}`} color={`danger`}>
+                                                <IonIcon icon={mailOutline} />
+                                            </IonFabButton>
+                                        </IonCol>
+                                    </IonRow>
+                                </IonCol>
+                            </IonRow>
+                        </IonGrid>
+                        <IonCardTitle className={`sub-title`}>
+                            Location <br />
+                            <IonNote>
+                                {Math.floor(distance)} km from you
+                    </IonNote>
+                        </IonCardTitle>
+
+                        <div ref={mapRef}>
+                            <iframe src={`http://maps.google.com/maps?q=${item.item_location.lat}, ${item.item_location.long}&z=15&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>
+                        </div>
+                        <IonItemDivider>
+                            <IonCardTitle className="sub-title">
+                                supplier's Reviews
+                    </IonCardTitle>
+                            <IonButtons slot={`end`}>
+                                {myreview ? <FlipMove >{!addReview &&
                                     <IonButton onClick={() => setaddReview(true)} fill={`outline`}>
-                                        add review
+                                        edit review
                              </IonButton>}
-                                </FlipMove>}
-                        </IonButtons>
-                    </IonItemDivider>
+                                </FlipMove> :
+                                    <FlipMove >{!addReview &&
+                                        <IonButton onClick={() => setaddReview(true)} fill={`outline`}>
+                                            add review
+                             </IonButton>}
+                                    </FlipMove>}
+                            </IonButtons>
+                        </IonItemDivider>
 
-                    {addReview && <FlipMove>
-                        {addReview && <ReviewInput item={item} reviewSent={() => setaddReview(false)}>
-                        </ReviewInput>}
-                    </FlipMove>}
-                    {
-                        myreview && <ReviewItem data={myreview}></ReviewItem>
-                    }
-                    {
-                        reviewItems.map((review, index) => {
-                            if(review.email==user.email) return <></>
-                            return <ReviewItem key={index} data={review}></ReviewItem>
-                        })
-                    }
-                    {
-                        reviewItems.length <= 0 && !myreview &&
-                        <IonCardContent>
-                            <IonCardSubtitle><i>no reviews yet for this suplier</i></IonCardSubtitle>
-                        </IonCardContent>
-                    }
+                        {addReview && <FlipMove>
+                            {addReview && <ReviewInput item={item} reviewSent={() => setaddReview(false)}>
+                            </ReviewInput>}
+                        </FlipMove>}
+                        {
+                            myreview && <ReviewItem data={myreview}></ReviewItem>
+                        }
+                        {
+                            reviewItems.map((review, index) => {
+                                if (review.email == user.email) return <></>
+                                return <ReviewItem key={index} data={review}></ReviewItem>
+                            })
+                        }
+                        {
+                            reviewItems.length <= 0 && !myreview &&
+                            <IonCardContent>
+                                <IonCardSubtitle><i>no reviews yet for this suplier</i></IonCardSubtitle>
+                            </IonCardContent>
+                        }
 
-                    {/* <div className="recommended">
+                        {/* <div className="recommended">
                         <IonCardTitle className={`sub-title`}>
                             Recommended
                     </IonCardTitle>
@@ -289,87 +289,87 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
                             </IonRow>
                         </IonGrid>
                     </div> */}
-              
-                </IonCardContent>
 
-            </IonContent>
-            { user.email == item.item_contact.user_email && <EditClassifiedFab onEdit={() => { }} onDelete={() => { onDidDismiss() }} item={item}></EditClassifiedFab>}
-        </IonModal>
-    );
-};
+                    </IonCardContent>
 
-export default ClassifiedItemModal
+                </IonContent>
+                { user.email == item.item_contact.user_email && <EditClassifiedFab onEdit={() => { }} onDelete={() => { onDidDismiss() }} item={item}></EditClassifiedFab>}
+            </IonModal>
+        );
+    };
 
-
-
-
-
-export function CalculateDistanceKm(point1: { long: number, lat: number }, point2: { long: number, lat: number }) {
-
-    function deg2rad(deg: number) {
-        return deg * (Math.PI / 180)
-    }
-    const lat1 = point1.lat, lon1 = point1.long, lat2 = point2.lat, lon2 = point2.long
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-    console.log(`d------------------`, d)
-    return (d)
+    export default ClassifiedItemModal
 
 
 
 
 
-}
+    export function CalculateDistanceKm(point1: { long: number, lat: number }, point2: { long: number, lat: number }) {
 
-
-export const StarReview: FC<{ value: number }> = ({ value }) => {
-    const numStars = value > 5 ? 5 : value < 0 ? 0 : value
-    const [stars, setstars] = useState([0, 0, 0, 0, 0])
-
-    useEffect(() => {
-
-        const wholeNum = Math.floor(numStars)
-        const extra = numStars - wholeNum;
-        const temp_stars = [0, 0, 0, 0, 0]
-        for (let i = 0; i < wholeNum; i++) {
-            temp_stars[i] = 1;
+        function deg2rad(deg: number) {
+            return deg * (Math.PI / 180)
         }
-        if (temp_stars[4] != 1)
-            temp_stars[wholeNum] = extra ? 0.5 : 0;
-        setstars([...temp_stars])
-    }, [value])
+        const lat1 = point1.lat, lon1 = point1.long, lat2 = point2.lat, lon2 = point2.long
+        var R = 6371; // Radius of the earth in km
+        var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+        var dLon = deg2rad(lon2 - lon1);
+        var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            ;
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c; // Distance in km
+        console.log(`d------------------`, d)
+        return (d)
 
-    return (
-        <div>
-            <IonButtons>
-                {numStars}
-                {
-                    stars.map((starVal, index) => {
-                        if (starVal == 0.5)
-                            return (
-                                <IonButton color={`warning`}>
-                                    <IonIcon icon={starHalfOutline} />
-                                </IonButton>
-                            )
-                        if (starVal == 1)
-                            return (
-                                <IonButton color={`warning`}>
-                                    <IonIcon icon={star} />
-                                </IonButton>
-                            )
-                        return (<IonButton color={`warning`}>
-                            <IonIcon icon={starOutline} />
-                        </IonButton>)
-                    })
-                } </IonButtons>
-        </div>
-    )
-}
+
+
+
+
+    }
+
+
+    export const StarReview: FC<{ value: number }> = ({ value }) => {
+        const numStars = value > 5 ? 5 : value < 0 ? 0 : value
+        const [stars, setstars] = useState([0, 0, 0, 0, 0])
+
+        useEffect(() => {
+
+            const wholeNum = Math.floor(numStars)
+            const extra = numStars - wholeNum;
+            const temp_stars = [0, 0, 0, 0, 0]
+            for (let i = 0; i < wholeNum; i++) {
+                temp_stars[i] = 1;
+            }
+            if (temp_stars[4] != 1)
+                temp_stars[wholeNum] = extra ? 0.5 : 0;
+            setstars([...temp_stars])
+        }, [value])
+
+        return (
+            <div>
+                <IonButtons>
+                    {numStars}
+                    {
+                        stars.map((starVal, index) => {
+                            if (starVal == 0.5)
+                                return (
+                                    <IonButton color={`warning`}>
+                                        <IonIcon icon={starHalfOutline} />
+                                    </IonButton>
+                                )
+                            if (starVal == 1)
+                                return (
+                                    <IonButton color={`warning`}>
+                                        <IonIcon icon={star} />
+                                    </IonButton>
+                                )
+                            return (<IonButton color={`warning`}>
+                                <IonIcon icon={starOutline} />
+                            </IonButton>)
+                        })
+                    } </IonButtons>
+            </div>
+        )
+    }

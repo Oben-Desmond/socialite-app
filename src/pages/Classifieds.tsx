@@ -1,25 +1,28 @@
 // @flow strict
 
 import { Geolocation } from '@capacitor/geolocation';
-import { IonActionSheet, IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { IonActionSheet, IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { add, addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline } from 'ionicons/icons';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef , useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 import { maincategories, subcategories } from '../components/classified/categories-data';
 import ClassifiedItem from '../components/classified/ClassifiedItem';
 import { fetchMyItems } from '../components/classified/classifieds-fetch';
 import SearchModal from '../components/classified/searchModal';
 import UploadClassified from '../components/classified/UploadClassified';
-import { getItemsMatching } from '../components/classified/uploadClassifiedToDB';
+import { fetchItemById, getItemsMatching } from '../components/classified/uploadClassifiedToDB';
 import SkeletonHome from '../components/top stories/dummy';
 import { fstore } from '../Firebase/Firebase';
 import { classifiedItemInterface } from '../interfaces/classifiedItems';
+import { PostInterface } from '../interfaces/posts';
 import { UserInterface } from '../interfaces/users';
 import { selectFavorites } from '../states/reducers/favoritesReducer';
 import { selectLocation, update_location } from '../states/reducers/location-reducer';
 import { selectUser } from '../states/reducers/userReducers';
 import { Pictures } from './images/images';
 import "./style/Classifieds.css";
+
 
 const mycontext: any = []
 export const SelectedTabContext = createContext(mycontext)
@@ -36,6 +39,28 @@ const Classifieds: React.FC = () => {
     const user_location = useSelector(selectLocation)
     const user: UserInterface = useSelector(selectUser)
     const favorites = useSelector(selectFavorites)
+    const refresherRef = useRef<HTMLIonRefresherElement>(null)
+
+
+    const params: { postid: string } = useParams()
+
+    useEffect(() => {
+        if (params.postid == `default` || !params.postid) return;
+        getPost(params.postid)
+
+    }, [params])
+    function getPost(postid: string) {
+        setclassifiedList([])
+        fetchItemById(postid, (post: classifiedItemInterface) => {
+            setclassifiedList([])
+            setclassifiedList([post])
+            if ([post].length <= 0) {
+                setnotFound(true)
+            }
+        }, () => {
+            setnotFound(true)
+        })
+    }
 
     const dispatch = useDispatch()
     function openUploadItem() {
@@ -56,19 +81,12 @@ const Classifieds: React.FC = () => {
         console.log(category)
         setsearchTabText(``)
         if (selectedTab.cat == `latest`) {
-            fstore.collection(`classified`).orderBy(`timestamp`, `desc`).limit(20).get().then(res => {
-                const docs: any[] = res.docs.map((doc) => doc.data())
-                console.log(docs)
-                setclassifiedList(docs)
-                setnotFound(docs.length <= 0)
-                setloading(false)
-
-            })
+            getLatestClassifieds(()=>{})
 
         } else {
-            if (category.subcat && category.subcat!=`order`) {
+            if (category.subcat && category.subcat != `order`) {
                 console.log();
-                
+
                 const unsub = fstore.collection(`classified`)
                     .where(`sub_category`, `==`, category.subcat).limit(20).get().then(res => {
                         const docs: any[] = res.docs.map((doc) => doc.data())
@@ -78,22 +96,34 @@ const Classifieds: React.FC = () => {
                         setloading(false)
 
                     })
-            } else if(category.cat) {
+            } else if (category.cat) {
                 const unsub = fstore.collection(`classified`)
-                .where(`sub_category`, `==`, category.subcat).limit(20).get().then(res => {
-                    const docs: any[] = res.docs.map((doc) => doc.data())
-                    console.log(docs)
-                    setclassifiedList(docs)
-                    setnotFound(docs.length <= 0)
-                    setloading(false)
+                    .where(`sub_category`, `==`, category.subcat).limit(20).get().then(res => {
+                        const docs: any[] = res.docs.map((doc) => doc.data())
+                        console.log(docs)
+                        setclassifiedList(docs)
+                        setnotFound(docs.length <= 0)
+                        setloading(false)
 
-                })
+                    })
             }
         }
         // return (() => unsub())
 
     }, [selectedTab])
 
+    function getLatestClassifieds(callback:()=>void){
+        setclassifiedList([])
+        fstore.collection(`classified`).orderBy(`timestamp`, `desc`).limit(20).get().then(res => {
+            const docs: any[] = res.docs.map((doc) => doc.data())
+            console.log(docs)
+            setclassifiedList(docs)
+            setnotFound(docs.length <= 0)
+            setloading(false)
+            callback()
+
+        })
+    }
 
     function getClassified(category: string) {
 
@@ -156,6 +186,9 @@ const Classifieds: React.FC = () => {
 
                 </div>
                 <IonContent >
+                    <IonRefresher ref={refresherRef} onIonRefresh={() => getLatestClassifieds(() => refresherRef.current?.complete())} slot={`fixed`}>
+                        <IonRefresherContent></IonRefresherContent>
+                    </IonRefresher>
                     <IonContent scrollY={false} style={{ height: `45px`, width: `100%` }} scrollX className={`category-tab`}>
                         <div style={{ width: `600vw` }}>
                             <Categories getClassified={getClassified}></Categories>
@@ -208,11 +241,11 @@ const Classifieds: React.FC = () => {
 
                 </IonContent>
                 <IonFab vertical={`bottom`} horizontal={`end`}>
-                    <IonFabButton onClick={()=>setshowMenu(true)}>
+                    <IonFabButton color={`secondary`} onClick={() => openUploadItem()}>
                         <IonIcon icon={add}></IonIcon>
                     </IonFabButton>
                 </IonFab>
- 
+
 
                 <IonPopover onDidDismiss={() => setshowMenu(false)} isOpen={showMenu}>
                     <IonItem lines={`none`}>
@@ -265,7 +298,7 @@ function Categories(props: { getClassified: (cat: string) => void }) {
 
         </>
     )
-} 
+}
 
 export interface categoryPayloadInterface {
     cat: string,
@@ -363,3 +396,4 @@ export const categoryData: { name: string, url: string, color: string }[] = [
         , color: `success`
     }
 ]
+ 
