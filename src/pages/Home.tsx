@@ -37,6 +37,17 @@ const Home: React.FC = function () {
         getPost(params.postid)
 
     }, [params])
+    function getPost(postid: string) {
+        setstories([])
+        fetchPostById(postid, countryinfo.name, (post: PostInterface) => {
+            setstories([post, ...stories])
+            if([post, ...stories].length<=0){
+                setnoData(true)
+            }
+        }, ()=>{
+            setnoData(true)
+        })
+    }
 
     useEffect(() => {
         console.log(`fetching...`)
@@ -74,17 +85,7 @@ const Home: React.FC = function () {
             setstories([...data])
         })
     }
-    function getPost(postid: string) {
-        setstories([])
-        fetchPostById(postid, countryinfo.name, (post: PostInterface) => {
-            setstories([post, ...stories])
-            if([post, ...stories].length<=0){
-                setnoData(true)
-            }
-        }, ()=>{
-            setnoData(true)
-        })
-    }
+  
     return (
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
