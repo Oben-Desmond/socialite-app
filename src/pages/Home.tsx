@@ -40,8 +40,9 @@ const Home: React.FC = function () {
     function getPost(postid: string) {
         setstories([])
         fetchPostById(postid, countryinfo.name, (post: PostInterface) => {
-            setstories([post, ...stories])
-            if([post, ...stories].length<=0){
+            setstories([])
+            setstories([post])
+            if([post].length<=0){
                 setnoData(true)
             }
         }, ()=>{

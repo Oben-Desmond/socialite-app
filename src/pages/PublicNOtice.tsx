@@ -23,7 +23,7 @@ const PublicNotice: React.FC = function () {
     const [addNotice, setaddNotice] = useState(false)
     const [notices, setnotices] = useState<PostInterface[]>([])
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
-    const [ noData, setnoData] = useState(false)
+    const [noData, setnoData] = useState(false)
     const params: { postid: string } = useParams()
 
     useEffect(() => {
@@ -34,11 +34,13 @@ const PublicNotice: React.FC = function () {
     function getPost(postid: string) {
         setnotices([])
         fetchNoticeById(postid, countryinfo.name, (post: PostInterface) => {
-            setnotices([post, ...notices])
-            if([post, ...notices].length<=0){
+
+            setnotices([])
+            setnotices([post])
+            if ([post].length <= 0) {
                 setnoData(true)
             }
-        }, ()=>{
+        }, () => {
             setnoData(true)
         })
     }
@@ -46,17 +48,17 @@ const PublicNotice: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         if (countryinfo) {
-            const country_name=countryinfo.name || `South Africa`
+            const country_name = countryinfo.name || `South Africa`
             setnoData(false)
             fstore.collection(`posts/${country_name}/notice`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
                 const data: any[] = res.docs.map(doc => {
                     return doc.data()
                 })
-                if(data.length<=0){
+                if (data.length <= 0) {
                     setnoData(true)
                 }
                 console.log(data)
-               setnotices([...data])
+                setnotices([...data])
             })
         }
 
@@ -65,7 +67,7 @@ const PublicNotice: React.FC = function () {
         <IonPage>
             <PageHeader></PageHeader>
             <IonContent>
-                { notices.length <= 0 && !noData&& <SkeletonHome></SkeletonHome>}
+                {notices.length <= 0 && !noData && <SkeletonHome></SkeletonHome>}
                 <IonGrid >
                     {
                         notices.map((post) => {
@@ -75,8 +77,8 @@ const PublicNotice: React.FC = function () {
                         })
                     }
                     {
-                        notices.length <= 0 && noData&& <IonToolbar style={{textAlign:`center`,paddingTop:`10vh`}}><IonImg src={Pictures.notfound} />
-                        <IonCardSubtitle>NO PUBLIC NOTICE YET </IonCardSubtitle>
+                        notices.length <= 0 && noData && <IonToolbar style={{ textAlign: `center`, paddingTop: `10vh` }}><IonImg src={Pictures.notfound} />
+                            <IonCardSubtitle>NO PUBLIC NOTICE YET </IonCardSubtitle>
                         </IonToolbar>
                     }
                 </IonGrid>

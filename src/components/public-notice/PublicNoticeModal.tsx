@@ -119,7 +119,7 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
           }
     }
     function sharePost(){
-        Share.share({dialogTitle:`check out this public notice`,url:`https://soionet.co.za/notice/${post.id}`})
+        Share.share({dialogTitle:`check out this public notice`,url:`https://socionet.co.za/public-notice/${post.id}`})
     }
 
     return (
