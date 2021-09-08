@@ -31,7 +31,7 @@ import LetteredAvatar from './LetterAvatar';
 import { Storage } from '@capacitor/storage';
 import { updateUser } from '../states/action-creators/users';
 import { init_favorites, update_favorites } from '../states/reducers/favoritesReducer';
-import { auth } from '../Firebase/Firebase';
+import { auth, fstore } from '../Firebase/Firebase';
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
@@ -81,13 +81,15 @@ const Menu: React.FC = () => {
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
 
-  function loginToService() {
-    let code = user.domainCode
+  function loginToService(code = user.domainCode) {
+
     if (!code) {
-      //  let  account:`service`|`company` |``=interpreteCode(code)
-        setgetCode(true)
-       }
-     
+      setgetCode(true)
+      return;
+    }
+    let account = interpreteCode(code, countryInfo?.name || `South Africa`, user)
+
+
   }
   useEffect(() => {
 
@@ -123,11 +125,12 @@ const Menu: React.FC = () => {
       }
     })
   }
-  function submitCode(e:any){
-    console.log(e)
-   let newUser:UserInterface= {
-     ...user, domainCode: e[0]+``
-   }
+  function submitCode(e: any) {
+
+    let newUser: UserInterface = {
+      ...user, domainCode: e[0] + ``
+    }
+    dispatch(updateUser(newUser))
   }
 
 
@@ -177,11 +180,11 @@ const Menu: React.FC = () => {
         </IonToolbar>
       </IonToolbar>
       <IonContent>
-         <IonAlert buttons={[{text:`send`,handler:submitCode},{text:`cancel`}]} inputs={[{type:`number`}]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={()=>setgetCode(false)} isOpen={getCode}/>
+        <IonAlert buttons={[{ text: `send`, handler: submitCode }, { text: `cancel` }]} inputs={[{ type: `number` }]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={() => setgetCode(false)} isOpen={getCode} />
         <div className={`list`}>
           {appPages.map((appPage, index) => {
-            
-            
+
+
             return (
               <IonMenuToggle color={`dark`} key={index} autoHide={false}>
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
@@ -192,7 +195,7 @@ const Menu: React.FC = () => {
             );
           })}
           <IonMenuToggle color={`dark`} autoHide={false}>
-            <IonItem color={`dark`} onClick={loginToService} routerDirection="forward" lines={`full`} detail={false}>
+            <IonItem color={`dark`} onClick={() => loginToService()} routerDirection="forward" lines={`full`} detail={false}>
               <IonIcon slot="start" ios={peopleOutline} md={peopleOutline} />
               <IonLabel>Business Account</IonLabel>
             </IonItem>
@@ -213,3 +216,27 @@ const Menu: React.FC = () => {
 };
 
 export default Menu;
+
+async function interpreteCode(code: string, country: string, user: UserInterface) {
+
+
+  return (new Promise((resolve, reject) => {
+    if (code.length != 6) {
+      reject({ message: `SERVICE CODE must not be 6 characters` })
+      return;
+    }
+
+    fstore.collection(`business`).doc(country).collection(`accounts`).doc(code).get()
+      .then((snapshot) => {
+        if (!(snapshot.data() && snapshot.exists)) {
+            reject({message:`No such service account matches the service code`})    
+            return;
+        }
+        else{
+
+        }
+      }).catch(reject)
+
+
+  }))
+}
