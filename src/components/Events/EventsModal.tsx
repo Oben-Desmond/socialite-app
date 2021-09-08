@@ -110,7 +110,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
     }
     function handleKeyBoard() {
       try{
-        Keyboard.addListener(`keyboardDidHide`, () => {
+        await Keyboard.addListener(`keyboardDidHide`, () => {
             setmoveInputUp(false)
         })
       }catch(err){
