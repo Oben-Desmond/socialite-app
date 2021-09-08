@@ -68,7 +68,6 @@ const App: React.FC = () => {
             <Route path="/notifications" component={Notifications} exact={true} />
             <Route path="/jobs" component={Jobs} exact={true} />
             <Route path="/settings" component={Settings} exact={true} />
-            <Route path="/service/:type" component={IncidentReport} exact={true} />
             <Route path="/feed/:postid" component={Home} exact={true} />
             <Route path="/events/:postid" component={Events} exact={true} />
             <Route path="/classifieds/:postid" component={Classifieds} exact={true} />
@@ -99,7 +98,7 @@ const App: React.FC = () => {
         <Route path="/Login" component={Login} exact={true} />
         <Route path="/signup" component={SignUp} exact={true} />
         <Route path="/incident-report" component={IncidentReport} exact={true} />
-
+        <Route path="/service/:type" component={IncidentReport} exact={true} />
       </IonReactRouter>
     </IonApp>
   );

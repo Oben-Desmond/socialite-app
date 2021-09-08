@@ -63,7 +63,7 @@ const IncidentReport: React.FC = () => {
         const id = Date.now() + (user.email || ``)
 
         setnoData(false)
-        fstore.collection(`reports`).doc(`Cameroon-010001`).collection(`reports`).onSnapshot((snapshot) => {
+        fstore.collection(`business`).doc(`${servAcc.country}-${servAcc.code}`).collection(`reports`).onSnapshot((snapshot) => {
 
             const docs: any[] = snapshot.docs.map(doc => doc.data());
             setserviceReports([...docs]);
