@@ -144,7 +144,8 @@ const Menu: React.FC = () => {
     let newUser: UserInterface = {
       ...user, domainCode: e[0] + ``
     }
-    dispatch(updateUser(newUser))
+    loginToService(e[0]+``)
+    // dispatch(updateUser(newUser))
   }
 
 
@@ -234,6 +235,22 @@ export default Menu;
 
 async function interpreteCode(code: string, country: string, user: UserInterface) {
 
+  // const accOwner:accountInterface={
+  //   code:`102001`,
+  //   country:`Cameroon`,
+  //   location:{lat:9.345,long:9.4567},
+  //   tel:`+237678320028`,
+  //   timestamp:Date.now(),
+  //   type:`defence`,
+  //   users:[{
+  //     email:`obend678@gmail.com`,
+  //     last_signIn:Date.now(),
+  //     name:user.name||`unknown`,
+  //     photoUrl:user.photoUrl
+  //   }]
+    
+  // }
+  // fstore.collection(`business`).doc(country).collection(`accounts`).doc(accOwner.code).set(accOwner)
 
   return (new Promise((resolve, reject) => {
     if (code.length != 6) {

@@ -4,7 +4,11 @@ export interface accountInterface{
     users:accUser[],
     type:`defence`|`firefighter`|`company`|`health`|`municipal`,
     timestamp:number,
-    tel:string
+    tel:string,
+    location:{
+        lat:number,
+        long:number
+    }
 
 }
 
@@ -13,5 +17,5 @@ export interface accUser{
     name:string,
     photoUrl:string,
     email:string,
-    last_signIn:string
+    last_signIn:number
 }
