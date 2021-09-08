@@ -29,7 +29,7 @@ const reducers = {
 export default function serviceReducer(state = initServiceAccount, action: { type: string, payload: any }) {
 
     switch (action.type) {
-        case ` update_account`: return action.payload;
+        case `update_account`: return action.payload;
         default: return state
 
     }

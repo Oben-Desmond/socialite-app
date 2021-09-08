@@ -98,7 +98,6 @@ const Menu: React.FC = () => {
 
     try {
       let account:accountInterface|any = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
-      console.log(`acount - - - - `, account);
       dispatch(update_account(account))
       history.push(`/service/${account.type}`)
     }

@@ -6,7 +6,7 @@ import { Toast } from '@capacitor/toast';
 import { StatusBar } from '@capacitor/status-bar';
 import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCardContent, IonCol, IonContent, IonFab, IonFabButton, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonItemDivider, IonLabel, IonList, IonModal, IonPage, IonRow, IonSkeletonText, IonSlide, IonSlides, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
 import { add, arrowBack, cameraOutline, close, images, statsChart, statsChartOutline, trashOutline } from 'ionicons/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { hideTabBar } from '../App';
 import { Pictures } from './images/images';
@@ -21,6 +21,8 @@ import { selectUser } from '../states/reducers/userReducers';
 import { useSelector } from 'react-redux';
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../components/PhotoOptionsModal';
 import AddIncident from '../components/service/addIncident';
+import { selectServiceAccount } from '../states/reducers/service-reducer';
+import { accountInterface } from '../components/service/serviceTypes';
 
 
 const IncidentReport: React.FC = () => {
@@ -30,8 +32,16 @@ const IncidentReport: React.FC = () => {
     const [noData, setnoData] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
     const [uploadIncident, setuploadIncident] = useState(false)
+    const servAcc: accountInterface=useSelector(selectServiceAccount);
+    const history= useHistory();
 
-    const history = useHistory()
+    console.log(servAcc)
+
+    useEffect(() => {
+         if(!servAcc.code){
+               history.push(`/guide/default`)
+         }
+    }, [servAcc])
     function goBack() {
         history.goBack()
     }
@@ -92,9 +102,9 @@ const IncidentReport: React.FC = () => {
                         </IonButton>
                     </IonButtons>
                     <IonTitle>Incident</IonTitle>
-                    <IonButton size={`small`} slot={`end`} fill={`outline`} color={`secondary`}>
+                    {/* <IonButton size={`small`} slot={`end`} fill={`outline`} color={`secondary`}>
                         <IonLabel>switch to personal</IonLabel>
-                    </IonButton>
+                    </IonButton> */}
                 </IonToolbar>
             </IonHeader>
             <IonContent>
