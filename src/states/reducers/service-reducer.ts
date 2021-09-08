@@ -35,7 +35,7 @@ export default function serviceReducer(state = initServiceAccount, action: { typ
     }
 }
 
-const selectServiceAccount=(state:any)=>state.serviceReducer
+export const selectServiceAccount=(state:any)=>state.serviceReducer
 
 export const {update_account} = actions
 

@@ -100,7 +100,7 @@ const Menu: React.FC = () => {
       let account:accountInterface|any = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
       console.log(`acount - - - - `, account);
       dispatch(update_account(account))
-      history.push(`/`)
+      history.push(`/service/${account.type}`)
     }
     catch (err) {
       Dialog.alert({ title: `Auth Error`, message: err.message || err || `unexpected error occurred` })
@@ -251,9 +251,8 @@ async function interpreteCode(code: string, country: string, user: UserInterface
   //     name:user.name||`unknown`,
   //     photoUrl:user.photoUrl
   //   }]
-    
-  // }
-  // fstore.collection(`business`).doc(country).collection(`accounts`).doc(accOwner.code).set(accOwner)
+ // }
+  // fstore.collection(`business`).doc(`${country}-${code}`).set(accOwner);
 
   return (new Promise((resolve, reject) => {
     if (code.length != 6) {
@@ -261,7 +260,7 @@ async function interpreteCode(code: string, country: string, user: UserInterface
       return;
     }
 
-    fstore.collection(`business`).doc(country).collection(`accounts`).doc(code).get()
+    fstore.collection(`business`).doc(`${country}-${code}`).get()
       .then((snapshot) => {
         if (!(snapshot.data() && snapshot.exists)) {
           reject({ message: `No such service account matches the service code` })

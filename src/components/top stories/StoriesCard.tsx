@@ -147,7 +147,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         try{
             Keyboard.addListener(`keyboardDidHide`, () => {
                 setmoveInputUp(false)
-            })
+            }).catch(console.log)
           }catch(err){
               console.log(err)
           }
