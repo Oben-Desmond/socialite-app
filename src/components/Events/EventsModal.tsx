@@ -108,7 +108,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
             setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``) ,domainCode:``})
         }
     }
-    function handleKeyBoard() {
+    async function handleKeyBoard() {
       try{
         await Keyboard.addListener(`keyboardDidHide`, () => {
             setmoveInputUp(false)

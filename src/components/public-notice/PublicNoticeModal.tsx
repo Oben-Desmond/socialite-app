@@ -109,7 +109,7 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``), domainCode:undefined })
         }
     }
-    function handleKeyBoard() {
+    async function handleKeyBoard() {
         try{
             await Keyboard.addListener(`keyboardDidHide`, () => {
                 setmoveInputUp(false)
