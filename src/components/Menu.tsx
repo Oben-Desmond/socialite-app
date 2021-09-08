@@ -37,6 +37,7 @@ import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { update_location } from '../states/reducers/location-reducer';
 import { Dialog } from '@capacitor/dialog';
+import { accountInterface } from './service/serviceTypes';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -81,14 +82,19 @@ const Menu: React.FC = () => {
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
 
-  function loginToService(code = user.domainCode) {
+ async function loginToService(code = user.domainCode) {
 
     if (!code) {
       setgetCode(true)
       return;
     }
-    let account = interpreteCode(code, countryInfo?.name || `South Africa`, user)
-
+    try{
+      let account = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
+      console.log(`acount - - - - `,account);
+    }
+    catch (err){
+              Dialog.alert({title:`Auth Error`,message:err.message||err||`unexpected error occurred`})
+    }
 
   }
   useEffect(() => {
@@ -229,11 +235,18 @@ async function interpreteCode(code: string, country: string, user: UserInterface
     fstore.collection(`business`).doc(country).collection(`accounts`).doc(code).get()
       .then((snapshot) => {
         if (!(snapshot.data() && snapshot.exists)) {
-            reject({message:`No such service account matches the service code`})    
-            return;
+          reject({ message: `No such service account matches the service code` })
+          return;
         }
-        else{
-
+        else {
+          const acc: accountInterface|any = snapshot.data();
+          const filUsers = acc.users.filter(((accuser:any )=> accuser.email == user.email))
+          if (filUsers.length <= 0) {
+            reject({ message: `your email is not permitted among permitted service providers` });
+            return;
+          } else {
+            resolve(acc)
+          }
         }
       }).catch(reject)
 
