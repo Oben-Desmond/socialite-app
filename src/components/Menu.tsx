@@ -42,6 +42,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { update_location } from '../states/reducers/location-reducer';
 import { Dialog } from '@capacitor/dialog';
 import { accountInterface } from './service/serviceTypes';
+import { update_account } from '../states/reducers/service-reducer';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -96,8 +97,10 @@ const Menu: React.FC = () => {
     setloading(true)
 
     try {
-      let account = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
+      let account:accountInterface|any = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
       console.log(`acount - - - - `, account);
+      dispatch(update_account(account))
+      history.push(`/`)
     }
     catch (err) {
       Dialog.alert({ title: `Auth Error`, message: err.message || err || `unexpected error occurred` })
