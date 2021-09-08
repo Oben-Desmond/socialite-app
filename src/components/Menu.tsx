@@ -3,6 +3,7 @@ import {
   IonAvatar,
   IonButton,
   IonButtons,
+  IonCardHeader,
   IonContent,
   IonIcon,
   IonImg,
@@ -10,9 +11,12 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonMenu,
   IonMenuToggle,
   IonNote,
+  IonPopover,
+  IonRow,
   IonToolbar,
 } from '@ionic/react';
 
@@ -75,6 +79,7 @@ const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
 const Menu: React.FC = () => {
   const location = useLocation();
+  const [loading, setloading] = useState(false)
   const [getCode, setgetCode] = useState(false)
   const rootState: any = (useSelector(state => state))
   const user: UserInterface = rootState.userReducer;
@@ -82,19 +87,22 @@ const Menu: React.FC = () => {
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
 
- async function loginToService(code = user.domainCode) {
+  async function loginToService(code = user.domainCode) {
 
     if (!code) {
       setgetCode(true)
       return;
     }
-    try{
+    setloading(true)
+
+    try {
       let account = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
-      console.log(`acount - - - - `,account);
+      console.log(`acount - - - - `, account);
     }
-    catch (err){
-              Dialog.alert({title:`Auth Error`,message:err.message||err||`unexpected error occurred`})
+    catch (err) {
+      Dialog.alert({ title: `Auth Error`, message: err.message || err || `unexpected error occurred` })
     }
+    setloading(false)
 
   }
   useEffect(() => {
@@ -187,6 +195,7 @@ const Menu: React.FC = () => {
       </IonToolbar>
       <IonContent>
         <IonAlert buttons={[{ text: `send`, handler: submitCode }, { text: `cancel` }]} inputs={[{ type: `number` }]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={() => setgetCode(false)} isOpen={getCode} />
+        <IonLoading message={`loading...`} onDidDismiss={() => setloading(false)} isOpen={loading}></IonLoading>
         <div className={`list`}>
           {appPages.map((appPage, index) => {
 
@@ -239,8 +248,8 @@ async function interpreteCode(code: string, country: string, user: UserInterface
           return;
         }
         else {
-          const acc: accountInterface|any = snapshot.data();
-          const filUsers = acc.users.filter(((accuser:any )=> accuser.email == user.email))
+          const acc: accountInterface | any = snapshot.data();
+          const filUsers = acc.users.filter(((accuser: any) => accuser.email == user.email))
           if (filUsers.length <= 0) {
             reject({ message: `your email is not permitted among permitted service providers` });
             return;
