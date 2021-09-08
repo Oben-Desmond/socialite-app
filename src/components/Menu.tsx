@@ -1,4 +1,5 @@
 import {
+  IonAlert,
   IonAvatar,
   IonButton,
   IonButtons,
@@ -16,7 +17,7 @@ import {
 } from '@ionic/react';
 
 import { useHistory, useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, peopleOutline, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 import { Pictures } from '../pages/images/images';
 import { useEffect, useState } from 'react';
@@ -64,19 +65,8 @@ const appPages: AppPage[] = [
   //   iosIcon: flagOutline,
   //   mdIcon: flagOutline
   // },
-  {
-    title: 'Settings',
-    url: '/settings',
-    iosIcon: settingsOutline,
-    mdIcon: settingsOutline
-  },
-  {
-    title: 'Jobs',
-    url: '/jobs',
-    iosIcon: cashOutline,
-    mdIcon: cashOutline
-  },
-  
+
+
 
 ];
 
@@ -84,12 +74,21 @@ const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
 const Menu: React.FC = () => {
   const location = useLocation();
-  const [showCountries, setshowCountries] = useState(false)
+  const [getCode, setgetCode] = useState(false)
   const rootState: any = (useSelector(state => state))
   const user: UserInterface = rootState.userReducer;
   const dispatch = useDispatch()
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
+
+  function loginToService() {
+    let code = user.domainCode
+    if (!code) {
+      //  let  account:`service`|`company` |``=interpreteCode(code)
+        setgetCode(true)
+       }
+     
+  }
   useEffect(() => {
 
     fetch(`https://get.geojs.io/v1/ip/country.json`).then(async res => {
@@ -123,6 +122,12 @@ const Menu: React.FC = () => {
         history.push(`/login`)
       }
     })
+  }
+  function submitCode(e:any){
+    console.log(e)
+   let newUser:UserInterface= {
+     ...user, domainCode: e[0]+``
+   }
   }
 
 
@@ -158,7 +163,7 @@ const Menu: React.FC = () => {
         <div className={`country-flag`}>
           <IonImg src={user?.photoUrl || Pictures.bg} />
         </div>
-        <IonToolbar className={`dp`} color={`none`} style={{ marginTop: `-6px`, paddingBottom:`30px` }}>
+        <IonToolbar className={`dp`} color={`none`} style={{ marginTop: `-6px`, paddingBottom: `30px` }}>
           {countryInfo?.country && <img style={{ marginBottom: `-20px` }} src={`https://www.countryflags.io/${countryInfo?.country}/shiny/64.png`} />}
           {user.photoUrl && <IonAvatar slot={`end`}  >
             <IonImg src={user.photoUrl} />
@@ -172,51 +177,27 @@ const Menu: React.FC = () => {
         </IonToolbar>
       </IonToolbar>
       <IonContent>
-
+         <IonAlert buttons={[{text:`send`,handler:submitCode},{text:`cancel`}]} inputs={[{type:`number`}]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={()=>setgetCode(false)} isOpen={getCode}/>
         <div className={`list`}>
           {appPages.map((appPage, index) => {
-            // if (appPage.title === `Countries`) {
-            //   return (
-            //     <React.Fragment key={index}>
-            //       <FlipMove>
-            //         <IonItem onClick={() => setshowCountries(!showCountries)} color={`dark`} className={location.pathname === appPage.url ? 'selected' : ''} lines={`full`} detail={false}>
-            //           <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-            //           <IonLabel>{appPage.title}</IonLabel>
-            //           <IonButtons slot={`end`}>
-            //             <IonButton>
-            //               <IonIcon icon={showCountries ? chevronUp : chevronDown} />
-            //             </IonButton>
-            //           </IonButtons>
-            //         </IonItem>
-
-
-            //         {
-            //           showCountries && countries.map((country, index) => {
-            //             return (
-            //               <IonMenuToggle color={`primary`} key={index} autoHide={false}>
-            //                 <IonItem color={`primary`} className={location.pathname === appPage.url ? 'selected' : ''} lines={`full`} detail={false}>
-            //                   {country}
-            //                 </IonItem>
-            //               </IonMenuToggle>
-            //             )
-            //           })
-
-            //         }
-            //       </FlipMove>
-
-            //     </React.Fragment>
-            //   )
-            // }
+            
+            
             return (
               <IonMenuToggle color={`dark`} key={index} autoHide={false}>
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
-                  <IonIcon color={ location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon}  md={appPage.mdIcon} />
-                  <IonLabel color={`dark`} style={{ color : location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white'}} >{appPage.title}</IonLabel>
+                  <IonIcon color={location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                  <IonLabel color={`dark`} style={{ color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );
           })}
-          <IonMenuToggle onClick={()=>auth.signOut()} color={`dark`}  autoHide={false}>
+          <IonMenuToggle color={`dark`} autoHide={false}>
+            <IonItem color={`dark`} onClick={loginToService} routerDirection="forward" lines={`full`} detail={false}>
+              <IonIcon slot="start" ios={peopleOutline} md={peopleOutline} />
+              <IonLabel>Business Account</IonLabel>
+            </IonItem>
+          </IonMenuToggle>
+          <IonMenuToggle onClick={() => auth.signOut()} color={`dark`} autoHide={false}>
             <IonItem color={`dark`} className={location.pathname === `/login` ? 'selected' : ''} routerLink={`/login`} routerDirection="forward" lines={`full`} detail={false}>
               <IonIcon slot="start" ios={exit} md={exitOutline} />
               <IonLabel>Logout</IonLabel>
