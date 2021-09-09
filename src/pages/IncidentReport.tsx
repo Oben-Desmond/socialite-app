@@ -32,15 +32,15 @@ const IncidentReport: React.FC = () => {
     const [noData, setnoData] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
     const [uploadIncident, setuploadIncident] = useState(false)
-    const servAcc: accountInterface=useSelector(selectServiceAccount);
-    const history= useHistory();
+    const servAcc: accountInterface = useSelector(selectServiceAccount);
+    const history = useHistory();
 
     console.log(servAcc)
 
     useEffect(() => {
-         if(!servAcc.code){
-               history.push(`/guide/default`)
-         }
+        if (!servAcc.code) {
+            history.push(`/guide/default`)
+        }
     }, [servAcc])
     function goBack() {
         history.goBack()
@@ -95,6 +95,7 @@ const IncidentReport: React.FC = () => {
     return (
         <IonPage>
             <IonHeader>
+                <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
                 <IonToolbar color={`primary`}>
                     <IonButtons onClick={goBack} slot={`start`}>
                         <IonButton>
