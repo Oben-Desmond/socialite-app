@@ -14,6 +14,10 @@ import { StoreStateInteface } from "../../interfaces/redux";
 import { countryInfoInterface } from "../../interfaces/country";
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from "../PhotoOptionsModal";
 import { Dialog } from "@capacitor/dialog";
+import { reportInterface } from "../../interfaces/reportTypes";
+import * as  uuid from "uuid";
+import { selectLocation } from "../../states/reducers/location-reducer";
+import { useHistory } from "react-router";
 
 
 
@@ -24,36 +28,54 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
     const user: UserInterface = rootState.userReducer;
     const countryInfo: countryInfoInterface = rootState.countryReducer
     const [images, setimages] = useState<any[]>(parentImages);
+    const [category, setcategory] = useState<string>(``);
     const contentRef = useRef<HTMLIonContentElement>(null)
+    const location: { long: number, lat: number } = useSelector(selectLocation);
 
     const [loading, setloading] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
     const [showImg, setshowImg] = useState<number | undefined>()
-    const textAreaRef=useRef<HTMLIonTextareaElement>(null)
-    const inputRef=useRef<HTMLIonInputElement>(null)
+    const textAreaRef = useRef<HTMLIonTextareaElement>(null)
+    const inputRef = useRef<HTMLIonInputElement>(null)
+    const history = useHistory()
 
     const addPost = function (e: any) {
-
-
+        if (!user.email) {
+            history.push(`/login`);
+            return;
+        }
+        const incident: reportInterface = {
+            author: user.email,
+            category,
+            country: countryInfo.name,
+            description: textAreaRef.current?.value || ``,
+            id: uuid.v4(),
+            images,
+            location,
+            photoUrl: user.photoUrl,
+            seenBy: [],
+            sentTo: [],
+            timestamp: Date.now()
+        }
 
         if (user.email) {
             setloading(true)
 
-            // UploadContent(data, images, user, countryInfo).then(() => {
+            ReportIncident(incident).then(() => {
 
-            //     Toast.show({ text: `post has been sent` })
-            //     onDidDismiss()
-            // }).finally(() => {
-            //     e.target.title.value = ``
-            //     e.target.story.value = ``
-            //     setimages([])
-            //     setloading(false)
+                Toast.show({ text: `post has been sent` })
+                onDidDismiss()
+            }).finally(() => {
+                e.target.title.value = ``
+                e.target.story.value = ``
+                setimages([])
+                setloading(false)
 
-            // })
+            })
         }
     }
     useEffect(() => {
-          setimages([...images,parentImages])
+        setimages([...images, parentImages])
     }, [parentImages])
 
 
@@ -106,7 +128,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                                     {
                                         images.map((img, index) => {
                                             return (
-                                                <span onClick={() => setshowImg(index)} style={{ flex: 1, marginLeft: `10px`,maxHeight:`46vh`,width:`100%`, border:`1px solid var(--ion-color-secondary)` }} key={index}>
+                                                <span onClick={() => setshowImg(index)} style={{ flex: 1, marginLeft: `10px`, maxHeight: `46vh`, width: `100%`, border: `1px solid var(--ion-color-secondary)` }} key={index}>
                                                     <ImageSlide deleteItem={() => deleteItem(index)} img={img} ></ImageSlide>
                                                 </span>
                                             )
@@ -115,7 +137,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                                 </FlipMove>
                             </IonItem>}
                         </FlipMove>
-                        <div style={{height:`30px`}}></div>
+                        <div style={{ height: `30px` }}></div>
                         <div className="input">
                             <IonItem lines={`none`} color={`none`} onClick={() => setPhotoOptions(true)} button>
                                 <IonIcon color={`secondary`} icon={cameraOutline}></IonIcon>
@@ -124,12 +146,12 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         </div>
 
                         <div style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea ref={textAreaRef} onClick={()=>{textAreaRef.current?.scrollIntoView({behavior:`smooth`})}} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
+                            <IonTextarea ref={textAreaRef} onClick={() => { textAreaRef.current?.scrollIntoView({ behavior: `smooth` }) }} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
                         </div>
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
-                                <IonSelect name={`category`} value={`sports`}>
+                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category} name={`category`} value={`sports`}>
 
                                     <IonSelectOption value={`Robbery`}>Robbery</IonSelectOption>
                                     <IonSelectOption value={`accident`}>Accident</IonSelectOption>

@@ -70,6 +70,7 @@ const IncidentReport: React.FC = () => {
             console.log(docs)
             if (docs.length <= 0) setnoData(true)
         })
+        
 
     }, [])
     function takePicture() {
@@ -92,6 +93,8 @@ const IncidentReport: React.FC = () => {
 
         })
     }
+
+    
     return (
         <IonPage>
             <IonHeader>
