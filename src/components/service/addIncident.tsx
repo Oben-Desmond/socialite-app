@@ -18,6 +18,7 @@ import { reportInterface } from "../../interfaces/reportTypes";
 import * as  uuid from "uuid";
 import { selectLocation } from "../../states/reducers/location-reducer";
 import { useHistory } from "react-router";
+import { ReportIncident } from "../../Firebase/services/report";
 
 
 
@@ -151,7 +152,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
-                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category} name={`category`} value={`sports`}>
+                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category||`sports`} name={`category`} >
 
                                     <IonSelectOption value={`Robbery`}>Robbery</IonSelectOption>
                                     <IonSelectOption value={`accident`}>Accident</IonSelectOption>
