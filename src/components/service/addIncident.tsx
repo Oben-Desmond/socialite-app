@@ -1,7 +1,7 @@
 import { Camera, CameraResultType } from "@capacitor/camera";
 import { IonModal, IonHeader, IonContent, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonThumbnail, IonImg, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonSelect, IonSelectOption, IonButton, IonBackdrop, IonLoading, IonProgressBar } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PostInterface } from "../../interfaces/posts";
 import { fstore } from "../../Firebase/Firebase";
 import { DefaultRootState, useSelector } from "react-redux";
@@ -29,6 +29,9 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
     const [loading, setloading] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
     const [showImg, setshowImg] = useState<number | undefined>()
+    const textAreaRef=useRef<HTMLIonTextareaElement>(null)
+    const inputRef=useRef<HTMLIonInputElement>(null)
+
     const addPost = function (e: any) {
 
 
@@ -49,6 +52,9 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
             // })
         }
     }
+    useEffect(() => {
+          setimages([...images,parentImages])
+    }, [parentImages])
 
 
     function deleteItem(item: number) {
@@ -92,7 +98,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                 <IonToolbar className={`ion-padding`} >
                     <IonCardTitle>ADD INCIDENTS</IonCardTitle>
                 </IonToolbar >
-                <IonCardContent>
+                <IonCardContent >
                     <form onSubmit={addPost} action="">
                         <FlipMove  >
                             {images.length > 0 && <IonItem className={`images`}>
@@ -100,7 +106,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                                     {
                                         images.map((img, index) => {
                                             return (
-                                                <span onClick={() => setshowImg(index)} style={{ flex: 1, marginLeft: `10px` }} key={index}>
+                                                <span onClick={() => setshowImg(index)} style={{ flex: 1, marginLeft: `10px`,maxHeight:`46vh`,width:`100%`, border:`1px solid var(--ion-color-secondary)` }} key={index}>
                                                     <ImageSlide deleteItem={() => deleteItem(index)} img={img} ></ImageSlide>
                                                 </span>
                                             )
@@ -109,6 +115,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                                 </FlipMove>
                             </IonItem>}
                         </FlipMove>
+                        <div style={{height:`30px`}}></div>
                         <div className="input">
                             <IonItem lines={`none`} color={`none`} onClick={() => setPhotoOptions(true)} button>
                                 <IonIcon color={`secondary`} icon={cameraOutline}></IonIcon>
@@ -117,7 +124,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         </div>
 
                         <div style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea onClick={scrollDown} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
+                            <IonTextarea ref={textAreaRef} onClick={()=>{textAreaRef.current?.scrollIntoView({behavior:`smooth`})}} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
                         </div>
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>

@@ -19,3 +19,11 @@ export interface accUser{
     email:string,
     last_signIn:number
 }
+
+
+export interface availableAccount{
+    name:string,
+    emergency__contact:string,
+    location:{long:number, lat:number},
+    code:string,
+}
