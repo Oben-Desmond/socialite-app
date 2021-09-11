@@ -44,6 +44,7 @@ import {
   Token,
 } from '@capacitor/push-notifications';
 import AppUrlListener from './components/deep-linking/AppUrlListener';
+import ReportAnIncident from './pages/ReportAnIncident';
 
 const App: React.FC = () => {
 
@@ -98,6 +99,8 @@ const App: React.FC = () => {
         <Route path="/Login" component={Login} exact={true} />
         <Route path="/signup" component={SignUp} exact={true} />
         <Route path="/incident-report" component={IncidentReport} exact={true} />
+        <Route path="/report" component={ReportAnIncident} exact={true} />
+        
         <Route path="/service/:type" component={IncidentReport} exact={true} />
       </IonReactRouter>
     </IonApp>

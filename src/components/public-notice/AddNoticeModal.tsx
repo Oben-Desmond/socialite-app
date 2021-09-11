@@ -121,7 +121,7 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
                             <IonInput required name={`title`} placeholder={`Enter title of notice`}></IonInput>
                         </div>
                         <div onClick={() => storyRef.current?.scrollIntoView({ behavior: `smooth` })} ref={storyRef} style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea required name={`story`} placeholder={`Enter Public Notice`}></IonTextarea>
+                            <IonTextarea autoGrow  rows={3}  required name={`story`} placeholder={`Enter Public Notice`}></IonTextarea>
                         </div>
                         {/* <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>

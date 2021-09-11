@@ -163,7 +163,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                             <IonInput required name={`name`} placeholder={`Enter name of item`}></IonInput>
                         </div>
                         <div onClick={() => descRef.current?.scrollIntoView({ behavior: `smooth` })} ref={descRef} style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea required name={`desc`} placeholder={`Enter Description of Item`}></IonTextarea>
+                            <IonTextarea autoGrow  rows={3}  required name={`desc`} placeholder={`Enter Description of Item`}></IonTextarea>
                         </div>
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>

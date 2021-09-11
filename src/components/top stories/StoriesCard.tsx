@@ -252,13 +252,14 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                         <div style={{ marginLeft: `40px` }}> <Comment></Comment></div>
                         <Comment></Comment>
                         <Comment></Comment> */}
-                       <div ref={commentItemRef}></div>
                         <FlipMove  >
                             {comments.map((comment, index) => {
                                 return <Comment key={comment.id} comment={comment}></Comment>
                             })
                             }
                         </FlipMove>
+                       <div ref={commentItemRef}></div>
+
                     </IonGrid>
                 </IonToolbar>
                 <IonToolbar className={`ion-padding`}>
@@ -328,7 +329,7 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
                         <IonButton color={`light`} fill={`clear`} size={`small`} onClick={closeComment} style={{}} slot={`start`} shape={`round`}>
                             <IonIcon icon={closeCircleOutline} />
                         </IonButton>
-                        <IonTextarea onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
+                        <IonTextarea   autoGrow onIonBlur={props.onBlur} autofocus={true} ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
                     </IonToolbar>
                 </IonCol>
                 <IonCol>

@@ -38,7 +38,7 @@ const ReportAnIncident: React.FC = () => {
     console.log(servAcc)
 
     useEffect(() => {
-        if (!servAcc.code) {
+        if (!user.email) {
             history.push(`/feed/default`)
         }
     }, [servAcc])
@@ -104,7 +104,7 @@ const ReportAnIncident: React.FC = () => {
                             <IonIcon icon={arrowBack}></IonIcon>
                         </IonButton>
                     </IonButtons>
-                    <IonTitle>Incident</IonTitle>
+                    <IonTitle>Reported Incidents</IonTitle>
                     {/* <IonButton size={`small`} slot={`end`} fill={`outline`} color={`secondary`}>
                         <IonLabel>switch to personal</IonLabel>
                     </IonButton> */}

@@ -126,10 +126,10 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
                             </IonItem>
                         </div>
                         <div className="input">
-                            <IonInput autocomplete={`country-name`} autoCorrect={`story, people, man`} autocorrect={`on`} onClick={scrollDown} required name={`title`} placeholder={`Enter title of story`}></IonInput>
+                            <IonInput  onClick={(e:any)=>e.target.scrollIntoView({behavior:'smooth'})} autocomplete={`country-name`} autoCorrect={`story, people, man`} autocorrect={`on`} onClick={scrollDown} required name={`title`} placeholder={`Enter title of story`}></IonInput>
                         </div>
                         <div style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea onClick={scrollDown} required name={`story`} placeholder={`Enter story`}></IonTextarea>
+                            <IonTextarea autoGrow rows={2}  onClick={(e:any)=>e.target.scrollIntoView({behavior:'smooth'})} required name={`story`} placeholder={`Enter story`}></IonTextarea>
                         </div>
                         {/* <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
@@ -149,13 +149,12 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
                                 </IonSelect>
                             </IonItem >
                         </div> */}
-                        <IonToolbar style={{height:`40px`}}></IonToolbar>
 
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
                                 Post</IonButton>
                         </IonToolbar>  
-                        <IonToolbar style={{height:`70px`}} ></IonToolbar>
+                        <IonToolbar style={{height:`50vh`}} ></IonToolbar>
                     </form>
                 </IonCardContent>
             </IonCardContent>

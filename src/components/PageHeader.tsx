@@ -16,7 +16,7 @@ function PageHeader() {
                <div style={{height:`25px`,background:`var(--ion-color-primary)`}} className="status-bar"></div>
                 <IonToolbar color={`primary`} >
                     <IonMenuButton slot={`start`}></IonMenuButton>
-                    <IonButton fill={`outline`} size={`small`} slot={`end`} routerLink={`/incident-report`} color={`danger`}>REPORT</IonButton>
+                    <IonButton fill={`outline`} size={`small`} slot={`end`} routerLink={`/report`} color={`danger`}>REPORT</IonButton>
                     <IonTitle> Socionet</IonTitle>
                     {/* <IonButtons className={`weather`} slot={`end`}>
                         <div onClick={() => setshowWeather(true)} style={{ textAlign: `center` }}>

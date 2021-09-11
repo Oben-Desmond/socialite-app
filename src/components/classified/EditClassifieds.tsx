@@ -173,7 +173,7 @@ const EditClassifiedModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean,
                                 <IonInput onIonChange={e => setinput({ ...input, name: (e.detail.value || ``) })} value={input.name} required name={`name`} placeholder={`Enter name of item`}></IonInput>
                             </div>
                             <div style={{ whiteSpace: `pre-wrap` }} className="input">
-                                <IonTextarea value={input.desc} onIonChange={e => setinput({ ...input, desc: (e.detail.value || ``) })} required name={`desc`} placeholder={`Enter Description of Item`}></IonTextarea>
+                                <IonTextarea autoGrow  value={input.desc} onIonChange={e => setinput({ ...input, desc: (e.detail.value || ``) })} required name={`desc`} placeholder={`Enter Description of Item`}></IonTextarea>
                             </div>
                             <div className={`input`}>
                                 <IonItem lines={`none`} color={`none`}>

@@ -160,7 +160,7 @@ const EditClassifiedModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean,
                                 <IonInput onIonChange={e => setinput({ ...input, title: (e.detail.value || ``) })} value={input.title} required name={`title`} placeholder={`Enter title of post`}></IonInput>
                             </div>
                             <div ref={descRef} onClick={()=>descRef.current?.scrollIntoView({behavior:`smooth`})} style={{ whiteSpace: `pre-wrap` }} className="input">
-                                <IonTextarea value={input.description} onIonChange={e => setinput({ ...input, description: (e.detail.value || ``) })} required name={`description`} placeholder={`Enter post detail`}></IonTextarea>
+                                <IonTextarea autoGrow  value={input.description} onIonChange={e => setinput({ ...input, description: (e.detail.value || ``) })} required name={`description`} placeholder={`Enter post detail`}></IonTextarea>
                             </div>
                             {/* <div className={`input`}>
                                 <IonItem lines={`none`} color={`none`}>
