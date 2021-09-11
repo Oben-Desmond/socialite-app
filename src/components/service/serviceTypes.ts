@@ -1,4 +1,5 @@
 export interface accountInterface{
+    name:string,
     country:string,
     code:string,
     users:accUser[],

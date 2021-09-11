@@ -23,7 +23,7 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
     const provider_queries = nearByServices.map(provider => {
         return fstore.collection('business').doc(`${country}-${provider.code}`).collection('reports').add(incident);
     })
-    const reporter_query = fstore.collection('users').doc(`${incident.author}`).collection('reports').add(incident);
+    const reporter_query = fstore.collection('users').doc(`${incident.author}`).collection('reports').doc(incident.id).set(incident);
 
 
     return (Promise.all([reporter_query, provider_queries]))
