@@ -29,28 +29,28 @@ const styles: stylesInterface = {
 
 const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
     const [viewReport, setviewReport] = useState(false);
-    const user:UserInterface = useSelector(selectUser)
+    const user: UserInterface = useSelector(selectUser)
     const [seen, setseen] = useState(false)
-    console.log(user.email , report.author);
+    console.log(user.email, report.author);
     useEffect(() => {
-        setseen((report.seenBy || []).filter(item=>(item.code==`010001`)).length>0);
-    
+        setseen((report.seenBy || []).filter(item => (item.code == `010001`)).length > 0);
+
     }, [report])
 
     return (
         <div>
-            <IonItem disabled={!report.location && !report.author && report.images.length<=0} onClick={() => setviewReport(true)}>
+            <IonItem disabled={!report.location && !report.author && report.images.length <= 0} onClick={() => setviewReport(true)}>
                 <IonGrid>
                     <IonRow>
                         <IonCol className={`ion-align-self-center`}>
-                            {report.author&& <>
+                            {report.author && <>
                                 {report.photoUrl && <IonAvatar>
                                     <IonImg src={report.photoUrl} />
                                 </IonAvatar>}
                                 {!report.photoUrl && <UserAvatar name={report.author} ></UserAvatar>}</>}
-                                {
-                                   !report.author&&<IonIcon size={`large`} icon={banOutline}/>
-                                }
+                            {
+                                !report.author && <IonIcon size={`large`} icon={banOutline} />
+                            }
                         </IonCol>
                         <IonCol className={`ion-align-self-center ion-text-capitalize`} >
                             <IonRow>
@@ -70,7 +70,7 @@ const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
                         </IonCol>
                         <IonCol className={`ion-align-self-center ion-text-center`}>
                             <IonRow style={{ textAlign: `center` }}>
-                                {(!seen && user.email!==report.author) && <IonCol>
+                                {(!seen && user.email !== report.author) && <IonCol>
                                     <IonBadge color={`success`}><div style={{ width: `4px`, height: `4px` }}></div> </IonBadge>
                                     {/* <IonIcon color={`success`} icon={checkmarkDone}></IonIcon> */}
                                 </IonCol>}
