@@ -126,7 +126,7 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
                             </IonItem>
                         </div>
                         <div className="input">
-                            <IonInput  onClick={(e:any)=>e.target.scrollIntoView({behavior:'smooth'})} autocomplete={`country-name`} autoCorrect={`story, people, man`} autocorrect={`on`} onClick={scrollDown} required name={`title`} placeholder={`Enter title of story`}></IonInput>
+                            <IonInput  onClick={(e:any)=>e.target.scrollIntoView({behavior:'smooth'})} autocomplete={`country-name`} autoCorrect={`story, people, man`} autocorrect={`on`}  required name={`title`} placeholder={`Enter title of story`}></IonInput>
                         </div>
                         <div style={{ whiteSpace: `pre-wrap` }} className="input">
                             <IonTextarea autoGrow rows={2}  onClick={(e:any)=>e.target.scrollIntoView({behavior:'smooth'})} required name={`story`} placeholder={`Enter story`}></IonTextarea>
