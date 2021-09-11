@@ -16,6 +16,7 @@ export interface reportInterface {
     country:string,
     photoUrl:string,
     id:string,
+    username:string
 }
 
 export interface serviceProvider{

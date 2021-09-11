@@ -44,7 +44,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
     const [nearBYServiceProvider, setnearBYServiceProvider] = useState<availableAccount[]>([]);
 
     useEffect(() => {
-
+        console.log(images)
         if (category) {
             GetNearByPlaces()
         }
@@ -59,6 +59,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
         }
     }
     const addPost = function (e: any) {
+        e.preventDefault();
         if (!user.email) {
             history.push(`/login`);
             return;
@@ -74,14 +75,15 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
             photoUrl: user.photoUrl,
             seenBy: [],
             sentTo: [...nearBYServiceProvider],
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            username:user.name
         }
-    
-        return;
+      
+        
         if (user.email) {
             setloading(true)
 
-            ReportIncident(incident).then(() => {
+            ReportIncident(incident, nearBYServiceProvider,countryInfo.name).then(() => {
 
                 Toast.show({ text: `post has been sent` })
                 onDidDismiss()
@@ -95,7 +97,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
         }
     }
     useEffect(() => {
-        setimages([...images, parentImages])
+        setimages([...parentImages])
     }, [parentImages])
 
 
@@ -135,6 +137,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                 {loading && <IonProgressBar color={`danger`} value={0.5} buffer={0.7}></IonProgressBar>}
             </div>
         </IonHeader>
+        <IonLoading message={nearBYServiceProvider.length<=0?`Sending Report... `:`sending Report to ${nearBYServiceProvider.length} ${category} offices`} isOpen={loading} onDidDismiss={()=>{ setloading(false)}} />
         <IonContent ref={contentRef}>
             <IonCardContent mode={`md`}>
                 <IonToolbar className={`ion-padding`} >
@@ -164,26 +167,24 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                                 <IonLabel className={`ion-padding-start`}> Add photos of incident</IonLabel>
                             </IonItem>
                         </div>
-
-                        <div style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea ref={textAreaRef} onClick={() => { textAreaRef.current?.scrollIntoView({ behavior: `smooth` }) }} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
-                        </div>
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>I am in need of </IonLabel>
                                 <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
-
                                     <IonSelectOption value={`defence`}>Police services</IonSelectOption>
                                     <IonSelectOption value={`health`}>Hospital/Health services</IonSelectOption>
                                     <IonSelectOption value={`firefighter`}>Fire Fighter service</IonSelectOption>
-                                   </IonSelect>
+                                </IonSelect>
                             </IonItem >
                         </div>
+                        <div style={{ whiteSpace: `pre-wrap` }} className="input">
+                            <IonTextarea ref={textAreaRef} onClick={() => { textAreaRef.current?.scrollIntoView({ behavior: `smooth` }) }} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
+                        </div>
+
                         <IonToolbar style={{ height: `40px` }}></IonToolbar>
                         <IonToolbar style={{ textAlign: `center` }}>
-                            <IonButton disabled={nearBYServiceProvider.length > 0} type={"submit"}>
+                            <IonButton type={"submit"}>
                                 Post</IonButton>
-                            <IonText>sending to {nearBYServiceProvider.length} service Provider(s)</IonText>
                         </IonToolbar>
                         <IonToolbar style={{ height: `30vh` }} ></IonToolbar>
                     </form>
