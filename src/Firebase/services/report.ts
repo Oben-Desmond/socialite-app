@@ -6,6 +6,8 @@ import { fstore } from "../Firebase";
 
 export function getServicesNearBy(place:string,category:string){
     return (new Promise((resolve, reject)=>{
+        console.log(`business/${place}/${category}`)
+  
         fstore.collection(`business`).doc(place).collection(category).get().then(snapshot=>{
              const docs = snapshot.docs.map(doc=> doc.data());
              resolve(docs)

@@ -39,7 +39,7 @@ const IncidentReport: React.FC = () => {
 
     useEffect(() => {
         if (!servAcc.code) {
-            history.push(`/guide/default`)
+            history.push(`/feed/default`)
         }
     }, [servAcc])
     function goBack() {

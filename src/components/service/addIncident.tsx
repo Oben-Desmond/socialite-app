@@ -173,11 +173,11 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                                 <IonLabel color={`secondary`}>category</IonLabel>
                                 <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
 
-                                    <IonSelectOption value={`Robbery`}>Robbery</IonSelectOption>
-                                    <IonSelectOption value={`accident`}>Accident</IonSelectOption>
-                                    <IonSelectOption value={`Fight`}>Fight</IonSelectOption>
-                                    <IonSelectOption value={`Gunshots`}>Family</IonSelectOption>
-                                    <IonSelectOption value={`Injured Person`}>Injured Person</IonSelectOption>
+                                    <IonSelectOption value={`defence`}>Robbery</IonSelectOption>
+                                    <IonSelectOption value={`defence`}>Accident</IonSelectOption>
+                                    <IonSelectOption value={`defence`}>Fight</IonSelectOption>
+                                    <IonSelectOption value={`health`}>Heart injury</IonSelectOption>
+                                    <IonSelectOption value={`health`}>Injured Person</IonSelectOption>
                                     {/* <IonSelectOption value={`politics`}>Politics</IonSelectOption>
                                     <IonSelectOption value={`religion`}>Religion</IonSelectOption>
                                     <IonSelectOption value={`science`}>Science</IonSelectOption>
