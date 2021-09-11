@@ -2,6 +2,7 @@ import { accountInterface } from "../../components/service/serviceTypes";
 
 
 const initServiceAccount: accountInterface = {
+    name:``,
     code: ``,
     country: ``,
     location: { long: 0, lat: 0 },

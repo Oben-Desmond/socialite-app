@@ -7,6 +7,9 @@ import ReportStatistics from "./report-statistics";
 import ViewReportModal from "./ViewReportModal";
 import TimeAgo from '../timeago';
 import { reportInterface } from "../../interfaces/reportTypes";
+import { UserInterface } from "../../interfaces/users";
+import { selectUser } from "../../states/reducers/userReducers";
+import { useSelector } from "react-redux";
 
 
 
@@ -26,7 +29,9 @@ const styles: stylesInterface = {
 
 const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
     const [viewReport, setviewReport] = useState(false);
+    const user:UserInterface = useSelector(selectUser)
     const [seen, setseen] = useState(false)
+    console.log(user.email , report.author);
     useEffect(() => {
         setseen((report.seenBy || []).filter(item=>(item.code==`010001`)).length>0);
     
@@ -65,7 +70,7 @@ const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
                         </IonCol>
                         <IonCol className={`ion-align-self-center ion-text-center`}>
                             <IonRow style={{ textAlign: `center` }}>
-                                {!seen && <IonCol>
+                                {(!seen && user.email!==report.author) && <IonCol>
                                     <IonBadge color={`success`}><div style={{ width: `4px`, height: `4px` }}></div> </IonBadge>
                                     {/* <IonIcon color={`success`} icon={checkmarkDone}></IonIcon> */}
                                 </IonCol>}
