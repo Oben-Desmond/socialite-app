@@ -1,22 +1,37 @@
 import { Toast } from '@capacitor/toast'
 import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg } from '@ionic/react'
 import { peopleOutline, close, checkmark, trash, trashOutline, share, shareSocial } from 'ionicons/icons'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { fstore } from '../../Firebase/Firebase'
+import { markThisIncidentAsRead } from '../../Firebase/services/report'
 import { countryInfoInterface } from '../../interfaces/country'
 import { reportInterface } from '../../interfaces/reportTypes'
 import { UserInterface } from '../../interfaces/users'
 import { selectCountry } from '../../states/reducers/countryReducer'
+import { selectServiceAccount } from '../../states/reducers/service-reducer'
 import { selectUser } from '../../states/reducers/userReducers'
 import { UserAvatar } from './reportCard'
+import { accountInterface } from './serviceTypes'
 
 const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, report: reportInterface }> = function ({ isOpen, onDidDismiss, report }) {
     const [maploaded, setmaploaded] = useState(true)
     const country: countryInfoInterface = useSelector(selectCountry);
     const user: UserInterface = useSelector(selectUser);
+    const servAcc: accountInterface = useSelector(selectServiceAccount);
+    console.log(servAcc)
 
+    useEffect(() => {
+        if (servAcc && servAcc.code) {
+            if (user.email == report.author) return;
+            if (report.seenBy.filter(serv => serv.code == servAcc.code).length > 0) return;
+            markThisIncidentAsRead(report, servAcc, () => {
+
+            });
+
+        }
+    }, [])
     async function deleteReport() {
         const reportData = {
             author: ``,
@@ -52,7 +67,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                     </div>
                     <IonButtons slot={`end`}>
                         <IonButton onClick={deleteReport}>
-                            <IonIcon  icon={trashOutline} />
+                            <IonIcon icon={trashOutline} />
                         </IonButton>
                         <IonButton >
                             <IonIcon icon={shareSocial} />

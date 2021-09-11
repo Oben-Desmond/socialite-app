@@ -1,6 +1,7 @@
 import { Dialog } from "@capacitor/dialog";
 import { accountInterface, availableAccount } from "../../components/service/serviceTypes";
 import { reportInterface } from "../../interfaces/reportTypes";
+import { UserInterface } from "../../interfaces/users";
 import { fstore } from "../Firebase";
 
 
@@ -27,4 +28,16 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
 
 
     return (Promise.all([reporter_query, provider_queries]))
+}
+
+
+export async function markThisIncidentAsRead( report: reportInterface,serviceAccount:accountInterface,callback:()=>void) {
+    const seenByArr:availableAccount[]=[...report.seenBy,{
+        code:serviceAccount.code,
+        emergency__contact:serviceAccount.tel,
+        location:serviceAccount.location,
+        name:serviceAccount.name
+    }];
+    const reporter_query = fstore.collection('users').doc(`${report.author}`).collection('reports').doc(report.id).update({seenBy:seenByArr});
+
 }
