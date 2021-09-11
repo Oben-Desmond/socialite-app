@@ -1,3 +1,4 @@
+import { availableAccount } from "../components/service/serviceTypes";
 
 export interface reportInterface {
     
@@ -10,8 +11,8 @@ export interface reportInterface {
         long:number,
         lat:number
     }|undefined,
-    sentTo:string[],
-    seenBy:string[],
+    sentTo:availableAccount[],
+    seenBy:availableAccount[],
     country:string,
     photoUrl:string,
     id:string,

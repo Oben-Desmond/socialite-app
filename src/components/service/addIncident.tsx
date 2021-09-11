@@ -1,5 +1,5 @@
 import { Camera, CameraResultType } from "@capacitor/camera";
-import { IonModal, IonHeader, IonContent, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonThumbnail, IonImg, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonSelect, IonSelectOption, IonButton, IonBackdrop, IonLoading, IonProgressBar } from "@ionic/react";
+import { IonModal, IonHeader, IonContent, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonThumbnail, IonImg, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonSelect, IonSelectOption, IonButton, IonBackdrop, IonLoading, IonProgressBar, IonText } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
 import React, { useEffect, useRef, useState } from "react";
 import { PostInterface } from "../../interfaces/posts";
@@ -14,11 +14,13 @@ import { StoreStateInteface } from "../../interfaces/redux";
 import { countryInfoInterface } from "../../interfaces/country";
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from "../PhotoOptionsModal";
 import { Dialog } from "@capacitor/dialog";
-import { reportInterface } from "../../interfaces/reportTypes";
+import { reportInterface, serviceProvider } from "../../interfaces/reportTypes";
 import * as  uuid from "uuid";
 import { selectLocation } from "../../states/reducers/location-reducer";
 import { useHistory } from "react-router";
-import { ReportIncident } from "../../Firebase/services/report";
+import { getServicesNearBy, ReportIncident } from "../../Firebase/services/report";
+import { availableAccount } from "./serviceTypes";
+import { selectServiceAccount } from "../../states/reducers/service-reducer";
 
 
 
@@ -38,8 +40,24 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
     const [showImg, setshowImg] = useState<number | undefined>()
     const textAreaRef = useRef<HTMLIonTextareaElement>(null)
     const inputRef = useRef<HTMLIonInputElement>(null)
-    const history = useHistory()
+    const history = useHistory();
+    const [nearBYServiceProvider, setnearBYServiceProvider] = useState<availableAccount[]>([]);
 
+    useEffect(() => {
+
+        if (category) {
+            GetNearByPlaces()
+        }
+    }, [category])
+
+    async function GetNearByPlaces() {
+        try {
+            const serAcc: any = await getServicesNearBy(countryInfo.name, category);
+            setnearBYServiceProvider([...serAcc]);
+        } catch (err) {
+            Dialog.alert({ message: err.message || err || 'Unexpected error occured', title: 'Error getting nearby police stations' })
+        }
+    }
     const addPost = function (e: any) {
         if (!user.email) {
             history.push(`/login`);
@@ -55,10 +73,11 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
             location,
             photoUrl: user.photoUrl,
             seenBy: [],
-            sentTo: [],
+            sentTo: [...nearBYServiceProvider],
             timestamp: Date.now()
         }
-
+    
+        return;
         if (user.email) {
             setloading(true)
 
@@ -68,7 +87,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                 onDidDismiss()
             }).finally(() => {
                 e.target.title.value = ``
-                e.target.story.value = ``
+                e.target.story.value = ``;
                 setimages([])
                 setloading(false)
 
@@ -152,7 +171,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
-                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category||`sports`} name={`category`} >
+                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
 
                                     <IonSelectOption value={`Robbery`}>Robbery</IonSelectOption>
                                     <IonSelectOption value={`accident`}>Accident</IonSelectOption>
@@ -169,8 +188,9 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         </div>
                         <IonToolbar style={{ height: `40px` }}></IonToolbar>
                         <IonToolbar style={{ textAlign: `center` }}>
-                            <IonButton type={"submit"}>
+                            <IonButton disabled={nearBYServiceProvider.length > 0} type={"submit"}>
                                 Post</IonButton>
+                            <IonText>sending to {nearBYServiceProvider.length} service Provider(s)</IonText>
                         </IonToolbar>
                         <IonToolbar style={{ height: `30vh` }} ></IonToolbar>
                     </form>
