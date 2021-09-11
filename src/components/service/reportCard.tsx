@@ -28,7 +28,8 @@ const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
     const [viewReport, setviewReport] = useState(false);
     const [seen, setseen] = useState(false)
     useEffect(() => {
-        setseen((report.seenBy || []).indexOf(`010001`) >= 0)
+        setseen((report.seenBy || []).filter(item=>(item.code==`010001`)).length>0);
+    
     }, [report])
 
     return (

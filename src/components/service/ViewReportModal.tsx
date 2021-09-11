@@ -109,7 +109,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                                         <IonItem key={index}>
                                             <IonIcon icon={peopleOutline} slot={`start`} />
                                             <IonLabel>
-                                                {sento}
+                                                {sento.name}
                                             </IonLabel>
                                         </IonItem>
                                     )
@@ -125,7 +125,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                                         <IonItem key={index}>
                                             <IonIcon icon={peopleOutline} slot={`start`} />
                                             <IonLabel>
-                                                {seenby}
+                                                {seenby.name}
                                             </IonLabel>
                                             <IonButton fill={`clear`} color={`success`}>
                                                 <IonIcon icon={checkmark} />
