@@ -170,20 +170,13 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         </div>
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
-                                <IonLabel color={`secondary`}>category</IonLabel>
+                                <IonLabel color={`secondary`}>I am in need of </IonLabel>
                                 <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
 
-                                    <IonSelectOption value={`defence`}>Robbery</IonSelectOption>
-                                    <IonSelectOption value={`defence`}>Accident</IonSelectOption>
-                                    <IonSelectOption value={`defence`}>Fight</IonSelectOption>
-                                    <IonSelectOption value={`health`}>Heart injury</IonSelectOption>
-                                    <IonSelectOption value={`health`}>Injured Person</IonSelectOption>
-                                    {/* <IonSelectOption value={`politics`}>Politics</IonSelectOption>
-                                    <IonSelectOption value={`religion`}>Religion</IonSelectOption>
-                                    <IonSelectOption value={`science`}>Science</IonSelectOption>
-                                    <IonSelectOption value={`sports`}>Sports</IonSelectOption>
-                                    <IonSelectOption value={`technology`}>Technology</IonSelectOption> */}
-                                </IonSelect>
+                                    <IonSelectOption value={`defence`}>Police services</IonSelectOption>
+                                    <IonSelectOption value={`health`}>Hospital/Health services</IonSelectOption>
+                                    <IonSelectOption value={`firefighter`}>Fire Fighter service</IonSelectOption>
+                                   </IonSelect>
                             </IonItem >
                         </div>
                         <IonToolbar style={{ height: `40px` }}></IonToolbar>
