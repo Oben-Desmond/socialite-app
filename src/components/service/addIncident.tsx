@@ -173,6 +173,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                                 <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
                                     <IonSelectOption value={`defence`}>Police services</IonSelectOption>
                                     <IonSelectOption value={`health`}>Hospital/Health services</IonSelectOption>
+                                    <IonSelectOption value={`municipal`}>Municipal Aid</IonSelectOption>
                                     <IonSelectOption value={`firefighter`}>Fire Fighter service</IonSelectOption>
                                 </IonSelect>
                             </IonItem >
