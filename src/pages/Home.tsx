@@ -21,7 +21,8 @@ import { Toast } from '@capacitor/toast';
 import { Dialog } from '@capacitor/dialog';
 import { useParams } from 'react-router';
 import { fetchPostById } from '../Firebase/pages/top pages';
-import { LocalNotifications } from '@capacitor/local-notifications';
+import { ActionPerformed, LocalNotifications } from '@capacitor/local-notifications';
+import { PushNotifications, PushNotificationSchema, Token } from '@capacitor/push-notifications';
 
 
 
@@ -124,6 +125,47 @@ const Home: React.FC = function () {
         })
     }
 
+    function PushNotif(){
+         
+            PushNotifications.requestPermissions().then(result => {
+              if (result.receive === 'granted') {
+                // Register with Apple / Google to receive push via APNS/FCM
+                PushNotifications.register();
+              } else {
+                // Show some error
+              }
+            });
+          
+            // On success, we should be able to receive notifications
+            PushNotifications.addListener('registration',
+              (token: Token) => {
+                alert('Push registration success, token: ' + token.value);
+              }
+            );
+          
+            // Some issue with our setup and push will not work
+            PushNotifications.addListener('registrationError',
+              (error: any) => {
+                alert('Error on registration: ' + JSON.stringify(error));
+              }
+            );
+          
+            // Show us the notification payload if the app is open on our device
+            PushNotifications.addListener('pushNotificationReceived',
+              (notification: PushNotificationSchema) => {
+                alert('Push received: ' + JSON.stringify(notification));
+              }
+            );
+          
+            // Method called when tapping on a notification
+            PushNotifications.addListener('pushNotificationActionPerformed',
+              (notification: any) => {
+                alert('Pussssh action performed: ' + JSON.stringify(notification));
+              }
+            );
+          
+    }
+
     return (
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
@@ -132,6 +174,7 @@ const Home: React.FC = function () {
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
                 <IonButton onClick={() => schedule()} >notify</IonButton>
+                <IonButton color={`success`} onClick={() =>PushNotif()} >push notify</IonButton>
                 {
                     stories.length <= 0 && !noData && <SkeletonHome></SkeletonHome>
                 }
