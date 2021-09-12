@@ -14,16 +14,16 @@ export async function scheduleNotif() {
         console.log('notify me_______________--')
         await LocalNotifications.schedule({
             notifications: [{
-                title: 'Triumph30',
-                body: 'my notifcation',
+                title: 'socionet notification',
+                body: 'curently working on the notification feature',
                 id: new Date().getTime(),
                 schedule: {
                     at: (new Date(Date.now() + 5000)), allowWhileIdle: true,
                 }
             },{
-                title: 'notification sent',
-                body: 'my notifcation',
-                id: new Date().getTime(),
+                title: 'socionet',
+                body: 'socionet notification loading...',
+                id: 76545,
                 schedule: {
                     at: (new Date(Date.now() + 5000)), allowWhileIdle: true,
                 }
