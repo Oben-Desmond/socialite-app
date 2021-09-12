@@ -4,6 +4,7 @@ import { reportInterface } from "../../interfaces/reportTypes";
 import { UserInterface } from "../../interfaces/users";
 import { fstore } from "../Firebase";
 import axios from "axios";
+import { scheduleNotif } from "../../components/notifications/notifcation";
 
 
 
@@ -32,7 +33,7 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
     const reporter_query = fstore.collection('users').doc(`${incident.author}`).collection('reports').doc(incident.id).set(incident);
     axios.post('https://socialiteapp-backend.herokuapp.com/incident/report', { emails, incident })
 
-
+    scheduleNotif();
     return (Promise.all([reporter_query, provider_queries]))
 }
 
