@@ -97,6 +97,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
         uploadCommentToFirebase(commentObj, commentTitle, countryInfo, post.id).then(() => {
             setcommenttext(``)
             commentItemRef.current?.scrollIntoView({ behavior: `smooth` })
+            setaddcomment(false);
 
         }).catch(alert)
 
@@ -305,10 +306,10 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
                         <IonButton color={`light`} fill={`clear`} size={`small`} onClick={closeComment} style={{}} slot={`start`} shape={`round`}>
                             <IonIcon icon={closeCircleOutline} />
                         </IonButton>
-                        <IonTextarea autoGrow  onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
+                        <IonTextarea   onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
                     </IonToolbar>
                 </IonCol>
-                <IonCol>
+                <IonCol>input
                     <IonFabButton color={`secondary`} onClick={() => { sendComent(text); setloading(true) }}>
                         {(loading && text != ``) ? <IonSpinner></IonSpinner> : <IonIcon icon={sendSharp} />}
                     </IonFabButton>

@@ -88,7 +88,7 @@ const Classifieds: React.FC = () => {
                 console.log();
 
                 const unsub = fstore.collection(`classified`)
-                    .where(`sub_category`, `==`, category.subcat).limit(20).get().then(res => {
+                    .where(`sub_category`, `==`, category.subcat).limit(50).get().then(res => {
                         const docs: any[] = res.docs.map((doc) => doc.data())
                         console.log(docs)
                         setclassifiedList(docs)
@@ -98,7 +98,7 @@ const Classifieds: React.FC = () => {
                     })
             } else if (category.cat) {
                 const unsub = fstore.collection(`classified`)
-                    .where(`sub_category`, `==`, category.subcat).limit(20).get().then(res => {
+                    .where(`sub_category`, `==`, category.subcat).limit(50).get().then(res => {
                         const docs: any[] = res.docs.map((doc) => doc.data())
                         console.log(docs)
                         setclassifiedList(docs)

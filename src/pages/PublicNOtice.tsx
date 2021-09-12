@@ -14,7 +14,9 @@ import { GetHoursAgo, StoryModal } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
 import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
+import { UserInterface } from '../interfaces/users';
 import { selectCountry } from '../states/reducers/countryReducer';
+import { selectUser } from '../states/reducers/userReducers';
 import { Pictures } from './images/images';
 
 
@@ -26,7 +28,7 @@ const PublicNotice: React.FC = function () {
     const [noData, setnoData] = useState(false)
     const params: { postid: string } = useParams()
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
-
+    const user:UserInterface=useSelector(selectUser);
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
@@ -94,11 +96,11 @@ const PublicNotice: React.FC = function () {
                 </IonGrid>
 
             </IonContent>
-            <IonFab vertical={`bottom`} horizontal={`end`} >
+            {user.domainCode&&<IonFab vertical={`bottom`} horizontal={`end`} >
                 <IonFabButton onClick={() => setaddNotice(true)} color={`secondary`}>
                     <IonIcon icon={add} />
                 </IonFabButton>
-            </IonFab>
+            </IonFab>}
             <AddNoticeModal isOpen={addNotice} onDidDismiss={() => setaddNotice(false)}></AddNoticeModal>
         </IonPage>
     );

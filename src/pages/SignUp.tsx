@@ -127,7 +127,7 @@ const SignUp: React.FC = () => {
                                     <IonIcon icon={lockClosedOutline}></IonIcon>
                                     <IonInput name={`pass`} required placeholder={`enter password`} type={`password`}></IonInput>
                                 </IonItem>
-                                <IonToolbar key={`4`} className={`ion-padding-top`}>
+                                {/* <IonToolbar key={`4`} className={`ion-padding-top`}>
                                     <IonLabel>Type of Account</IonLabel>
                                     <IonRadioGroup value={acctype} onIonChange={(e) => modifyAccountType(e.detail.value)}>
                                         <IonItem>
@@ -139,7 +139,7 @@ const SignUp: React.FC = () => {
                                             <IonLabel>Business</IonLabel>
                                         </IonItem>
                                     </IonRadioGroup>
-                                </IonToolbar>
+                                </IonToolbar> */}
                                 {businessAcc && <div key={`5`} className="ion-padding-start">
                                     <IonItem className={`domain`} lines={`inset`}>
                                         <IonIcon icon={peopleOutline}></IonIcon>

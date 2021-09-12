@@ -179,7 +179,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                             </IonItem >
                         </div>
                         <div style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea autoGrow  rows={3}  ref={textAreaRef} onClick={() => { textAreaRef.current?.scrollIntoView({ behavior: `smooth` }) }} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
+                            <IonTextarea   rows={4}   ref={textAreaRef} onClick={() => { textAreaRef.current?.scrollIntoView({ behavior: `smooth` }) }} required name={`desc`} placeholder={`Describe Incident`}></IonTextarea>
                         </div>
 
                         <IonToolbar style={{ height: `40px` }}></IonToolbar>

@@ -78,7 +78,7 @@ const ReviewInput: React.FC<{ reviewSent: () => void,item:classifiedItemInterfac
                         (sendExperience &&
 
                             <div className="input">
-                                <IonTextarea autoGrow  onIonChange={(e) => setdescText(e.detail.value || ``)} value={descText} placeholder={`please add a description of your experience`}></IonTextarea>
+                                <IonTextarea   rows={4}  onIonChange={(e) => setdescText(e.detail.value || ``)} value={descText} placeholder={`please add a description of your experience`}></IonTextarea>
                             </div>)
                     }
                 </FlipMove>

@@ -53,6 +53,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
     return (
         <IonModal isOpen={isOpen} onDidDismiss={onDidDismiss}>
             <IonHeader>
+                <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
                 <IonToolbar color={`primary`} >
                     <IonButtons slot={`start`}>
                         <IonBackdrop></IonBackdrop>

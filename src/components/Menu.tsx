@@ -43,6 +43,7 @@ import { update_location } from '../states/reducers/location-reducer';
 import { Dialog } from '@capacitor/dialog';
 import { accountInterface } from './service/serviceTypes';
 import { update_account } from '../states/reducers/service-reducer';
+import { scheduleNotif } from './notifications/notifcation';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -122,6 +123,7 @@ const Menu: React.FC = () => {
     })
     initLocation()
     initUser()
+    scheduleNotif()
 
   }, [])
 

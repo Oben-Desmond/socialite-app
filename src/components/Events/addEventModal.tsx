@@ -117,7 +117,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
                             <IonInput required name={`title`} placeholder={`add title of Event`}></IonInput>
                         </div>
                         <div onClick={() => descRef.current?.scrollIntoView({ behavior: `smooth` })} ref={descRef} style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea autoGrow  rows={3}  required name={`story`} placeholder={`add event description`}></IonTextarea>
+                            <IonTextarea   rows={4}   required name={`story`} placeholder={`add event description`}></IonTextarea>
                         </div>
                         {/* <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>

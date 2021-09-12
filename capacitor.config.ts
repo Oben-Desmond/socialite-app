@@ -8,12 +8,13 @@ const config: CapacitorConfig = {
   "plugins": {
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]
-    }
-  },
-  "server": {
-    "url": "http://192.168.43.123:8100",
-    "cleartext": true
-  }
+    },
+    LocalNotifications: {
+      smallIcon: "ic_stat_icon_config_sample",
+      iconColor: "#488AFF",
+      sound: "beep.wav",
+    },
+  } 
  
 };
 

@@ -230,7 +230,7 @@ function getValidIds(text: string) {
 function getLast20ClassifiedsNotIn(keys: string[]) {
 
     return (new Promise((resolve, reject) => {
-        fstore.collection(`classified`).where(`item_id`, `not-in`, [...keys]).orderBy(`item_id`).limitToLast(20).get().then((snapshot) => {
+        fstore.collection(`classified`).where(`item_id`, `not-in`, [...keys]).orderBy(`item_id`).limitToLast(50).get().then((snapshot) => {
             const classifieds = snapshot.docs.map(doc => doc.data())
             resolve(classifieds)
         }).catch(reject)

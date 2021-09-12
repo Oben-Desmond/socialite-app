@@ -329,7 +329,7 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
                         <IonButton color={`light`} fill={`clear`} size={`small`} onClick={closeComment} style={{}} slot={`start`} shape={`round`}>
                             <IonIcon icon={closeCircleOutline} />
                         </IonButton>
-                        <IonTextarea   autoGrow onIonBlur={props.onBlur} autofocus={true} ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
+                        <IonTextarea    onIonBlur={props.onBlur} autofocus={true} ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
                     </IonToolbar>
                 </IonCol>
                 <IonCol>

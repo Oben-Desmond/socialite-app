@@ -31,7 +31,7 @@ const SearchModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, searchF
     function searchWord(text: string) {
         setloading(true)
         return (new Promise((resolve, reject) => {
-            fstore.collection(`classified`).orderBy(`timestamp`).limitToLast(2).where(`item_keywords`, `array-contains-any`, text).get().then((res) => {
+            fstore.collection(`classified`).orderBy(`timestamp`).limitToLast(4).where(`item_keywords`, `array-contains-any`, text).get().then((res) => {
                 const docs = res.docs.map(doc => doc.data())
                 resolve(docs)
             }).catch(reject).finally(() => {
