@@ -21,6 +21,7 @@ import { Toast } from '@capacitor/toast';
 import { Dialog } from '@capacitor/dialog';
 import { useParams } from 'react-router';
 import { fetchPostById } from '../Firebase/pages/top pages';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 
 
@@ -42,10 +43,10 @@ const Home: React.FC = function () {
         fetchPostById(postid, countryinfo.name, (post: PostInterface) => {
             setstories([])
             setstories([post])
-            if([post].length<=0){
+            if ([post].length <= 0) {
                 setnoData(true)
             }
-        }, ()=>{
+        }, () => {
             setnoData(true)
         })
     }
@@ -86,7 +87,43 @@ const Home: React.FC = function () {
             setstories([...data])
         })
     }
-  
+    async function schedule() {
+
+      
+
+        await LocalNotifications.checkPermissions()
+        .then(res=>console.log(res,'then------------'))
+        .catch(res=>console.log(res,'catch------------'))
+
+        LocalNotifications.schedule({
+            notifications: [{
+                title: "Title",
+                body: "Body",
+                id: 1,
+                schedule: { at: new Date(Date.now() + 1000 * 5) },
+                sound: undefined,
+                attachments: undefined,
+                actionTypeId: "",
+                extra:{
+                    data:'welcome home'
+                }
+
+            }
+            ]
+        }).then(res => {
+            console.log(res);
+
+        }).catch(err => {
+            console.log(err)
+        })
+        LocalNotifications.addListener('localNotificationActionPerformed',()=>{
+            console.log('performed')
+        })
+        LocalNotifications.addListener('localNotificationReceived',()=>{
+            console.log('recieved')
+        })
+    }
+
     return (
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
@@ -94,6 +131,7 @@ const Home: React.FC = function () {
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getFeed(() => refresherRef.current?.complete())} slot={`fixed`}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
+                <IonButton onClick={() => schedule()} >notify</IonButton>
                 {
                     stories.length <= 0 && !noData && <SkeletonHome></SkeletonHome>
                 }
