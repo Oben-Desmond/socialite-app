@@ -28,3 +28,27 @@ For CI servers and headless environments, generate a new token with firebase log
     at async /usr/local/lib/node_modules/firebase-tools/lib/command.js:161:17
 [error] 
 [error] Error: Failed to get Firebase project socialiteapp-66eb5. Please make sure the project exists and your account has permission to access it.
+[debug] [2021-09-12T14:09:20.499Z] ----------------------------------------------------------------------
+[debug] [2021-09-12T14:09:20.503Z] Command:       /home/desmond/.nvm/versions/node/v16.4.1/bin/node /usr/local/bin/firebase deploy
+[debug] [2021-09-12T14:09:20.504Z] CLI Version:   9.6.1
+[debug] [2021-09-12T14:09:20.504Z] Platform:      linux
+[debug] [2021-09-12T14:09:20.505Z] Node Version:  v16.4.1
+[debug] [2021-09-12T14:09:20.555Z] Time:          Sun Sep 12 2021 15:09:20 GMT+0100 (West Africa Standard Time)
+[debug] [2021-09-12T14:09:20.555Z] ----------------------------------------------------------------------
+[debug] [2021-09-12T14:09:20.555Z] 
+[debug] [2021-09-12T14:09:20.576Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2021-09-12T14:09:20.655Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-09-12T14:09:20.656Z] > authorizing via signed-in user
+[debug] [2021-09-12T14:09:20.657Z] [iam] checking project socialiteapp-66eb5 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-09-12T14:09:20.659Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-09-12T14:09:20.660Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-09-12T14:09:27.011Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2021-09-12T14:09:27.012Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2021-09-12T14:09:27.108Z] <<< HTTP RESPONSE 200 {"cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sun, 12 Sep 2021 14:09:27 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-09-12T14:09:27.146Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/socialiteapp-66eb5:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-09-12T14:09:29.111Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 12 Sep 2021 14:09:29 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=599","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-09-12T14:09:29.114Z] > refreshing access token with scopes: []
+[debug] [2021-09-12T14:09:29.115Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>

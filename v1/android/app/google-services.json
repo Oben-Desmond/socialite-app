@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "558156043941",
+    "firebase_url": "https://socialiteapp-66eb5-default-rtdb.firebaseio.com",
+    "project_id": "socialiteapp-66eb5",
+    "storage_bucket": "socialiteapp-66eb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558156043941:android:ef9911ad69c0e784a91f4c",
+        "android_client_info": {
+          "package_name": "com.socionet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558156043941-7p9mb7tp04f1ham3ic2ivp6pq5ssn94g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.socionet",
+            "certificate_hash": "cedd43ef0c5002a73098a0cc9272130fcd7db405"
+          }
+        },
+        {
+          "client_id": "558156043941-1v3h2r75k5pdj8p0rh8ciudgdotjgc2s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlVxYRAlAkU-SiTzn0yDpIsmdyT7hnOFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558156043941-1v3h2r75k5pdj8p0rh8ciudgdotjgc2s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

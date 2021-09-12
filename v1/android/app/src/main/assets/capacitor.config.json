@@ -1,0 +1,16 @@
+{
+	"appId": "com.socionet",
+	"appName": "socionet",
+	"webDir": "build",
+	"bundledWebRuntime": false,
+	"plugins": {
+		"PushNotifications": {
+			"presentationOptions": [
+				"badge",
+				"sound",
+				"alert"
+			]
+		} 
+		 
+	}
+}
