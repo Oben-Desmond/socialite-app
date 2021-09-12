@@ -90,11 +90,11 @@ const Home: React.FC = function () {
     }
     async function schedule() {
 
-      
+
 
         await LocalNotifications.checkPermissions()
-        .then(res=>console.log(res,'then------------'))
-        .catch(res=>console.log(res,'catch------------'))
+            .then(res => console.log(res, 'then------------'))
+            .catch(res => console.log(res, 'catch------------'))
 
         LocalNotifications.schedule({
             notifications: [{
@@ -105,8 +105,8 @@ const Home: React.FC = function () {
                 sound: undefined,
                 attachments: undefined,
                 actionTypeId: "",
-                extra:{
-                    data:'welcome home'
+                extra: {
+                    data: 'welcome home'
                 }
 
             }
@@ -117,54 +117,57 @@ const Home: React.FC = function () {
         }).catch(err => {
             console.log(err)
         })
-        LocalNotifications.addListener('localNotificationActionPerformed',()=>{
+        LocalNotifications.addListener('localNotificationActionPerformed', () => {
             console.log('performed')
         })
-        LocalNotifications.addListener('localNotificationReceived',()=>{
+        LocalNotifications.addListener('localNotificationReceived', () => {
             console.log('recieved')
         })
     }
 
-    function PushNotif(){
-         
-            PushNotifications.requestPermissions().then(result => {
-              if (result.receive === 'granted') {
+    function PushNotif() {
+
+        PushNotifications.requestPermissions().then(result => {
+            if (result.receive === 'granted') {
                 // Register with Apple / Google to receive push via APNS/FCM
                 PushNotifications.register();
-              } else {
+            } else {
                 // Show some error
-              }
-            });
-          
-            // On success, we should be able to receive notifications
-            PushNotifications.addListener('registration',
-              (token: Token) => {
+            }
+        });
+
+        // On success, we should be able to receive notifications
+        PushNotifications.addListener('registration',
+            (token: Token) => {
                 alert('Push registration success, token: ' + token.value);
-              }
-            );
-          
-            // Some issue with our setup and push will not work
-            PushNotifications.addListener('registrationError',
-              (error: any) => {
+            }
+        );
+
+        // Some issue with our setup and push will not work
+        PushNotifications.addListener('registrationError',
+            (error: any) => {
                 alert('Error on registration: ' + JSON.stringify(error));
-              }
-            );
-          
-            // Show us the notification payload if the app is open on our device
-            PushNotifications.addListener('pushNotificationReceived',
-              (notification: PushNotificationSchema) => {
+            }
+        );
+
+        // Show us the notification payload if the app is open on our device
+        PushNotifications.addListener('pushNotificationReceived',
+            (notification: PushNotificationSchema) => {
                 alert('Push received: ' + JSON.stringify(notification));
-              }
-            );
-          
-            // Method called when tapping on a notification
-            PushNotifications.addListener('pushNotificationActionPerformed',
-              (notification: any) => {
+            }
+        );
+
+        // Method called when tapping on a notification
+        PushNotifications.addListener('pushNotificationActionPerformed',
+            (notification: any) => {
                 alert('Pussssh action performed: ' + JSON.stringify(notification));
-              }
-            );
-          
+            }
+        );
+
     }
+    useEffect(() => {
+        PushNotif();
+    }, [])
 
     return (
         <IonPage className={`home`}>
@@ -173,8 +176,8 @@ const Home: React.FC = function () {
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getFeed(() => refresherRef.current?.complete())} slot={`fixed`}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
-                <IonButton onClick={() => schedule()} >notify</IonButton>
-                <IonButton color={`success`} onClick={() =>PushNotif()} >push notify</IonButton>
+                {/* <IonButton onClick={() => schedule()} >notify</IonButton>
+                <IonButton color={`success`} onClick={() =>PushNotif()} >push notify</IonButton> */}
                 {
                     stories.length <= 0 && !noData && <SkeletonHome></SkeletonHome>
                 }

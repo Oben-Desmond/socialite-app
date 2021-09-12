@@ -40,8 +40,20 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
             <p className={`description`}>
                 {post.description.substr(0, 180)}...
             </p>
-            <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo>  |</IonLabel> {post.location}</IonLabel>
-            <hr />
+            <IonItem>
+                <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
+                <IonButtons slot={`end`}>
+                    <IonButton color={`secondary`}>
+                        <IonIcon icon={thumbsUpOutline}></IonIcon>
+                        <IonLabel>4</IonLabel>
+                    </IonButton>
+                    <IonButton color={`secondary`}>
+                        <IonIcon icon={thumbsDownOutline}></IonIcon>
+                        <IonLabel>2</IonLabel>
+                    </IonButton>
+                </IonButtons>
+            </IonItem>
+            {/* <hr /> */}
             <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
         </div>
     );
@@ -71,7 +83,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     const countryInfo: countryInfoInterface = useSelector(selectCountry)
     const commentTitle = title.replace(` `, ``).trim()
     const [moveInputUp, setmoveInputUp] = useState(false)
-    const commentItemRef=useRef<HTMLDivElement>(null)
+    const commentItemRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const unsub = fstore.collection(`posts/${countryInfo.name || `South Africa`}/${commentTitle}-reactions`).doc(`${post.id}`).collection(`comments`).orderBy(`timestamp`, `asc`).onSnapshot((res) => {
@@ -131,8 +143,8 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         const commentTitle = title.replace(` `, ``).trim()
         uploadCommentToFirebase(commentObj, commentTitle, countryInfo, post.id).then(() => {
             setcommenttext(``)
-            commentItemRef.current?.scrollIntoView({behavior:`smooth`})
-             
+            commentItemRef.current?.scrollIntoView({ behavior: `smooth` })
+
         }).catch(alert)
 
     }
@@ -140,21 +152,21 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         setviewProfile(true)
 
         if (email == post.email) {
-            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``), domainCode:undefined })
+            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``), domainCode: undefined })
         }
     }
     function handleKeyBoard() {
-        try{
+        try {
             Keyboard.addListener(`keyboardDidHide`, () => {
                 setmoveInputUp(false)
             }).catch(console.log)
-          }catch(err){
-              console.log(err)
-          }
+        } catch (err) {
+            console.log(err)
+        }
     }
 
-    const sharePost=()=>{
-        Share.share({dialogTitle:`share post with friends`,url:`https://socionet.co.za/feed/${post.id}`})
+    const sharePost = () => {
+        Share.share({ dialogTitle: `share post with friends`, url: `https://socionet.co.za/feed/${post.id}` })
     }
 
     return (
@@ -258,7 +270,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                             })
                             }
                         </FlipMove>
-                       <div ref={commentItemRef}></div>
+                        <div ref={commentItemRef}></div>
 
                     </IonGrid>
                 </IonToolbar>
@@ -268,7 +280,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
 
             </IonContent>
             {/* <FlipMove appearAnimation={'elevator'}> */}
-            {user?.email == post.email && !addcomment && <EditLocalFeedFab comments={comments} post={post} onEdit={() => { }} onDelete={() => { onDidDismiss();}}></EditLocalFeedFab>}
+            {user?.email == post.email && !addcomment && <EditLocalFeedFab comments={comments} post={post} onEdit={() => { }} onDelete={() => { onDidDismiss(); }}></EditLocalFeedFab>}
             {/* </FlipMove> */}
             <FlipMove >
                 {!addcomment && user?.email && <IonFab onClick={() => setaddcomment(true)} vertical={`bottom`} horizontal={`end`}>
@@ -329,7 +341,7 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
                         <IonButton color={`light`} fill={`clear`} size={`small`} onClick={closeComment} style={{}} slot={`start`} shape={`round`}>
                             <IonIcon icon={closeCircleOutline} />
                         </IonButton>
-                        <IonTextarea    onIonBlur={props.onBlur} autofocus={true} ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
+                        <IonTextarea onIonBlur={props.onBlur} autofocus={true} ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
                     </IonToolbar>
                 </IonCol>
                 <IonCol>
