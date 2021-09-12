@@ -23,6 +23,7 @@ import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../compo
 import AddIncident from '../components/service/addIncident';
 import { selectServiceAccount } from '../states/reducers/service-reducer';
 import { accountInterface } from '../components/service/serviceTypes';
+import ReportersCard from '../components/service/ReportersCard';
 
 
 const ReportAnIncident: React.FC = () => {
@@ -127,7 +128,7 @@ const ReportAnIncident: React.FC = () => {
                                             <IonItemDivider>
                                                 <IonLabel>yesterday</IonLabel>
                                             </IonItemDivider>
-                                            <ReportCard report={report}></ReportCard>
+                                            <ReportersCard report={report}></ReportersCard>
                                         </>
                                     )
                                 }
@@ -137,7 +138,7 @@ const ReportAnIncident: React.FC = () => {
                                             <IonItemDivider>
                                                 <IonLabel>Earlier</IonLabel>
                                             </IonItemDivider>
-                                            <ReportCard report={report}></ReportCard>
+                                            <ReportersCard report={report}></ReportersCard>
                                         </>
                                     )
                                 }
@@ -149,11 +150,11 @@ const ReportAnIncident: React.FC = () => {
                                             Today
                                     </IonLabel>
                                     </IonItemDivider>
-                                    <ReportCard report={report}></ReportCard>
+                                    <ReportersCard report={report}></ReportersCard>
                                 </>)
                             }
                             return (
-                                <ReportCard report={report}></ReportCard>
+                                <ReportersCard report={report}></ReportersCard>
                             )
                         })
                     }
