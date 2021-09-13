@@ -100,7 +100,7 @@ const SignUp: React.FC = () => {
                 <form onSubmit={signIn} action="">
                     <IonList className={`login-list`}>
                         <IonToolbar>
-                            <IonTitle>Sign up | <span style={{color:`var(--ion-color-secondary)`}}>Socialite</span></IonTitle>
+                            <IonTitle color='secondary' >Sign up | <span style={{color:`var(--ion-color-primary)`}}>Socialite</span></IonTitle>
                         </IonToolbar>
 
                         <IonCard>
