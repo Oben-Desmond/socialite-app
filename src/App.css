@@ -1,11 +1,26 @@
- 
 .view-img {
   --background: rgba(0, 0, 0, 0.886);
 }
 
-ion-tab-bar ion-tab-button{
-    --color-selected: var(--ion-color-secondary);
-    /* --color-focused:red;
+ion-tab-bar ion-tab-button {
+  --color-selected: var(--ion-color-secondary);
+  /* --color-focused:red;
     --color:red;
     --background-focused:blue; */
+}
+
+@font-face {
+  font-family: "Comfortaa";
+  src: local("Comfortaa"),
+    url(./fonts/Comfortaa-VariableFont_wght.ttf) format("truetype");
+}
+
+.text-align-center {
+  text-align: center;
+}
+.comfortaa{
+  font-family:  'Comfortaa';
+}
+.grey{
+  color: rgb(77, 77, 77);
 }
