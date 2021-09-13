@@ -29,6 +29,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
     const [readmore, setreadmore] = useState<boolean>(false);
     const [loaded, setloaded] = useState<boolean>(false)
+    const user: UserInterface = useSelector(selectUser);
     return (
         <div className={`stories-card comfortaa`}>
             <IonList>
@@ -36,8 +37,8 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                 <div onClick={() => setreadmore(true)} className="hero-img">
                     <img src={post.images[0]} />
                 </div>
-                <IonFab vertical='bottom' horizontal='start' style={{ height: '20%', width: '140%', transform: 'translate(-20px,0)' }} >
-                    <div style={{ width: '100%', height: '100%', backgroundImage: 'linear-gradient(to bottom right, #0000003b, #00000035, #000000a1, #0000007c, #000000)' }}>
+                <IonFab vertical='bottom' horizontal='start' style={{ height: '20%', width: '140%', transform: 'translate(-20px,0)',background:'#000',opacity:0.7  }} >
+                    <div style={{ width: '100%', height: '100%', }} >
 
                     </div>
                 </IonFab>
@@ -49,14 +50,11 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                 <IonFab style={{ width: '120%' }} horizontal='start' vertical='bottom'>
 
                     <IonItem color='none' lines='none' >
-                        {post.author_url && <IonAvatar>
-                            <IonImg src={post.author_url} />
-                        </IonAvatar>}
+                        {(post.author_url || (user.photoUrl && user.email == post.email)) ? <IonAvatar>
+                            <IonImg src={post.author_url || user.photoUrl} />
+                        </IonAvatar> : <LetteredAvatar name={post.author_name} size={40} ></LetteredAvatar>}
 
-
-                        {!post.author_url && <LetteredAvatar name={post.author_name} size={40} ></LetteredAvatar>}
-
-                        <div style={{ margin: '0 30px 0 15px' }}  >
+                        <div style={{ margin: '0 25px 0 15px' }}  >
                             <IonLabel className='comfortaa' color='light'>
                                 {post.author_name}
                             </IonLabel>
