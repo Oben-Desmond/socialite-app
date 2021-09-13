@@ -29,14 +29,14 @@ const  PhotoOptionsModal:React.FC<{onDidDismiss:()=>void, isOpen:boolean, fromCa
 
 export async function photosFromCamera(){
     return (new Promise((resolve, reject)=>{
-       Camera.getPhoto({ resultType: CameraResultType.DataUrl,source:CameraSource.Camera , quality:70}).then(res=>{
+       Camera.getPhoto({ resultType: CameraResultType.DataUrl,source:CameraSource.Camera , quality:60}).then(res=>{
            resolve(res.dataUrl+``)
        }).catch(reject)
     }))
 }
 export async function photosFromGallery(){
      return (new Promise((resolve, reject)=>{
-        Camera.getPhoto({ resultType: CameraResultType.DataUrl,source:CameraSource.Photos, quality:70 }).then(res=>{
+        Camera.getPhoto({ resultType: CameraResultType.DataUrl,source:CameraSource.Photos, quality:60 }).then(res=>{
             resolve(res.dataUrl)
         }).catch(reject)
      }))

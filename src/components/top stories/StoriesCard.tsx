@@ -1,6 +1,6 @@
 // @flow strict
 
-import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCard, IonCol, IonContent, IonFab, IonFabButton, IonFabList, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonSpinner, IonTextarea, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCard, IonCol, IonContent, IonFab, IonFabButton, IonFabList, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonSpinner, IonTextarea, IonToolbar } from '@ionic/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { Pictures } from '../../pages/images/images';
 import "../styles/Cards.css";
@@ -22,38 +22,71 @@ import { countryInfoInterface } from '../../interfaces/country';
 import { Keyboard } from '@capacitor/keyboard';
 import EditLocalFeedFab from './EditLocalFeedTab';
 import { Share } from '@capacitor/share';
+import { selectUser } from '../../states/reducers/userReducers';
 
 
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
     const [readmore, setreadmore] = useState<boolean>(false);
     const [loaded, setloaded] = useState<boolean>(false)
-
     return (
-        <div onClick={() => setreadmore(true)} className={`stories-card`}>
-            <div className="hero-img">
-                <img src={post.images[0]} />
-            </div>
+        <div className={`stories-card`}>
+            <IonList>
+
+                <div onClick={() => setreadmore(true)} className="hero-img">
+                    <img src={post.images[0]} />
+                </div>
+                <IonFab vertical='bottom' horizontal='start' style={{ height: '20%', width: '140%', transform: 'translate(-20px,0)' }} >
+                    <div style={{ width: '100%', height: '100%', backgroundImage: 'linear-gradient(to bottom right, #0000003b, #00000035, #000000a1, #0000007c, #000000)' }}>
+
+                    </div>
+                </IonFab>
+                {/* <IonFab vertical='bottom' horizontal='end' style={{ height: '20%', width: '50%', transform: 'translate(20px,0)' }} >
+                    <div style={{ width: '100%', height: '100%', backgroundImage: 'linear-gradient(to bottom right, #0000003f, #00000035, #000000a1, #0000007c, #000000)' }}></div>
+                </IonFab> */}
+
+
+                <IonFab style={{ width: '120%' }} horizontal='start' vertical='bottom'>
+
+                    <IonItem color='none' lines='none' >
+                        {post.author_url && <IonAvatar>
+                            <IonImg src={post.author_url} />
+                        </IonAvatar>}
+
+
+                        {!post.author_url && <LetteredAvatar name={post.author_name} size={40} ></LetteredAvatar>}
+
+                        <div style={{ margin: '0 20px' }}  >
+                            <IonLabel color='light'>
+                                {post.author_name}
+                            </IonLabel>
+                        </div>
+
+                        <IonButtons  >
+                            <IonButton color={`light`}>
+                                <IonIcon icon={thumbsUpOutline}></IonIcon>
+                                <IonLabel>4</IonLabel>
+                            </IonButton>
+                            <IonButton color={`light`}>
+                                <IonIcon icon={thumbsDownOutline}></IonIcon>
+                                <IonLabel>2</IonLabel>
+                            </IonButton>
+                        </IonButtons>
+
+                    </IonItem>
+                </IonFab>
+            </IonList>
             <IonLabel className={`news-caption`}>
                 {post.title}
             </IonLabel>
-            <p className={`description`}>
+            <p  className={`description`}>
                 {post.description.substr(0, 180)}...
-            </p>
-            <IonItem>
+           
+            <IonButtons style={{marginTop:'5px'}}> 
                 <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
-                <IonButtons slot={`end`}>
-                    <IonButton color={`secondary`}>
-                        <IonIcon icon={thumbsUpOutline}></IonIcon>
-                        <IonLabel>4</IonLabel>
-                    </IonButton>
-                    <IonButton color={`secondary`}>
-                        <IonIcon icon={thumbsDownOutline}></IonIcon>
-                        <IonLabel>2</IonLabel>
-                    </IonButton>
-                </IonButtons>
-            </IonItem>
-            {/* <hr /> */}
+            </IonButtons>
+            <hr />
+            </p>
             <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
         </div>
     );

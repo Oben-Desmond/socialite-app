@@ -1,8 +1,11 @@
 import { Dialog } from '@capacitor/dialog'
 import { IonAlert, IonAvatar, IonButton, IonCol, IonContent, IonFab, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonNote, IonPage, IonProgressBar, IonRow, IonToolbar } from '@ionic/react'
-import { callOutline, cameraOutline, flagOutline, locate, mailOutline } from 'ionicons/icons'
+import { callOutline, cameraOutline, close, flagOutline, locate, mailOutline } from 'ionicons/icons'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
+import LetterAvatar from '../../components/LetterAvatar'
+import LetteredAvatar from '../../components/LetterAvatar'
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../../components/PhotoOptionsModal'
 import { fstore, storage } from '../../Firebase/Firebase'
 import { countryInfoInterface } from '../../interfaces/country'
@@ -20,6 +23,7 @@ const Profile: React.FC = function () {
     const [image, setimage] = useState(user.photoUrl);
     const [loading, setloading] = useState(0)
     const dispatch = useDispatch()
+    const history= useHistory();
 
     function EditProfile(formValue: string) {
         const newUser: UserInterface = { ...user, ...{ tel: formValue[1], name: formValue[0] } };
@@ -27,7 +31,7 @@ const Profile: React.FC = function () {
         dispatch(updateUser(newUser));
     }
     function takePicture() {
-
+        setgetPhoto(false)
         photosFromCamera().then((data: any) => {
             if (data)
                 uploadImage(data)
@@ -40,16 +44,26 @@ const Profile: React.FC = function () {
             if (data)
                 uploadImage(data)
         })
+        setgetPhoto(false)
+    }
+
+    function goBack(){
+        history.goBack()
     }
 
     async function uploadImage(data: string) {
+        console.log(data);
+        setloading(0.23)
         try {
             const blob = await fetch(data).then(res => res.blob());
+            setloading(0.23)
+
             const uploadTask = storage.ref(`profiles/${country.name || 'South Africa'}/${user.email}/profile.png`).put(blob)
 
             uploadTask
                 .on('state_changed', (snapshot) => {
-                    setloading(Math.floor(snapshot.bytesTransferred / snapshot.totalBytes))
+                    const progress = Math.floor(snapshot.bytesTransferred / snapshot.totalBytes);
+                    setloading(progress > 1 ? 1 : progress);
                 }, (err) => {
                     Dialog.alert({ message: err.message || 'unexpected error occured', title: 'unable to set profile image' })
                 }, () => {
@@ -57,7 +71,7 @@ const Profile: React.FC = function () {
                     uploadTask.snapshot.ref.getDownloadURL()
                         .then(url => {
                             fstore.collection('users').doc(user.email).update({ photoUrl: url });
-                            dispatch(updateUser({...user,photoUrl:url}))
+                            dispatch(updateUser({ ...user, photoUrl: url }))
                         })
                 })
 
@@ -70,14 +84,22 @@ const Profile: React.FC = function () {
             <IonHeader>
                 <IonToolbar>
                     <IonImg src={Pictures.bg} />
-
                 </IonToolbar>
                 <IonFab style={{ background: '#000000ad', width: '200%', height: '190%', transform: 'translate(-50%, -50%)' }} vertical='top' horizontal='start'>
                     <div style={{ background: '#000000ad', width: '100%' }}></div>
                 </IonFab>
                 <IonFab vertical='center' horizontal='center'>
                     <IonAvatar>
-                        <IonImg src={'https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg'} />
+                        {user.photoUrl && <IonImg src={user.photoUrl} />
+                        }
+                        {user.name && !user.photoUrl &&
+                            <LetterAvatar
+                                name={user.name.trim()[0]}
+                                size={57}
+                                color="#fff"
+                                backgroundColors={['var(--ion-color-secondary)']}
+                            />
+                        }
                         <IonButton disabled={loading != 0} onClick={() => setgetPhoto(true)} style={{ transform: 'translate(-50%, -50%)' }} size='small' color='light' fill='clear'>
                             {loading == 0 ? <IonIcon icon={cameraOutline} /> : <IonLabel>{loading * 100}%</IonLabel>}
                         </IonButton>
@@ -127,7 +149,12 @@ const Profile: React.FC = function () {
                     </IonRow>
                 </IonGrid>
             </IonToolbar>
-            <PhotoOptionsModal isOpen={getPhoto} onDidDismiss={() => { setgetPhoto(false) }} fromPhotos={photosFromGallery} fromCamera={photosFromCamera} ></PhotoOptionsModal>
+            <IonFab>
+                <IonButton onClick={goBack} color='light' fill='clear'>
+                    <IonIcon icon={close} />
+                </IonButton>
+            </IonFab>
+            <PhotoOptionsModal isOpen={getPhoto} onDidDismiss={() => { setgetPhoto(false) }} fromPhotos={galleryPhotos} fromCamera={takePicture} ></PhotoOptionsModal>
         </IonPage>
     )
 }
