@@ -157,7 +157,7 @@ const ReportersModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, repo
                             <div style={{ height: `50px` }}></div>
                             {maploaded && <div>
                                 <IonLabel color={`secondary`}>Location of Incident</IonLabel>
-                                {report?.location && <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=${report.location.lat}, ${report.location}&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>}
+                                {report?.location && <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=${report.location.lat}, ${report.location.long}&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>}
                             </div>}
                             {!maploaded && <IonGrid >
                                 <IonRow>

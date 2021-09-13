@@ -1,5 +1,5 @@
 import { Toast } from '@capacitor/toast'
-import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg } from '@ionic/react'
+import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg, IonAvatar } from '@ionic/react'
 import { peopleOutline, close, checkmark, trash, trashOutline, share, shareSocial } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -82,8 +82,11 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                         <IonGrid>
                             <IonRow>
                                 <IonCol className={`ion-align-self-start`}>
-                                    <UserAvatar name={`oBEN`}></UserAvatar>
-                                </IonCol>
+                                {report.author && <>
+                                        {(report.photoUrl || (user.photoUrl && user.email == report.author)) ? <IonAvatar style={{ width: '50px', height: '50px' }}>
+                                            <IonImg src={report.photoUrl || user.photoUrl} />
+                                        </IonAvatar> : <UserAvatar name={report.author} ></UserAvatar>}</>}
+                           </IonCol>
                                 <IonCol className={`ion-align-self-center `}>
                                     <IonLabel color={`secondary`}>
                                         Report by <Link to={`#`}>@{report.author}</Link>
@@ -154,7 +157,7 @@ const ViewReportModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, rep
                             <div style={{ height: `50px` }}></div>
                             {maploaded && <div>
                                 <IonLabel color={`secondary`}>Location of Incident</IonLabel>
-                                {report?.location && <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=${report.location.lat}, ${report.location}&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>}
+                                {report?.location && <iframe onLoadStart={() => setmaploaded(false)} onLoadedData={() => setmaploaded(true)} onLoad={() => setmaploaded(true)} src={`http://maps.google.com/maps?q=${report.location.lat}, ${report.location.long}&z=11&output=embed`} height="450" style={{ border: "0", width: `100%` }} loading="lazy"></iframe>}
                             </div>}
                             {!maploaded && <IonGrid >
                                 <IonRow>
