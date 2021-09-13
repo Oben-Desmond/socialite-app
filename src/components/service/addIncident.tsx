@@ -88,8 +88,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                 Toast.show({ text: `post has been sent` })
                 onDidDismiss()
             }).finally(() => {
-                e.target.title.value = ``
-                e.target.story.value = ``;
+               textAreaRef.current?.setAttribute('value','');
                 setimages([])
                 setloading(false)
 

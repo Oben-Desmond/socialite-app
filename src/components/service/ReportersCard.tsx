@@ -45,10 +45,9 @@ const ReportersCard: React.FC<{ report: reportInterface }> = ({ report }) => {
                     <IonRow>
                         <IonCol className={`ion-align-self-center`}>
                             {report.author && <>
-                                {report.photoUrl && <IonAvatar>
-                                    <IonImg src={report.photoUrl} />
-                                </IonAvatar>}
-                                {!report.photoUrl && <UserAvatar name={report.author} ></UserAvatar>}</>}
+                                {(report.photoUrl || (user.photoUrl && user.email == report.author)) ? <IonAvatar style={{ width: '50px', height: '50px' }}>
+                                    <IonImg src={report.photoUrl || user.photoUrl} />
+                                </IonAvatar> : <UserAvatar name={report.author} ></UserAvatar>}</>}
                             {
                                 !report.author && <IonIcon size={`large`} icon={banOutline} />
                             }

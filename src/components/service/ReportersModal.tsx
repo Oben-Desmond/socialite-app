@@ -1,5 +1,5 @@
 import { Toast } from '@capacitor/toast'
-import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg } from '@ionic/react'
+import { IonModal, IonHeader, IonToolbar, IonButtons, IonBackdrop, IonButton, IonIcon, IonLabel, IonContent, IonCardContent, IonGrid, IonRow, IonCol, IonSlides, IonSlide, IonCardHeader, IonCardTitle, IonList, IonItemDivider, IonItem, IonSpinner, IonImg, IonAvatar } from '@ionic/react'
 import { peopleOutline, close, checkmark, trash, trashOutline, share, shareSocial, starOutline } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -82,11 +82,14 @@ const ReportersModal: React.FC<{ isOpen: boolean, onDidDismiss: () => void, repo
                         <IonGrid>
                             <IonRow>
                                 <IonCol className={`ion-align-self-start`}>
-                                    <UserAvatar name={`oBEN`}></UserAvatar>
+                                    {report.author && <>
+                                        {(report.photoUrl || (user.photoUrl && user.email == report.author)) ? <IonAvatar style={{ width: '50px', height: '50px' }}>
+                                            <IonImg src={report.photoUrl || user.photoUrl} />
+                                        </IonAvatar> : <UserAvatar name={report.author} ></UserAvatar>}</>}
                                 </IonCol>
                                 <IonCol className={`ion-align-self-center `}>
                                     <IonLabel color={`secondary`}>
-                                        Report by <Link to={`#`}>@{report.author}</Link>
+                                        Reported by <Link to={`#`}>@{report.author}</Link>
                                     </IonLabel>
                                 </IonCol>
                             </IonRow>
