@@ -21,7 +21,7 @@ const Profile: React.FC = function () {
     const [edit, setedit] = useState(false)
     const country: countryInfoInterface = useSelector(selectCountry);
     const [getPhoto, setgetPhoto] = useState(false)
-    const [image, setimage] = useState(user.photoUrl);
+    const [uploading, setuploading] = useState(false);
     const [loading, setloading] = useState(0)
     const dispatch = useDispatch()
     const history= useHistory();
@@ -54,6 +54,7 @@ const Profile: React.FC = function () {
 
     async function uploadImage(data: string) {
         console.log(data);
+        setuploading(true)
         setloading(0.23)
         try {
             const blob = await fetch(data).then(res => res.blob());
@@ -81,6 +82,7 @@ const Profile: React.FC = function () {
         } catch (err) {
             Dialog.alert({ message: err.message || err || 'unexpected error occured', title: 'unable to set profile image' })
         }
+        setuploading(false)
     }
     return (
         <IonPage>
@@ -110,7 +112,7 @@ const Profile: React.FC = function () {
                 </IonFab>
             </IonHeader>
             <IonContent>
-                {loading > 0 && <IonProgressBar color='danger' type={'indeterminate'} ></IonProgressBar>}
+                {uploading && <IonProgressBar color='danger' type={'indeterminate'} ></IonProgressBar>}
                 <IonAlert cssClass='comfortaa' inputs={[{ label: 'user name', value: user.name, placeholder: user.name || 'your user name' }, { label: 'phone number', value: user.tel, placeholder: user.tel || 'phone number' }]} onDidDismiss={() => setedit(false)} buttons={[{ text: 'edit', handler: EditProfile }, { text: 'cancel' }]} header='Edit Profile' message='please edit Profile' isOpen={edit} />
 
                 <div className=" text-align-center ion-padding">

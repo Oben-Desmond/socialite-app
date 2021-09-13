@@ -42,12 +42,11 @@ const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
             <IonItem disabled={!report.location && !report.author && report.images.length <= 0} onClick={() => setviewReport(true)}>
                 <IonGrid>
                     <IonRow>
-                        <IonCol className={`ion-align-self-center`}>
+                        <IonCol className={`ion-align-self-centuser.photoUrler`}>
                             {report.author && <>
-                                {report.photoUrl && <IonAvatar>
-                                    <IonImg src={report.photoUrl} />
-                                </IonAvatar>}
-                                {!report.photoUrl && <UserAvatar name={report.author} ></UserAvatar>}</>}
+                                {(report.photoUrl || (user.photoUrl && user.email == report.author)) ? <IonAvatar style={{width:'50px', height:'50px'}}>
+                                    <IonImg src={report.photoUrl || user.photoUrl} />
+                                </IonAvatar> : <UserAvatar name={report.author} ></UserAvatar>}</>}
                             {
                                 !report.author && <IonIcon size={`large`} icon={banOutline} />
                             }
@@ -64,7 +63,7 @@ const ReportCard: React.FC<{ report: reportInterface }> = ({ report }) => {
                             </IonRow>
                             <IonRow>
                                 <IonNote>
-                                    {report.description}
+                                    {report.description.substr(0, 100).trim()}...
                                 </IonNote>
                             </IonRow>
                         </IonCol>
@@ -106,13 +105,15 @@ export const UserAvatar: React.FC<{ name: string }> = ({ name }) => {
     ];
 
     return (
-        <LetterAvatar
-            name={name.trim()[0]}
-            size={57}
-            // radius={20}
-            color="#fff"
-            // backgroundColor="rgb(55,55,22)"
-            backgroundColors={arrayWithColors}
-        />
+        <div style={{transform:'scale(0.8)'}}>
+            <LetterAvatar
+                name={name.trim()[0]}
+                size={50}
+                // radius={20}
+                color="#fff"
+                // backgroundColor="rgb(55,55,22)"
+                backgroundColors={arrayWithColors}
+            />
+        </div>
     )
 }
