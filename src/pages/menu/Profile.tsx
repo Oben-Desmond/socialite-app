@@ -1,4 +1,5 @@
 import { Dialog } from '@capacitor/dialog'
+import { Storage } from '@capacitor/storage'
 import { IonAlert, IonAvatar, IonButton, IonCol, IonContent, IonFab, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonNote, IonPage, IonProgressBar, IonRow, IonToolbar } from '@ionic/react'
 import { callOutline, cameraOutline, close, flagOutline, locate, mailOutline } from 'ionicons/icons'
 import React, { useState } from 'react'
@@ -71,7 +72,9 @@ const Profile: React.FC = function () {
                     uploadTask.snapshot.ref.getDownloadURL()
                         .then(url => {
                             fstore.collection('users').doc(user.email).update({ photoUrl: url });
+
                             dispatch(updateUser({ ...user, photoUrl: url }))
+                            Storage.set({key:'user',value:JSON.stringify({ ...user, photoUrl: url })})
                         })
                 })
 

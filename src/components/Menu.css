@@ -20,6 +20,10 @@ ion-menu.menu{
 ion-list.list *{
     --background:transparent
 }
+
+*{
+  font-family:  'Comfortaa';
+}
 /* 
 ion-menu.md ion-content {
   --padding-start: 8px;

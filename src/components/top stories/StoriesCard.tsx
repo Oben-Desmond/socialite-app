@@ -30,7 +30,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const [readmore, setreadmore] = useState<boolean>(false);
     const [loaded, setloaded] = useState<boolean>(false)
     return (
-        <div className={`stories-card`}>
+        <div className={`stories-card comfortaa`}>
             <IonList>
 
                 <div onClick={() => setreadmore(true)} className="hero-img">
@@ -56,19 +56,19 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
 
                         {!post.author_url && <LetteredAvatar name={post.author_name} size={40} ></LetteredAvatar>}
 
-                        <div style={{ margin: '0 20px' }}  >
-                            <IonLabel color='light'>
+                        <div style={{ margin: '0 30px 0 15px' }}  >
+                            <IonLabel className='comfortaa' color='light'>
                                 {post.author_name}
                             </IonLabel>
                         </div>
 
                         <IonButtons  >
                             <IonButton color={`light`}>
-                                <IonIcon icon={thumbsUpOutline}></IonIcon>
+                                <IonIcon slot='start' icon={thumbsUpOutline}></IonIcon>
                                 <IonLabel>4</IonLabel>
                             </IonButton>
                             <IonButton color={`light`}>
-                                <IonIcon icon={thumbsDownOutline}></IonIcon>
+                                <IonIcon slot='start' icon={thumbsDownOutline}></IonIcon>
                                 <IonLabel>2</IonLabel>
                             </IonButton>
                         </IonButtons>
@@ -79,13 +79,13 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
             <IonLabel className={`news-caption`}>
                 {post.title}
             </IonLabel>
-            <p  className={`description`}>
+            <p className={`description`}>
                 {post.description.substr(0, 180)}...
-           
-            <IonButtons style={{marginTop:'5px'}}> 
-                <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
-            </IonButtons>
-            <hr />
+
+            <IonButtons style={{ marginTop: '5px' }}>
+                    <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
+                </IonButtons>
+                <hr />
             </p>
             <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
         </div>

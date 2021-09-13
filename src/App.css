@@ -24,3 +24,11 @@ ion-tab-bar ion-tab-button {
 .grey{
   color: rgb(77, 77, 77);
 }
+
+ion-title{
+  font-family:  'Comfortaa';
+}
+
+*{
+  font-family:  'Comfortaa';
+}
