@@ -170,12 +170,12 @@ const Menu: React.FC = () => {
         if (data) {
           // alert({ long: data.coords.longitude, lat: data.coords.latitude });
           dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
-          Geolocation.clearWatch({id:geo_id});      
-      }
+          Geolocation.clearWatch({ id: geo_id });
+        }
 
       })
-    }catch(err){
-      Dialog.alert({title:'Unable to get Location',message:'Please make sure to turn on your location and have a stable connection'})
+    } catch (err) {
+      Dialog.alert({ title: 'Unable to get Location', message: 'Please make sure to turn on your location and have a stable connection' })
     }
 
 

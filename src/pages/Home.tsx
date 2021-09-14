@@ -7,7 +7,7 @@ import StoriesCard from '../components/top stories/StoriesCard';
 import { add } from 'ionicons/icons';
 import WeatherModal from '../components/WeatherModal';
 import Addmodal from '../components/top stories/addmodal';
-import { fstore } from '../Firebase/Firebase';
+import { db, fstore } from '../Firebase/Firebase';
 import { PostInterface } from '../interfaces/posts';
 import FlipMove from "react-flip-move";
 import SkeletonHome from '../components/top stories/dummy';
@@ -23,6 +23,8 @@ import { useParams } from 'react-router';
 import { fetchPostById } from '../Firebase/pages/top pages';
 import { ActionPerformed, LocalNotifications } from '@capacitor/local-notifications';
 import { PushNotifications, PushNotificationSchema, Token } from '@capacitor/push-notifications';
+import { UserInterface } from '../interfaces/users';
+import { selectUser } from '../states/reducers/userReducers';
 
 
 
@@ -33,6 +35,7 @@ const Home: React.FC = function () {
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const params: { postid: string } = useParams()
+    const user:UserInterface = useSelector(selectUser)
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
@@ -130,7 +133,7 @@ const Home: React.FC = function () {
         PushNotifications.requestPermissions().then(result => {
             if (result.receive === 'granted') {
                 // Register with Apple / Google to receive push via APNS/FCM
-                // PushNotifications.register();
+                PushNotifications.register();
             } else {
                 // Show some error
             }
@@ -140,6 +143,9 @@ const Home: React.FC = function () {
         PushNotifications.addListener('registration',
             (token: Token) => {
                 alert('Push registration success, token: ' + token.value);
+                  console.log(token.value);
+                  const formatEmail= user.email.replaceAll('.','');
+                  db.ref('tokens').child(formatEmail).set(token.value)
             }
         );
 
