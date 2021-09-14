@@ -9,6 +9,7 @@ div.country-flag{
 div.country-flag>ion-img{
    opacity: 0.8;
    transform: scale(1.4);
+   max-height: 25vh;
    /* height:30vh */
 }
 ion-toolbar.dp{

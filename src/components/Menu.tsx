@@ -95,6 +95,10 @@ const Menu: React.FC = () => {
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
 
+  useEffect(() => {
+    initLocation()
+  }, [])
+
   async function loginToService(code = user.domainCode) {
 
     if (!code) {
@@ -104,7 +108,7 @@ const Menu: React.FC = () => {
     setloading(true)
 
     try {
-      let account:accountInterface|any = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
+      let account: accountInterface | any = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
       dispatch(update_account(account))
       history.push(`/service/${account.type}`)
     }
@@ -154,33 +158,25 @@ const Menu: React.FC = () => {
     let newUser: UserInterface = {
       ...user, domainCode: e[0] + ``
     }
-    loginToService(e[0]+``)
+    loginToService(e[0] + ``)
     // dispatch(updateUser(newUser))
   }
 
 
   async function initLocation() {
-
-    Geolocation.checkPermissions().then((res) => {
-      if (res.location == `granted`)
-        Geolocation.getCurrentPosition().then(data => {
+    try {
+      const geo_id = await Geolocation.watchPosition({ enableHighAccuracy: true, maximumAge: 3000, timeout: 300000 }, (data) => {
+        // alert(data)
+        if (data) {
+          // alert({ long: data.coords.longitude, lat: data.coords.latitude });
           dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
-        })
-      else {
-        Geolocation.requestPermissions().then(async (res) => {
-          const ans = await Dialog.confirm({ message: `In Order for us to provide you relevant content we will require your current location`, title: `Location Required`, okButtonTitle: `Proceed`, cancelButtonTitle: `Deny` })
-
-          if (!ans.value) return;
-
-          if (res.location == `granted`) {
-            Geolocation.getCurrentPosition().then(data => {
-              dispatch(update_location({ long: data.coords.longitude, lat: data.coords.latitude }))
-            })
-          }
-        })
-
+          Geolocation.clearWatch({id:geo_id});      
       }
-    })
+
+      })
+    }catch(err){
+      Dialog.alert({title:'Unable to get Location',message:'Please make sure to turn on your location and have a stable connection'})
+    }
 
 
 
@@ -258,7 +254,7 @@ async function interpreteCode(code: string, country: string, user: UserInterface
   //     name:user.name||`unknown`,
   //     photoUrl:user.photoUrl
   //   }]
- // }
+  // }
   // fstore.collection(`business`).doc(`${country}-${code}`).set(accOwner);
 
   return (new Promise((resolve, reject) => {

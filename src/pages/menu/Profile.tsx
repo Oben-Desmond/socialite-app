@@ -13,6 +13,7 @@ import { countryInfoInterface } from '../../interfaces/country'
 import { UserInterface } from '../../interfaces/users'
 import { updateUser } from '../../states/action-creators/users'
 import { selectCountry } from '../../states/reducers/countryReducer'
+import { selectLocation } from '../../states/reducers/location-reducer'
 import { selectUser } from '../../states/reducers/userReducers'
 import { Pictures } from '../images/images'
 
@@ -25,6 +26,7 @@ const Profile: React.FC = function () {
     const [loading, setloading] = useState(0)
     const dispatch = useDispatch()
     const history= useHistory();
+    const location:{long:number, lat:number}=useSelector(selectLocation);
 
     function EditProfile(formValue: string) {
         const newUser: UserInterface = { ...user, ...{ tel: formValue[1], name: formValue[0] } };
@@ -88,7 +90,7 @@ const Profile: React.FC = function () {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonImg src={Pictures.bg} />
+                    <IonImg  src={Pictures.bg} />
                 </IonToolbar>
                 <IonFab style={{ background: '#000000ad', width: '200%', height: '190%', transform: 'translate(-50%, -50%)' }} vertical='top' horizontal='start'>
                     <div style={{ background: '#000000ad', width: '100%' }}></div>
@@ -140,6 +142,12 @@ const Profile: React.FC = function () {
                             {country.name}
                         </label>
                     </IonItem>
+                    <IonItem>
+                        <IonIcon slot='start' icon={locate} />
+                        <label className='comfortaa grey' >
+                            {`${location.lat}, ${location.long}`}
+                        </label>
+                    </IonItem>
                 </IonList>
             </IonContent>
             <IonToolbar>
@@ -154,7 +162,7 @@ const Profile: React.FC = function () {
                     </IonRow>
                 </IonGrid>
             </IonToolbar>
-            <IonFab>
+            <IonFab style={{transform:'translateY(20px)'}}>
                 <IonButton onClick={goBack} color='light' fill='clear'>
                     <IonIcon icon={close} />
                 </IonButton>
