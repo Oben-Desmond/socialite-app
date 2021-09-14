@@ -36,7 +36,7 @@ export async function photosFromCamera(){
 }
 export async function photosFromGallery(){
      return (new Promise((resolve, reject)=>{
-        Camera.getPhoto({ resultType: CameraResultType.DataUrl,source:CameraSource.Photos, quality:60 }).then(res=>{
+        Camera.getPhoto({ resultType: CameraResultType.DataUrl,source:CameraSource.Photos, quality:70 }).then(res=>{
             resolve(res.dataUrl)
         }).catch(reject)
      }))

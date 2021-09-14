@@ -50,6 +50,7 @@ const SignUp: React.FC = () => {
             }
         })
         data[`tel`]=countryCode+data.tel
+        data[`email`]=countryCode+data.tel.toLowerCase()
         console.log(data)
         if(!(data.email && data.name && data.tel &&data.pass)) {
             Dialog.alert({message:`you have some missen fields`,title:`Authentication error`});
@@ -62,7 +63,7 @@ const SignUp: React.FC = () => {
             location: countryInfo.name,
             photoUrl: ``,
             tel:data.tel,
-            domainCode:undefined,
+            domainCode:``,
         }
         setloading(true)
         

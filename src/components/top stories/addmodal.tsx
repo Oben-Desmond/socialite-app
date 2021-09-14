@@ -83,7 +83,6 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
 
 
     function galleryPhotos() {
-        setPhotoOptions(false)
         photosFromGallery().then((data: any) => {
             if (data)
                 setimages([...images, data])
