@@ -25,6 +25,7 @@ import { ActionPerformed, LocalNotifications } from '@capacitor/local-notificati
 import { PushNotifications, PushNotificationSchema, Token } from '@capacitor/push-notifications';
 import { UserInterface } from '../interfaces/users';
 import { selectUser } from '../states/reducers/userReducers';
+import axios from 'axios';
 
 
 
@@ -35,7 +36,7 @@ const Home: React.FC = function () {
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const params: { postid: string } = useParams()
-    const user:UserInterface = useSelector(selectUser)
+    const user: UserInterface = useSelector(selectUser)
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
@@ -142,10 +143,10 @@ const Home: React.FC = function () {
         // On success, we should be able to receive notifications
         PushNotifications.addListener('registration',
             (token: Token) => {
-                alert('Push registration success, token: ' + token.value);
-                  console.log(token.value);
-                  const formatEmail= user.email.replaceAll('.','');
-                  db.ref('tokens').child(formatEmail).set(token.value)
+                // alert('Push registration success, token: ' + token.value);
+                console.log(token.value);
+                const formatEmail = user.email.replaceAll('.', '');
+                db.ref('tokens').child(formatEmail).set(token.value)
             }
         );
 
@@ -159,14 +160,14 @@ const Home: React.FC = function () {
         // Show us the notification payload if the app is open on our device
         PushNotifications.addListener('pushNotificationReceived',
             (notification: PushNotificationSchema) => {
-                // alert('Push received: ' + JSON.stringify(notification));
+                alert('Push received: ' + JSON.stringify(notification));
             }
         );
 
         // Method called when tapping on a notification
         PushNotifications.addListener('pushNotificationActionPerformed',
             (notification: any) => {
-                // alert('Pussssh action performed: ' + JSON.stringify(notification));
+                alert('Pussssh action performed: ' + JSON.stringify(notification));
             }
         );
 
@@ -175,8 +176,20 @@ const Home: React.FC = function () {
         PushNotif();
     }, [])
 
+    async function sendNotification() {
+        db.ref('tokens').child('obend678@gmailcom').once('value', (snapshot) => {
+            const token = snapshot.val()
+            if (token) {
+                axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token })
+
+            }
+        })
+
+    }
+
     return (
         <IonPage className={`home`}>
+            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getFeed(() => refresherRef.current?.complete())} slot={`fixed`}>
