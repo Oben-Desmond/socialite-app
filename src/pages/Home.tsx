@@ -139,7 +139,7 @@ const Home: React.FC = function () {
         // On success, we should be able to receive notifications
         PushNotifications.addListener('registration',
             (token: Token) => {
-                // alert('Push registration success, token: ' + token.value);
+                alert('Push registration success, token: ' + token.value);
             }
         );
 

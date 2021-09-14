@@ -21,7 +21,7 @@ const Login: React.FC = () => {
 
     function loginUser(event: any) {
         event.preventDefault()
-        const email = event.target.email.value;
+        const email = event.target.email.value.toLowerCase();
         const pass = event.target.pass.value;
        console.log(pass)
         if (email && pass) {
