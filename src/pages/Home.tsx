@@ -180,7 +180,7 @@ const Home: React.FC = function () {
         db.ref('tokens').child('obend678@gmailcom').once('value', (snapshot) => {
             const token = snapshot.val()
             if (token) {
-                axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token })
+                axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token }).catch(alert).then(alert)
 
             }
         })
@@ -189,7 +189,6 @@ const Home: React.FC = function () {
 
     return (
         <IonPage className={`home`}>
-            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getFeed(() => refresherRef.current?.complete())} slot={`fixed`}>
@@ -218,6 +217,8 @@ const Home: React.FC = function () {
                     }
                 </FlipMove>
             </IonContent>
+            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
+
             <IonFab vertical={`bottom`} horizontal={`end`} >
                 <IonFabButton onClick={() => setaddStory(true)} color={`secondary`}>
                     <IonIcon icon={add} />
