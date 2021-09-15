@@ -136,6 +136,7 @@ const Home: React.FC = function () {
                 // Register with Apple / Google to receive push via APNS/FCM
                 PushNotifications.register();
             } else {
+            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
                 // Show some error
             }
         });
@@ -167,7 +168,8 @@ const Home: React.FC = function () {
         // Method called when tapping on a notification
         PushNotifications.addListener('pushNotificationActionPerformed',
             (notification: any) => {
-                alert('Pussssh action performed: ' + JSON.stringify(notification));
+            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
+            alert('Pussssh action performed: ' + JSON.stringify(notification));
             }
         );
 
