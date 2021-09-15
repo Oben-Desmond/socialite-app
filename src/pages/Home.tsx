@@ -124,7 +124,7 @@ const Home: React.FC = function () {
         LocalNotifications.addListener('localNotificationActionPerformed', () => {
             console.log('performed')
         })
-        LocalNotifications.addListener('localNotificationReceived', () => {
+        LocalNotifications.addListener('localNotificationReceived',  () => {
             console.log('recieved')
         })
     }
