@@ -216,7 +216,6 @@ const Home: React.FC = function () {
                     }
                 </FlipMove>
             </IonContent>
-            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
 
             <IonFab vertical={`bottom`} horizontal={`end`} >
                 <IonFabButton onClick={() => setaddStory(true)} color={`secondary`}>
