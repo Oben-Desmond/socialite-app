@@ -183,7 +183,7 @@ const Home: React.FC = function () {
                 axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token }).catch(alert).then(alert)
 
             }
-        })
+        })//
 
     }
 
