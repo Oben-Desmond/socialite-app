@@ -181,7 +181,6 @@ const Home: React.FC = function () {
             const token = snapshot.val()
             if (token) {
                 axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token }).catch(alert).then(alert)
-
             }
         })//
 
