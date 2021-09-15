@@ -136,7 +136,6 @@ const Home: React.FC = function () {
                 // Register with Apple / Google to receive push via APNS/FCM
                 PushNotifications.register();
             } else {
-            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
                 // Show some error
             }
         });
