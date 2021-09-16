@@ -171,7 +171,6 @@ const Home: React.FC = function () {
                 // alert('Push performed: ' + JSON.stringify(Object.keys(notification)));
                 // alert('Push performed: ' + JSON.stringify((notification)));
                 const {type,id}=notification.notification.data
-                alert(type);
                 history.push(`/${type}/${id}`);
             }
         );
