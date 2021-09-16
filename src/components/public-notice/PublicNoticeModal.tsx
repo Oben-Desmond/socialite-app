@@ -381,7 +381,7 @@ function Comment(props: { comment: commentInterface }) {
             <IonCol>
                 <IonRow>
                     <IonCol size={`3`}>
-                        {comment.photoUrl && <IonAvatar style={{ maxHeight: `50px` }}>
+                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width:`50px` }}>
                             <img src={comment.photoUrl} ></img>
                         </IonAvatar>}
 

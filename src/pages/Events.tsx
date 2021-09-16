@@ -104,7 +104,7 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
     const [openNotice, setopenNotice] = useState(false)
     return (
         <div onClick={() => setopenNotice(true)} style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
-            <IonToolbar>
+            <IonToolbar className='image-container'>
                 <div style={{ textAlign: `center`, maxHeight: `46vh` }}>
                     <img src={post.images[0]} />
                 </div>
