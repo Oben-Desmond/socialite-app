@@ -124,6 +124,7 @@ const Menu: React.FC = () => {
       const country: countryInfoInterface | undefined = (await res.json())
       if (country) {
         dispatch(updateCountry(country))
+        Storage.set({key:'country', value:JSON.stringify(country)});
       }
     }).catch(console.log)
     Storage.get({ key: `favorites` }).then((res) => {
