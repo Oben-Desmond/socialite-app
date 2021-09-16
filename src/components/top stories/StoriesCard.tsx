@@ -149,7 +149,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         }
     }
 
-    function sendReactionNotificaton(){
+    function sendReactionNotificaton(text=''){
         
         sendNotification({
             data:{
@@ -158,9 +158,25 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             },
             email:user?.email ||'',
             notification:{
-                body:(user?.name||'someone ')+' Reacted to your local feed',
+                body:(user?.name||'someone ')+' reacted to your local feed \n'+text,
                 image:user?.photoUrl||(post.images.length>0?post.images[0]:''),
                 title:'new reactions on your post'
+            }
+
+        })
+    }
+    function sendCommentReaction(text=''){
+        
+        sendNotification({
+            data:{
+                id:post.id,
+                type:'feed'
+            },
+            email:user?.email ||'',
+            notification:{
+                body:text,
+                image:user?.photoUrl||(post.images.length>0?post.images[0]:''),
+                title:(user?.name||'someone')+' commented on your post'
             }
 
         })
@@ -179,6 +195,8 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         }
     }
     function updateComment(text: string) {
+        
+        sendCommentReaction(text);
         if (!user?.email) return;
 
         const commentObj: commentInterface = {
@@ -463,7 +481,7 @@ function Comment(props: { comment: commentInterface }) {
             <IonCol>
                 <IonRow>
                     <IonCol size={`3`}>
-                        {comment.photoUrl && <IonAvatar style={{ maxHeight: `50px` }}>
+                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width:'50px' }}>
                             <img src={comment.photoUrl} ></img>
                         </IonAvatar>}
 
