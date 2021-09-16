@@ -23,6 +23,7 @@ import { Keyboard } from '@capacitor/keyboard';
 import EditLocalFeedFab from './EditLocalFeedTab';
 import { Share } from '@capacitor/share';
 import { selectUser } from '../../states/reducers/userReducers';
+import { sendNotification } from '../../Firebase/services/notifications';
 
 
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
@@ -134,7 +135,20 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         })
     }
     function likePost() {
-        let likes = reactions?.likes || []
+        let likes = reactions?.likes || [];
+        sendNotification({
+            data:{
+                id:post.id,
+                type:'feed'
+            },
+            email:user?.email ||'',
+            notification:{
+                body:(user?.name||'someone ')+'Reacted to your local feed',
+                image:user?.photoUrl||post.images.length>0?post.images[0]:'',
+                title:'new reactions on your post'
+            }
+
+        })
 
         if (user?.email) {
             if (likes.indexOf(user.email) >= 0) {

@@ -14,7 +14,7 @@ export interface NotificationData {
 }
  
 
-async function sendNotification(param: { notification: NotificationPayload, data: NotificationData, email: string }) {
+export async  function sendNotification(param: { notification: NotificationPayload, data: NotificationData, email: string }) {
     const { data, notification, email } = param;
 
     db.ref('tokens').child(email).once('value', (snapshot) => {
@@ -28,7 +28,7 @@ async function sendNotification(param: { notification: NotificationPayload, data
 
 
 
-async function sendManyNotifications(param: { notification: NotificationPayload, data: NotificationData, emails: string[] }) {
+export async  function sendManyNotifications(param: { notification: NotificationPayload, data: NotificationData, emails: string[] }) {
     const { data, notification, emails } = param;
 
     const tokens = await getTokens(emails)
