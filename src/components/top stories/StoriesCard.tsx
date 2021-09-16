@@ -24,6 +24,7 @@ import EditLocalFeedFab from './EditLocalFeedTab';
 import { Share } from '@capacitor/share';
 import { selectUser } from '../../states/reducers/userReducers';
 import { sendNotification } from '../../Firebase/services/notifications';
+import { sendReactionNotificaton, sendCommentReaction } from '../../Firebase/services/reaction-notifications';
 
 
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
@@ -135,8 +136,12 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         })
     }
     function likePost() {
+        
+        if(!user) return;
+        sendReactionNotificaton('',user,post);
+
         let likes = reactions?.likes || [];
-        sendReactionNotificaton();
+
 
         if (user?.email) {
             if (likes.indexOf(user.email) >= 0) {
@@ -149,38 +154,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         }
     }
 
-    function sendReactionNotificaton(text=''){
         
-        sendNotification({
-            data:{
-                id:post.id,
-                type:'feed'
-            },
-            email:user?.email ||'',
-            notification:{
-                body:(user?.name||'someone ')+' reacted to your local feed \n'+text,
-                image:user?.photoUrl||(post.images.length>0?post.images[0]:''),
-                title:'new reactions on your post'
-            }
-
-        })
-    }
-    function sendCommentReaction(text=''){
-        
-        sendNotification({
-            data:{
-                id:post.id,
-                type:'feed'
-            },
-            email:user?.email ||'',
-            notification:{
-                body:text,
-                image:user?.photoUrl||(post.images.length>0?post.images[0]:''),
-                title:(user?.name||'someone')+' commented on your post'
-            }
-
-        })
-    }
     function dislikePost() {
         let dislikes = reactions?.dislikes || []
 
@@ -195,9 +169,10 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         }
     }
     function updateComment(text: string) {
+        if (!user?.email || !user) return;
+
         
-        sendCommentReaction(text);
-        if (!user?.email) return;
+        sendCommentReaction(text,user,post);
 
         const commentObj: commentInterface = {
             author_name: user?.name,
