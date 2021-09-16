@@ -158,8 +158,8 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             },
             email:user?.email ||'',
             notification:{
-                body:(user?.name||'someone ')+'Reacted to your local feed',
-                image:user?.photoUrl||post.images.length>0?post.images[0]:'',
+                body:(user?.name||'someone ')+' Reacted to your local feed',
+                image:user?.photoUrl||(post.images.length>0?post.images[0]:''),
                 title:'new reactions on your post'
             }
 
