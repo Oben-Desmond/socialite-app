@@ -124,7 +124,7 @@ const Home: React.FC = function () {
         LocalNotifications.addListener('localNotificationActionPerformed', () => {
             console.log('performed')
         })
-        LocalNotifications.addListener('localNotificationReceived',  () => {
+        LocalNotifications.addListener('localNotificationReceived', () => {
             console.log('recieved')
         })
     }
@@ -160,14 +160,16 @@ const Home: React.FC = function () {
         // Show us the notification payload if the app is open on our device
         PushNotifications.addListener('pushNotificationReceived',
             (notification: PushNotificationSchema) => {
-                alert('Push received: ' + JSON.stringify(notification));
+                // alert('Push received: ' + JSON.stringify(notification));
             }
         );
 
         // Method called when tapping on a notification
         PushNotifications.addListener('pushNotificationActionPerformed',
             (notification: any) => {
-        //    alert('Pussssh action performed: ' + JSON.stringify(notification));
+                //    alert('Pussssh action performed: ' + JSON.stringify(notification));
+                alert('Push performed: ' + JSON.stringify(Object.keys(notification)));
+                alert('Push performed: ' + JSON.stringify((notification)));
             }
         );
 
@@ -176,7 +178,7 @@ const Home: React.FC = function () {
         PushNotif();
     }, [])
 
-    
+
 
     return (
         <IonPage className={`home`}>
