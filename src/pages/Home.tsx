@@ -167,8 +167,7 @@ const Home: React.FC = function () {
         // Method called when tapping on a notification
         PushNotifications.addListener('pushNotificationActionPerformed',
             (notification: any) => {
-            <IonButton onClick={() => sendNotification()}>SEND NOTIFICATION</IonButton>
-            alert('Pussssh action performed: ' + JSON.stringify(notification));
+           alert('Pussssh action performed: ' + JSON.stringify(notification));
             }
         );
 
@@ -177,15 +176,7 @@ const Home: React.FC = function () {
         PushNotif();
     }, [])
 
-    async function sendNotification() {
-        db.ref('tokens').child('obend678@gmailcom').once('value', (snapshot) => {
-            const token = snapshot.val()
-            if (token) {
-                axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token }).catch(alert).then(alert)
-            }
-        })//
-
-    }
+    
 
     return (
         <IonPage className={`home`}>
