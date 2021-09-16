@@ -136,6 +136,20 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     }
     function likePost() {
         let likes = reactions?.likes || [];
+        sendReactionNotificaton();
+
+        if (user?.email) {
+            if (likes.indexOf(user.email) >= 0) {
+                likes.splice(likes.indexOf(user.email), 1)
+            }
+            else {
+                likes = [...likes, post.email]
+            }
+            fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
+        }
+    }
+
+    function sendReactionNotificaton(){
         sendNotification({
             data:{
                 id:post.id,
@@ -149,16 +163,6 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             }
 
         })
-
-        if (user?.email) {
-            if (likes.indexOf(user.email) >= 0) {
-                likes.splice(likes.indexOf(user.email), 1)
-            }
-            else {
-                likes = [...likes, post.email]
-            }
-            fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
-        }
     }
     function dislikePost() {
         let dislikes = reactions?.dislikes || []
