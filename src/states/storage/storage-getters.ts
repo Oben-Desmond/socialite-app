@@ -1,25 +1,30 @@
 import { Storage } from "@capacitor/storage"
 
 
- const getCountry=async()=>{
+ export const getCountry=async()=>{
     const str =  (await Storage.get({key:'country'})).value
     if(str){
         return JSON.parse(str);
     }
+        return undefined
 } 
 
 
-const getUser=async()=>{
+export const getUser=async()=>{
     const str =  (await Storage.get({key:'user'})).value
     if(str){
         return JSON.parse(str);
     }
+
+        return undefined
 } 
 
 
-const getLocation=async()=>{
+export const getLocation=async()=>{
     const str =  (await Storage.get({key:'location'})).value
     if(str){
         return JSON.parse(str);
     }
+
+        return undefined
 } 

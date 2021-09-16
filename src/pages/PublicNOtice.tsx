@@ -17,6 +17,7 @@ import { PostInterface } from '../interfaces/posts';
 import { UserInterface } from '../interfaces/users';
 import { selectCountry } from '../states/reducers/countryReducer';
 import { selectUser } from '../states/reducers/userReducers';
+import { getCountry } from '../states/storage/storage-getters';
 import { Pictures } from './images/images';
 
 
@@ -28,15 +29,18 @@ const PublicNotice: React.FC = function () {
     const [noData, setnoData] = useState(false)
     const params: { postid: string } = useParams()
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
-    const user:UserInterface=useSelector(selectUser);
+    const user: UserInterface = useSelector(selectUser);
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
         getPost(params.postid)
 
     }, [params])
-    function getPost(postid: string) {
+    async function getPost(postid: string) {
         setnotices([])
+
+        let country = countryinfo.name || await getCountry() || 'South Africa';
+
         fetchNoticeById(postid, countryinfo.name, (post: PostInterface) => {
 
             setnotices([])
@@ -52,12 +56,12 @@ const PublicNotice: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         if (countryinfo) {
-           getNotice(()=>{})
+            getNotice(() => { })
         }
 
     }, [countryinfo])
 
-    function getNotice(callback:()=>void){
+    function getNotice(callback: () => void) {
         const country_name = countryinfo.name || `South Africa`
         setnoData(false)
         fstore.collection(`posts/${country_name}/notice`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
@@ -96,7 +100,7 @@ const PublicNotice: React.FC = function () {
                 </IonGrid>
 
             </IonContent>
-            {user.domainCode&&<IonFab vertical={`bottom`} horizontal={`end`} >
+            {user.domainCode && <IonFab vertical={`bottom`} horizontal={`end`} >
                 <IonFabButton onClick={() => setaddNotice(true)} color={`secondary`}>
                     <IonIcon icon={add} />
                 </IonFabButton>
@@ -138,4 +142,3 @@ const NoticeCard: React.FC<{ post: PostInterface }> = function ({ post }) {
     )
 }
 
- 

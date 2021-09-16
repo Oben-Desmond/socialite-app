@@ -13,6 +13,7 @@ import { fstore } from '../Firebase/Firebase';
 import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
 import { selectCountry } from '../states/reducers/countryReducer';
+import { getCountry } from '../states/storage/storage-getters';
 import { Pictures } from './images/images';
 
 
@@ -29,9 +30,11 @@ const Events: React.FC = function () {
         getPost(params.postid)
 
     }, [params])
-    function getPost(postid: string) {
+    async function getPost(postid: string) {
         setevents([])
-        fetchEventById(postid, countryinfo.name, (post: PostInterface) => {
+        let country = countryinfo.name || await getCountry() || 'South Africa';
+
+        fetchEventById(postid, country, (post: PostInterface) => {
             setevents([])
             setevents([post])
             if ([post].length <= 0) {
@@ -45,12 +48,12 @@ const Events: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         if (countryinfo) {
-           getEvent(()=>{})
+            getEvent(() => { })
         }
 
     }, [countryinfo])
 
-    function getEvent(callback:()=>void){
+    function getEvent(callback: () => void) {
         setnoData(false)
         setevents([])
         const country_name = countryinfo.name || `South Africa`
@@ -67,7 +70,7 @@ const Events: React.FC = function () {
         <IonPage>
             <PageHeader></PageHeader>
             <IonContent>
-            <IonRefresher ref={refresherRef} onIonRefresh={() => getEvent(() => refresherRef.current?.complete())} slot={`fixed`}>
+                <IonRefresher ref={refresherRef} onIonRefresh={() => getEvent(() => refresherRef.current?.complete())} slot={`fixed`}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
                 {events.length <= 0 && !noData && <SkeletonHome></SkeletonHome>}

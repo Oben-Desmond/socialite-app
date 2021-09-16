@@ -26,6 +26,7 @@ import { PushNotifications, PushNotificationSchema, Token } from '@capacitor/pus
 import { UserInterface } from '../interfaces/users';
 import { selectUser } from '../states/reducers/userReducers';
 import axios from 'axios';
+import { getCountry } from '../states/storage/storage-getters';
 
 
 
@@ -43,9 +44,11 @@ const Home: React.FC = function () {
         getPost(params.postid)
 
     }, [params])
-    function getPost(postid: string) {
+    async function getPost(postid: string) {
         setstories([])
-        fetchPostById(postid, countryinfo.name, (post: PostInterface) => {
+
+        let country = countryinfo.name|| await getCountry() ||'South Africa';
+        fetchPostById(postid, country, (post: PostInterface) => {
             setstories([])
             setstories([post])
             if ([post].length <= 0) {
