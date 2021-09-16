@@ -1,6 +1,6 @@
 // @flow strict
 
-import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCard, IonCol, IonContent, IonFab, IonFabButton, IonFabList, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonNote, IonRow, IonSlide, IonSlides, IonSpinner, IonTextarea, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCard, IonCol, IonContent, IonFab, IonFabButton, IonFabList, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonNote, IonRippleEffect, IonRow, IonSlide, IonSlides, IonSpinner, IonTextarea, IonToolbar } from '@ionic/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { Pictures } from '../../pages/images/images';
 import "../styles/Cards.css";
@@ -76,7 +76,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                     </IonItem>
                 </IonFab>
             </IonList>
-            <div onClick={() => setreadmore(true)}>
+            <div className="ion-activatable ripple-parent" onClick={() => setreadmore(true)}>
                 <IonLabel className={`news-caption`}>
                     {post.title}
                 </IonLabel>
@@ -88,6 +88,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                     </IonButtons>
                     <hr />
                 </p>
+                <IonRippleEffect/>
             </div>
             <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
         </div>
@@ -153,7 +154,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                 likes = [...likes, post.email]
             }
             fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
-        } updateComment
+        }  
     }
 
 
