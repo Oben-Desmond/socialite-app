@@ -17,7 +17,7 @@ export interface NotificationData {
 export async  function sendNotification(param: { notification: NotificationPayload, data: NotificationData, email: string }) {
     const { data, notification, email } = param;
 
-    db.ref('tokens').child(email).once('value', (snapshot) => {
+    db.ref('tokens').child(email.replaceAll('.','')).once('value', (snapshot) => {
         const token = snapshot.val()
         if (token) {
             axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token, data, notification }).catch(alert).then(alert)
@@ -44,7 +44,7 @@ async function getTokens(emails: string[]) {
     try {
         const queryTokens = emails.map((email) => {
             return (new Promise((resolve, reject) => {
-                db.ref('tokens').child(email).once('value', (snapshot) => {
+                db.ref('tokens').child(email.replaceAll('.','')).once('value', (snapshot) => {
                     const token = snapshot.val()
                     if (token) {
                         resolve(token)

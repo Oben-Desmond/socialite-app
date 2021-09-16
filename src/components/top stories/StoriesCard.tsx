@@ -150,6 +150,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     }
 
     function sendReactionNotificaton(){
+        
         sendNotification({
             data:{
                 id:post.id,
