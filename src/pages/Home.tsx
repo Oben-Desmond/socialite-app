@@ -194,8 +194,6 @@ const Home: React.FC = function () {
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getFeed(() => refresherRef.current?.complete())} slot={`fixed`}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
-                {/* <IonButton onClick={() => schedule()} >notify</IonButton>
-                <IonButton color={`success`} onClick={() =>PushNotif()} >push notify</IonButton> */}
                 {
                     stories.length <= 0 && !noData && <SkeletonHome></SkeletonHome>
                 }
