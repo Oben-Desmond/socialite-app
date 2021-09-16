@@ -39,7 +39,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                 <div onClick={() => setreadmore(true)} className="hero-img">
                     <img src={post.images[0]} />
                 </div>
-                <IonFab vertical='bottom' horizontal='start' style={{ height: '20%', width: '140%', transform: 'translate(-20px,0)',background:'#000',opacity:0.7  }} >
+                <IonFab vertical='bottom' horizontal='start' style={{ height: '20%', width: '140%', transform: 'translate(-20px,0)', background: '#000', opacity: 0.7 }} >
                     <div style={{ width: '100%', height: '100%', }} >
 
                     </div>
@@ -76,17 +76,19 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                     </IonItem>
                 </IonFab>
             </IonList>
-            <IonLabel className={`news-caption`}>
-                {post.title}
-            </IonLabel>
-            <p className={`description`}>
-                {post.description.substr(0, 180)}...
+            <div onClick={() => setreadmore(true)}>
+                <IonLabel className={`news-caption`}>
+                    {post.title}
+                </IonLabel>
+                <p className={`description`}>
+                    {post.description.substr(0, 180)}...
 
             <IonButtons style={{ marginTop: '5px' }}>
-                    <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
-                </IonButtons>
-                <hr />
-            </p>
+                        <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
+                    </IonButtons>
+                    <hr />
+                </p>
+            </div>
             <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
         </div>
     );
@@ -136,9 +138,9 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         })
     }
     function likePost() {
-        
-        if(!user) return;
-        sendReactionNotificaton('',user,post);
+
+        if (!user) return;
+        sendReactionNotificaton('', user, post);
 
         let likes = reactions?.likes || [];
 
@@ -151,10 +153,10 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                 likes = [...likes, post.email]
             }
             fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
-        }updateComment
+        } updateComment
     }
 
-        
+
     function dislikePost() {
         let dislikes = reactions?.dislikes || []
 
@@ -171,8 +173,8 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     function updateComment(text: string) {
         if (!user?.email || !user) return;
 
-        
-        sendCommentReaction(text,user,post);
+
+        sendCommentReaction(text, user, post);
 
         const commentObj: commentInterface = {
             author_name: user?.name,
@@ -456,7 +458,7 @@ function Comment(props: { comment: commentInterface }) {
             <IonCol>
                 <IonRow>
                     <IonCol size={`3`}>
-                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width:'50px' }}>
+                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width: '50px' }}>
                             <img src={comment.photoUrl} ></img>
                         </IonAvatar>}
 
