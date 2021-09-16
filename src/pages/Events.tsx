@@ -32,7 +32,7 @@ const Events: React.FC = function () {
     }, [params])
     async function getPost(postid: string) {
         setevents([])
-        let country = countryinfo.name || await getCountry() || 'South Africa';
+        let country = countryinfo.name || (await getCountry())?.name || 'South Africa';
 
         fetchEventById(postid, country, (post: PostInterface) => {
             setevents([])

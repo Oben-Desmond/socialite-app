@@ -47,7 +47,7 @@ const Home: React.FC = function () {
     async function getPost(postid: string) {
         setstories([])
 
-        let country = countryinfo.name|| await getCountry() ||'South Africa';
+        let country = countryinfo.name|| (await getCountry())?.name ||'South Africa';
         fetchPostById(postid, country, (post: PostInterface) => {
             setstories([])
             setstories([post])

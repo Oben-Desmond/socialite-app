@@ -39,7 +39,7 @@ const PublicNotice: React.FC = function () {
     async function getPost(postid: string) {
         setnotices([])
 
-        let country = countryinfo.name || await getCountry() || 'South Africa';
+        let country = countryinfo.name || (await getCountry())?.name || 'South Africa';
 
         fetchNoticeById(postid, countryinfo.name, (post: PostInterface) => {
 
