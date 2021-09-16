@@ -19,7 +19,7 @@ import { selectCountry } from '../states/reducers/countryReducer';
 import { countryInfoInterface } from '../interfaces/country';
 import { Toast } from '@capacitor/toast';
 import { Dialog } from '@capacitor/dialog';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { fetchPostById } from '../Firebase/pages/top pages';
 import { ActionPerformed, LocalNotifications } from '@capacitor/local-notifications';
 import { PushNotifications, PushNotificationSchema, Token } from '@capacitor/push-notifications';
@@ -37,7 +37,7 @@ const Home: React.FC = function () {
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const params: { postid: string } = useParams()
     const user: UserInterface = useSelector(selectUser)
-
+    const history= useHistory();
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
         getPost(params.postid)
@@ -122,7 +122,7 @@ const Home: React.FC = function () {
             console.log(err)
         })
         LocalNotifications.addListener('localNotificationActionPerformed', () => {
-            console.log('performed')
+            console.log('performedHistor')
         })
         LocalNotifications.addListener('localNotificationReceived', () => {
             console.log('recieved')
@@ -168,8 +168,12 @@ const Home: React.FC = function () {
         PushNotifications.addListener('pushNotificationActionPerformed',
             (notification: any) => {
                 //    alert('Pussssh action performed: ' + JSON.stringify(notification));
-                alert('Push performed: ' + JSON.stringify(Object.keys(notification)));
-                alert('Push performed: ' + JSON.stringify((notification)));
+                // alert('Push performed: ' + JSON.stringify(Object.keys(notification)));
+                // alert('Push performed: ' + JSON.stringify((notification)));
+                const {type,id}=notification.notification.data
+                alert(type);
+                alert(id)
+                history.push(`/${type}/${id}`);
             }
         );
 
