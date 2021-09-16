@@ -22,6 +22,7 @@ import { Keyboard } from '@capacitor/keyboard';
 import EditEventsFab from './EditEventsFab';
 import { getRandomColor } from '../text formaters/getRandomColor';
 import { Share } from '@capacitor/share';
+import { sendCommentReaction } from '../../Firebase/services/reaction-notifications';
 
 
 const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface }> = function ({ isOpen, onDidDismiss, post }) {
@@ -83,7 +84,8 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
         }
     }
     function updateComment(text: string) {
-        if (!user?.email) return;
+        if (!user?.email || !user) return;
+        sendCommentReaction(text,user,post);
 
         const commentObj: commentInterface = {
             author_name: user?.name,
