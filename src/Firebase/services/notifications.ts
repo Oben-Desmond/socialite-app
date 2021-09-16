@@ -12,7 +12,7 @@ export interface NotificationData {
     type: string,
     id: string
 }
-
+ 
 
 async function sendNotification(param: { notification: NotificationPayload, data: NotificationData, email: string }) {
     const { data, notification, email } = param;
@@ -32,6 +32,9 @@ async function sendManyNotifications(param: { notification: NotificationPayload,
     const { data, notification, emails } = param;
 
     const tokens = await getTokens(emails)
+    if (tokens.length > 0) {
+        axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { tokens, data, notification }).catch(alert).then(alert)
+    }
 
 }
 
@@ -62,4 +65,3 @@ async function getTokens(emails: string[]) {
     return [];
 
 }
-// axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token, data, notification }).catch(alert).then(alert)
