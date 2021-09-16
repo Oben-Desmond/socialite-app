@@ -133,7 +133,6 @@ const Menu: React.FC = () => {
     })
     initLocation()
     initUser()
-    scheduleNotif()
 
   }, [])
 
