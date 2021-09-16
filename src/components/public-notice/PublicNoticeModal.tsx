@@ -59,6 +59,8 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     }
     function likePost() {
         let likes = reactions?.likes || []
+        if(!user) return;
+        sendReactionNotificaton('',user,post);
 
         if (user?.email) {
             if (likes.indexOf(user.email) >= 0) {

@@ -22,7 +22,7 @@ import { Keyboard } from '@capacitor/keyboard';
 import EditEventsFab from './EditEventsFab';
 import { getRandomColor } from '../text formaters/getRandomColor';
 import { Share } from '@capacitor/share';
-import { sendCommentReaction } from '../../Firebase/services/reaction-notifications';
+import { sendCommentReaction, sendReactionNotificaton } from '../../Firebase/services/reaction-notifications';
 
 
 const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface }> = function ({ isOpen, onDidDismiss, post }) {
@@ -72,6 +72,8 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
     }
     function dislikePost() {
         let dislikes = reactions?.dislikes || []
+        if(!user) return;
+        sendReactionNotificaton('',user,post);
 
         if (user?.email) {
             if (dislikes.indexOf(user.email) >= 0) {

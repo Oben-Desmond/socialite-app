@@ -151,7 +151,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                 likes = [...likes, post.email]
             }
             fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
-        }
+        }updateComment
     }
 
         
