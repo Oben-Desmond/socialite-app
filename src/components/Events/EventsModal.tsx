@@ -313,7 +313,7 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
                         <IonTextarea   onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
                     </IonToolbar>
                 </IonCol>
-                <IonCol>input
+                <IonCol>
                     <IonFabButton color={`secondary`} onClick={() => { sendComent(text); setloading(true) }}>
                         {(loading && text != ``) ? <IonSpinner></IonSpinner> : <IonIcon icon={sendSharp} />}
                     </IonFabButton>

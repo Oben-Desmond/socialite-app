@@ -1,20 +1,24 @@
-import { IonCardSubtitle, IonContent, IonFab, IonFabButton, IonIcon, IonImg, IonLabel, IonPage, IonRefresher, IonRefresherContent, IonToolbar } from '@ionic/react';
-import { add } from 'ionicons/icons';
+import { IonAvatar, IonButton, IonButtons, IonCardSubtitle, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonRefresher, IonRefresherContent, IonText, IonToolbar } from '@ionic/react';
+import { add, thumbsDownOutline, thumbsUpOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import AddEventModal from '../components/Events/addEventModal';
 import { fetchEventById } from '../components/Events/event-functions';
 import EventsModal from '../components/Events/EventsModal';
+import LetteredAvatar from '../components/LetterAvatar';
 import PageHeader from '../components/PageHeader';
 import SkeletonHome from '../components/top stories/dummy';
 import { GetHoursAgo } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
 import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
+import { UserInterface } from '../interfaces/users';
 import { selectCountry } from '../states/reducers/countryReducer';
+import { selectUser } from '../states/reducers/userReducers';
 import { getCountry } from '../states/storage/storage-getters';
 import { Pictures } from './images/images';
+import './style/Events.css';
 
 
 const Events: React.FC = function () {
@@ -102,11 +106,36 @@ export default Events;
 
 const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
     const [openNotice, setopenNotice] = useState(false)
+    const user: UserInterface = useSelector(selectUser)
     return (
         <div onClick={() => setopenNotice(true)} style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
             <IonToolbar className='image-container'>
                 <div style={{ textAlign: `center`, maxHeight: `46vh` }}>
                     <img src={post.images[0]} />
+                </div>
+                <div className="reactions">
+                    <IonItem color='none' lines='none'>
+                        {
+                            (post.author_url || (user.email == post.email && user.photoUrl)) ?
+                                <IonAvatar>
+                                    <IonImg src={user.photoUrl || post.author_url} />
+                                </IonAvatar> : <LetteredAvatar name={post.author_name}></LetteredAvatar>
+                        }
+                        <div style={{ width: '10px' }}></div>
+                        <IonText color='light'>
+                            {post.author_name}
+                        </IonText>
+                        <IonButtons slot='end'>
+                            <IonButton color='light' >
+                                <IonLabel></IonLabel>
+                                <IonIcon icon={thumbsUpOutline}></IonIcon>
+                            </IonButton>
+                            <IonButton color='light'>
+                                <IonLabel></IonLabel>
+                                <IonIcon icon={thumbsDownOutline}></IonIcon>
+                            </IonButton>
+                        </IonButtons>
+                    </IonItem>
                 </div>
             </IonToolbar>
             <IonToolbar style={{ padding: `10px 20px` }}>
