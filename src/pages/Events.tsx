@@ -11,6 +11,7 @@ import PageHeader from '../components/PageHeader';
 import SkeletonHome from '../components/top stories/dummy';
 import { GetHoursAgo } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
+import { sendReactionNotificaton } from '../Firebase/services/reaction-notifications';
 import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
 import { UserInterface } from '../interfaces/users';
@@ -133,6 +134,8 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
             newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
 
         }
+        sendReactionNotificaton('', user, post);
+
         newPostLikes = newPostLikes.filter((email, index) => (!newPostLikes.includes(email, index + 1)))
         fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ likes: newPostLikes });
         setpostLikes(newPostLikes);
@@ -150,9 +153,9 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
         setdisliked(!disliked);
     }
     return (
-        <div onClick={() => setopenNotice(true)} style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
+        <div style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
             <IonToolbar className='image-container'>
-                <div style={{ textAlign: `center`, maxHeight: `46vh` }}>
+                <div onClick={() => setopenNotice(true)} style={{ textAlign: `center`, maxHeight: `46vh` }}>
                     <img src={post.images[0]} />
                 </div>
                 <div className="reactions">
@@ -167,7 +170,7 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
                         <IonText color='light'>
                             {post.author_name}
                         </IonText>
-                        
+
                         <IonButtons slot='end' >
                             <IonButton onClick={() => { likePost() }} color={`light`}>
                                 <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
@@ -189,7 +192,7 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
                     </IonItem>
                 </div>
             </IonToolbar>
-            <IonToolbar style={{ padding: `10px 20px` }}>
+            <IonToolbar onClick={() => setopenNotice(true)} style={{ padding: `10px 20px` }}>
                 <div >
                     <IonLabel style={{ textTransform: `capitalize` }}><b>{post.title}</b></IonLabel>
                     <p style={{ color: `#595858`, fontSize: `15px`, marginBottom: `0` }} >

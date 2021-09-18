@@ -39,7 +39,6 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
     })
 
     const reporter_query = fstore.collection('users').doc(`${incident.author}`).collection('reports').doc(incident.id).set(incident);
-    alert(JSON.stringify(emails))
     emailIncident(emails, incident)
 
     // scheduleNotif();
@@ -93,12 +92,12 @@ function emailIncident(emails: string[], incident: reportInterface) {
 
 function uploadImages(images: string[], user: string, country: string) {
 
-    if(images.length<=0) return new Promise((resolve) => resolve([]));
+    if (images.length <= 0) return new Promise((resolve) => resolve([]));
     try {
 
         const queries = images.map(async (image) => {
 
-            let blob = await(await fetch(image)).blob();
+            let blob = await (await fetch(image)).blob();
             let uploadTask = storage.ref('reports').child(country).child(user).child((new Date()).toDateString()).put(blob);
             return (await uploadTask).ref.getDownloadURL()
 
@@ -107,7 +106,7 @@ function uploadImages(images: string[], user: string, country: string) {
         return Promise.all(queries)
     }
     catch (err) {
-        alert(err.message || err);
+        Dialog.alert({ message: err.message || err, title: 'image upload error' });
     }
     return new Promise((resolve) => resolve([]));
 
@@ -122,20 +121,7 @@ function incidentEmailTemplate(incident: reportInterface) {
         * {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
-
-        h2 {
-            font-size: 14px;
-            color: grey;
-        }
-
-        div.chip {
-            padding: 6px;
-            max-width: max-content;
-            border: 1px solid red;
-            color: red;
-            border-radius: 30px;
-            font-size: 13px;
-        }
+  
 
         div.chip:active {
             opacity: 0.1;
@@ -154,22 +140,20 @@ function incidentEmailTemplate(incident: reportInterface) {
             margin: 20px auto;
             max-height: 40vh;
         }
-        button {
-            padding: 10px;
-            border: none;
-            background-color: rgb(189, 136, 36);
-            color: white;
-            margin: 10px 20px;
-            outline: none;
-            box-shadow: 1px 2px 10px rgba(135, 135, 135, 0.571);
-        }
+        
         button:active {
             opacity: 0.7;
         }
     </style>
     <div>
-        <h2>Socialite Incident Report</h2>
-        <div class="chip">
+        <h2 style='font-size: 14px;
+        color: grey;'>Socialite Incident Report</h2>
+        <div class="chip" style='padding: 6px;
+        max-width: max-content;
+        border: 1px solid red;
+        color: red;
+        border-radius: 30px;
+        font-size: 13px;'>
            ${incident.category}
         </div>
         <div class="intro">Incident Reported By <b>${incident.author}</b></div>
@@ -182,7 +166,14 @@ function incidentEmailTemplate(incident: reportInterface) {
         }    
         </p>
         <a href="https://socionet.co.za/reports/${incident.id}">
-        <button>VIEW FULL REPORT IN APP</button>
+        <button style='padding: 10px;
+        border: none;
+        background-color: rgb(189, 136, 36);
+        color: white;
+        margin: 10px 20px;
+        outline: none;
+        box-shadow: 1px 2px 10px rgba(135, 135, 135, 0.571);
+ '>VIEW FULL REPORT IN APP</button>
     </a>
         <iframe src="http://maps.google.com/maps?q=${incident.location?.lat}, ${incident.location?.long}&z=15&output=embed" height="450"
             style="border: 0; width:100%" loading="lazy"></iframe>
