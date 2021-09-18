@@ -1,9 +1,11 @@
 
+import { Dialog } from '@capacitor/dialog';
 import { TextareaChangeEventDetail } from '@ionic/core';
-import { IonButton, IonCardContent, IonCardTitle, IonChip, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonPage, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/react'
+import { IonButton, IonCardContent, IonCardTitle, IonChip, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonLoading, IonPage, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/react'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
-import { accountInterface } from '../../components/service/serviceTypes';
+import { accountInterface, availableAccount } from '../../components/service/serviceTypes';
+import { fstore } from '../../Firebase/Firebase';
 import { selectLocation } from '../../states/reducers/location-reducer';
 import "../style/admin.css";
 const AdminPanel: React.FC = function () {
@@ -14,8 +16,9 @@ const AdminPanel: React.FC = function () {
     const [company, setcompany] = useState('');
     const [contact, setcontact] = useState('');
     const [code, setcode] = useState(Math.floor(Math.random() * 1000000).toString());
-    const location:{long:number, lat:number} = useSelector(selectLocation)
- 
+    const location: { long: number, lat: number } = useSelector(selectLocation)
+    const [loading, setloading] = useState(false)
+
     function PermittedChange(e: any) {
         let str = e.detail.value || '';
         if (str[str.length - 1] == ' ' || str[str.length - 1] == ',' || str[str.length - 1] == '\n') {
@@ -31,24 +34,39 @@ const AdminPanel: React.FC = function () {
 
     }
 
-    function addAccount(e: any) {
+    async function addAccount(e: any) {
         e.preventDefault();
-        const account:accountInterface={
-           code,
-           country,
-           location,
-           name:company,
-           tel:contact,
-           timestamp:Date.now(),
-           type, 
-           users:permitted
+        const account: accountInterface = {
+            code,
+            country,
+            location,
+            name: company,
+            tel: contact,
+            timestamp: Date.now(),
+            type,
+            users: permitted
         }
 
+        const available_entry: availableAccount = {
+            name: company,
+            emergency__contact: contact,
+            code,
+            emails: permitted,
+            location
+        }
+        setloading(true)
+        try {
 
-        
 
+            let query1 = fstore.collection('service-accounts').doc(available_entry.name).collection(account.type).doc(account.code).set(available_entry);
+            let query2 = fstore.collection('business').doc(account.country + '-' + account.code).set(account);
 
-
+            await Promise.all([query1, query2]);
+        }
+        catch (err) {
+            Dialog.alert({ message: err.message || err || 'unexpected error occured', title: 'Error Creating Account' });
+        }
+        setloading(false)
     }
     return (
         <IonPage className='admin'>
@@ -58,6 +76,7 @@ const AdminPanel: React.FC = function () {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
+                <IonLoading isOpen={loading} onDidDismiss={() => setloading(false)} message='Creating Service Account'></IonLoading>
                 <IonCardContent>
                     <form onSubmit={addAccount}
                     >

@@ -2,7 +2,7 @@ export interface accountInterface{
     name:string,
     country:string,
     code:string,
-    users:accUser[],
+    users:string[],
     type:`defence`|`firefighter`|`company`|`health`|`municipal`|string,
     timestamp:number,
     tel:string,

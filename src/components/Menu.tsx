@@ -211,7 +211,7 @@ const Menu: React.FC = () => {
               <IonMenuToggle color={`dark`} key={index} autoHide={false}>
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
                   <IonIcon color={location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel color={`dark`} style={{ color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
+                  <IonLabel color={`dark`}  style={{fontFamily:'Comfortaa', color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );
@@ -219,13 +219,13 @@ const Menu: React.FC = () => {
           <IonMenuToggle color={`dark`} autoHide={false}>
             <IonItem color={`dark`} onClick={() => loginToService()} routerDirection="forward" lines={`full`} detail={false}>
               <IonIcon slot="start" ios={peopleOutline} md={peopleOutline} />
-              <IonLabel>Business Account</IonLabel>
+              <IonLabel style={{fontFamily:"Comfortaa"}}>Business Account</IonLabel>
             </IonItem>
           </IonMenuToggle>
           <IonMenuToggle onClick={() => auth.signOut()} color={`dark`} autoHide={false}>
             <IonItem color={`dark`} className={location.pathname === `/login` ? 'selected' : ''} routerLink={`/login`} routerDirection="forward" lines={`full`} detail={false}>
               <IonIcon slot="start" ios={exit} md={exitOutline} />
-              <IonLabel>Logout</IonLabel>
+              <IonLabel style={{fontFamily:"Comfortaa"}}>Logout</IonLabel>
             </IonItem>
           </IonMenuToggle>
         </div>
@@ -271,7 +271,7 @@ async function interpreteCode(code: string, country: string, user: UserInterface
         }
         else {
           const acc: accountInterface | any = snapshot.data();
-          const filUsers = acc.users.filter(((accuser: any) => accuser.email == user.email))
+          const filUsers = acc.users.filter(((accuser: any) => accuser == user.email))
           if (filUsers.length <= 0) {
             reject({ message: `your email is not permitted among permitted service providers` });
             return;
