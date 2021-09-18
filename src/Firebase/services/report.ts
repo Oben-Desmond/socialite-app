@@ -92,6 +92,8 @@ function emailIncident(emails: string[], incident: reportInterface) {
 
 
 function uploadImages(images: string[], user: string, country: string) {
+
+    if(images.length<=0) return new Promise((resolve) => resolve([]));
     try {
 
         const queries = images.map(async (image) => {

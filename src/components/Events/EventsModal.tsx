@@ -217,7 +217,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                             </IonCol>
                             <IonCol>
                                 <IonLabel >
-                                    {reactions?.shares?.length || 0}
+                                    share
                                 </IonLabel>
                             </IonCol>
                         </IonRow>
