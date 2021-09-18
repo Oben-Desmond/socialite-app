@@ -23,6 +23,7 @@ import EditEventsFab from './EditEventsFab';
 import { getRandomColor } from '../text formaters/getRandomColor';
 import { Share } from '@capacitor/share';
 import { sendCommentReaction, sendReactionNotificaton } from '../../Firebase/services/reaction-notifications';
+import { selectUser } from '../../states/reducers/userReducers';
 
 
 const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface }> = function ({ isOpen, onDidDismiss, post }) {
@@ -32,13 +33,17 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
     const [profile, setprofile] = useState<UserInterface>()
     const rootState: any = useSelector(state => state)
     const [commenttext, setcommenttext] = useState<string>(``)
-    const user: UserInterface | undefined = rootState.userReducer;
+    const user: UserInterface = useSelector(selectUser)
     const [comments, setcomments] = useState<commentInterface[]>([])
     const contentRef = useRef<HTMLIonContentElement>(null)
     const countryInfo: countryInfoInterface = useSelector(selectCountry)
     const commentTitle = `events`
     const [moveInputUp, setmoveInputUp] = useState(false)
     const commentItemRef = useRef<HTMLDivElement>(null)
+    const [liked, setliked] = useState(false);
+    const [postLikes, setpostLikes] = useState(post.likes);
+    const [postDislikes, setpostDislikes] = useState(post.dislikes);
+    const [disliked, setdisliked] = useState(false);
 
     useEffect(() => {
         const unsub = fstore.collection(`posts/${countryInfo.name || `South Africa`}/${commentTitle}-reactions`).doc(`${post.id}`).collection(`comments`).orderBy(`timestamp`, `asc`).onSnapshot((res) => {
@@ -57,37 +62,47 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
             }
         })
     }
+    useEffect(() => {
+        if ((post.likes || []).filter(email => (email == user.email)).length > 0) {
+            setliked(true)
+        }
+        else {
+            setliked(false)
+        }
+        if ((post.dislikes || []).filter(email => (email == user.email)).length > 0) {
+            setdisliked(true)
+        }
+        else {
+            setdisliked(false)
+        }
+    }, [])
     function likePost() {
-        let likes = reactions?.likes || []
+        let newPostLikes = [...(post.likes || []), user.email]
+        if (liked) {
+            newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
 
-        if (user?.email) {
-            if (likes.indexOf(user.email) >= 0) {
-                likes.splice(likes.indexOf(user.email), 1)
-            }
-            else {
-                likes = [...likes, post.email]
-            }
-            fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
         }
+        sendReactionNotificaton('', user, post);
+
+        newPostLikes = newPostLikes.filter((email, index) => (!newPostLikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ likes: newPostLikes });
+        setpostLikes(newPostLikes);
+        setliked(!liked);
     }
-    function dislikePost() {
-        let dislikes = reactions?.dislikes || []
-        if(!user) return;
-        sendReactionNotificaton('',user,post);
+    function disLikePost() {
+        let newpostDislikes = [...(post.dislikes || []), user.email]
+        if (!disliked) {
+            newpostDislikes = [...(post.dislikes || []).filter(email => !(email == user.email))];
 
-        if (user?.email) {
-            if (dislikes.indexOf(user.email) >= 0) {
-                dislikes.splice(dislikes.indexOf(user.email), 1)
-            }
-            else {
-                dislikes = [...dislikes, post.email]
-            }
-            fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, dislikes }).then(() => { console.log(`disliked`) }).catch(console.log)
         }
+        newpostDislikes = newpostDislikes.filter((email, index) => (!newpostDislikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ dislikes: newpostDislikes });
+        setpostDislikes(newpostDislikes);
+        setdisliked(!disliked);
     }
     function updateComment(text: string) {
         if (!user?.email || !user) return;
-        sendCommentReaction(text,user,post);
+        sendCommentReaction(text, user, post);
 
         const commentObj: commentInterface = {
             author_name: user?.name,
@@ -110,17 +125,17 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
         setviewProfile(true)
 
         if (email == post.email) {
-            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``) ,domainCode:``})
+            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``), domainCode: `` })
         }
     }
     async function handleKeyBoard() {
-      try{
-        await Keyboard.addListener(`keyboardDidHide`, () => {
-            setmoveInputUp(false)
-        })
-      }catch(err){
-          console.log(err)
-      }
+        try {
+            await Keyboard.addListener(`keyboardDidHide`, () => {
+                setmoveInputUp(false)
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
     async function sharePost() {
 
@@ -190,12 +205,14 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                         <IonRow style={{ textAlign: `center` }}>
                             <IonCol>
                                 <IonButton onClick={likePost} fill={`clear`}>
-                                    <LikeIcon user={user} likes={(reactions?.likes || [])} ></LikeIcon>
+                                    <IonIcon slot='start' color={!liked ? 'primary' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
+
                                 </IonButton>
                             </IonCol>
                             <IonCol>
-                                <IonButton onClick={dislikePost} fill={`clear`}>
-                                    <DisLikeIcon user={user} dislikes={(reactions?.dislikes || [])} ></DisLikeIcon>
+                                <IonButton fill={`clear`} onClick={() => { disLikePost() }} color={`primary`}>
+                                    <IonIcon slot='start' color={!disliked ? 'primary' : 'secondary'} icon={thumbsDownOutline}></IonIcon>
+
                                 </IonButton>
                             </IonCol>
                             <IonCol>
@@ -206,13 +223,17 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                         </IonRow>
                         <IonRow style={{ textAlign: `center` }}>
                             <IonCol>
-                                <IonLabel >
-                                    {reactions?.likes?.length || 0}
+                                <IonLabel>
+                                    {
+                                        postLikes?.length
+                                    }
                                 </IonLabel>
                             </IonCol>
                             <IonCol>
-                                <IonLabel >
-                                    {reactions?.dislikes?.length || 0}
+                                <IonLabel>
+                                    {
+                                        postDislikes?.length
+                                    }
                                 </IonLabel>
                             </IonCol>
                             <IonCol>
@@ -310,7 +331,7 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
                         <IonButton color={`light`} fill={`clear`} size={`small`} onClick={closeComment} style={{}} slot={`start`} shape={`round`}>
                             <IonIcon icon={closeCircleOutline} />
                         </IonButton>
-                        <IonTextarea   onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
+                        <IonTextarea onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
                     </IonToolbar>
                 </IonCol>
                 <IonCol>
@@ -382,7 +403,7 @@ function Comment(props: { comment: commentInterface }) {
             <IonCol>
                 <IonRow>
                     <IonCol size={`3`}>
-                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width:'50px' }}>
+                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width: '50px' }}>
                             <img src={comment.photoUrl} ></img>
                         </IonAvatar>}
 
