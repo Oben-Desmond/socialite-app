@@ -30,7 +30,6 @@ import { sendReactionNotificaton, sendCommentReaction } from '../../Firebase/ser
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
     const [readmore, setreadmore] = useState<boolean>(false);
-    const [loaded, setloaded] = useState<boolean>(false)
     const [liked, setliked] = useState(false);
     const [disliked, setdisliked] = useState(false);
     const user: UserInterface = useSelector(selectUser);
@@ -64,19 +63,19 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                         </div>
 
                         <IonButtons  >
-                            <IonButton color={`light`}>
-                                <IonIcon slot='start' icon={thumbsUpOutline}></IonIcon>
+                            <IonButton onClick={()=>setliked(!liked)} color={`light`}>
+                                <IonIcon slot='start' color={!liked?'primary':'secondary'} icon={!liked?thumbsUpOutline:thumbsUp}></IonIcon>
                                 <IonLabel>
                                     {
-                                        post.likes || ''
+                                        post.likes?.length
                                     }
                                 </IonLabel>
                             </IonButton>
-                            <IonButton color={`light`}>
-                                <IonIcon slot='start' icon={thumbsDownOutline}></IonIcon>
+                            <IonButton onClick={()=>setdisliked(!disliked)} color={`light`}>
+                                <IonIcon slot='start' color={!liked?'primary':'secondary'} icon={thumbsDownOutline}></IonIcon>
                                 <IonLabel>
                                     {
-                                        post.dislikes || ''
+                                        post.dislikes?.length
                                     }
                                 </IonLabel>
                             </IonButton>

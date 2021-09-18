@@ -9,8 +9,8 @@ export interface PostInterface {
      author_url: string
      id: string,
      email: string,
-     likes?:number,
-     dislikes?:number
+     likes?:string[],
+     dislikes?:string[]
 }
 
 
