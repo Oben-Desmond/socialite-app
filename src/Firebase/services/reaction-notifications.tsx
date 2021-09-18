@@ -44,16 +44,27 @@ export function sendReactionNotificaton(text = '', user: UserInterface, post: Po
     })
     sendReactionEmail({ text, user, post })
     const notif_id = uuid.v4();
+     
+    // saveNotification({ user, message: 'recently reacted to your post', path: '', post })
+
+
+}
+
+
+export function saveNotification(params: { user: UserInterface, message: string, path: string, post: PostInterface }) {
+    const { user, message, path,post } = params
+
+    const notif_id = uuid.v4();
     const dbnotification: dbReactionNotification = {
         sender: user.email,
         sender_photo: user.photoUrl,
-        message: user.name + ' recently reacted to your post',
+        message: user.name + ' '+message,
         post_id: post.id,
         timestamp: Date.now(),
-        id: notif_id
+        id: notif_id,
+        path
     }
     db.ref('notifications').child(post.email).child(notif_id).push(dbnotification)
-
 }
 
 export function sendReactionEmail(props: { user: UserInterface, post: PostInterface, text: string }) {
