@@ -72,12 +72,12 @@ const appPages: AppPage[] = [
     iosIcon: personOutline,
     mdIcon: personOutline
   },
-  // {
-  //   title: 'Countries',
-  //   url: '/page/Outbox',
-  //   iosIcon: flagOutline,
-  //   mdIcon: flagOutline
-  // },
+  {
+    title: 'Admin',
+    url: '/admin',
+    iosIcon: flagOutline,
+    mdIcon: flagOutline
+  },
 
 
 
