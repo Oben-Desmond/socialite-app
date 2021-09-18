@@ -23,15 +23,15 @@ export function getServicesNearBy(place: string, category: string) {
 }
 
 export async function ReportIncident(incident: reportInterface, nearByServices: availableAccount[], country: string,) {
-    let emails:string[] = [], em = nearByServices.map(p => p.emails);
+    let emails: string[] = [], em = nearByServices.map(p => p.emails);
     em.map(eml => {
-        emails=[...emails, ...eml];
+        emails = [...emails, ...eml];
     })
     const provider_queries = nearByServices.map(provider => {
         return fstore.collection('business').doc(`${country}-${provider.code}`).collection('reports').add(incident);
     })
     const reporter_query = fstore.collection('users').doc(`${incident.author}`).collection('reports').doc(incident.id).set(incident);
-    emailIncident(emails,incident)
+    emailIncident(emails, incident)
 
     scheduleNotif();
     return (Promise.all([reporter_query, provider_queries]))
@@ -53,7 +53,79 @@ export async function markThisIncidentAsRead(report: reportInterface, serviceAcc
 }
 
 
-function emailIncident(emails:string[], incident:reportInterface){
+function emailIncident(emails: string[], incident: reportInterface) {
 
     axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { emails, incident })
+}
+
+
+function incidentEmailTemplate(incident: reportInterface) {
+    return (
+        `
+        
+        <body>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        h2 {
+            font-size: 14px;
+            color: grey;
+        }
+
+        div.chip {
+            padding: 6px;
+            max-width: max-content;
+            border: 1px solid orange;
+            color: orange;
+            border-radius: 30px;
+            font-size: 13px;
+        }
+
+        div.chip:active {
+            opacity: 0.1;
+        }
+
+        .intro {
+            margin: 10px;
+        }
+
+        p {
+            padding: 13px;
+            color: rgb(69, 68, 68);
+        }
+
+        img {
+            margin: 20px auto;
+            max-height: 40vh;
+        }
+    </style>
+    <div>
+        <h2>Socialite Incident Report</h2>
+        <div class="chip">
+           ${incident.category}
+        </div>
+        <div class="intro">Incident Reported By <b>${incident.author}</b></div>
+        <div style="text-align: center;">
+            <img src="https://images.pexels.com/photos/370202/gun-revolver-fire-firing-370202.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                alt="">
+        </div>
+        <p>
+            ${
+                     incident.description
+            }    
+        </p>
+        <a href="https://socionet.co.za/reports/${incident.id}">
+        <button>VIEW FULL REPORT IN APP</button>
+    </a>
+        <iframe src="http://maps.google.com/maps?q=${incident.location?.lat}, ${incident.location?.long}&z=15&output=embed" height="450"
+            style="border: 0; width:100%" loading="lazy"></iframe>
+
+    </div>
+</body>
+        
+        
+        `
+    )
 }
