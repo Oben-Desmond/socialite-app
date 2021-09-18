@@ -210,7 +210,7 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                             </IonCol>
                             <IonCol>
                                 <IonLabel >
-                                    {reactions?.shares?.length || 0}
+                                   share
                                 </IonLabel>
                             </IonCol>
                         </IonRow>
