@@ -30,7 +30,7 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
         emails = [...emails, ...eml];
 
     })
-    const urls:any[]= await uploadImages(incident.images, incident.author,incident.country)
+    const urls:any= await uploadImages(incident.images, incident.author,incident.country)
     incident={
         ...incident, images:urls
     }
