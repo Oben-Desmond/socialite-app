@@ -8,9 +8,11 @@ export interface PostInterface {
      author_name: string,
      author_url: string
      id: string,
-     email: string
-
+     email: string,
+     likes?:number,
+     dislikes?:number
 }
+
 
 export interface commentInterface {
 

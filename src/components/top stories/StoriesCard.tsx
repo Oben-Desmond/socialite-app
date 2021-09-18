@@ -31,11 +31,12 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
     const [readmore, setreadmore] = useState<boolean>(false);
     const [loaded, setloaded] = useState<boolean>(false)
+    const [liked, setliked] = useState(false);
+    const [disliked, setdisliked] = useState(false);
     const user: UserInterface = useSelector(selectUser);
     return (
         <div className={`stories-card comfortaa`}>
             <IonList>
-
                 <div onClick={() => setreadmore(true)} className="hero-img">
                     <img src={post.images[0]} />
                 </div>
@@ -65,11 +66,19 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                         <IonButtons  >
                             <IonButton color={`light`}>
                                 <IonIcon slot='start' icon={thumbsUpOutline}></IonIcon>
-                                <IonLabel>4</IonLabel>
+                                <IonLabel>
+                                    {
+                                        post.likes || ''
+                                    }
+                                </IonLabel>
                             </IonButton>
                             <IonButton color={`light`}>
                                 <IonIcon slot='start' icon={thumbsDownOutline}></IonIcon>
-                                <IonLabel>2</IonLabel>
+                                <IonLabel>
+                                    {
+                                        post.dislikes || ''
+                                    }
+                                </IonLabel>
                             </IonButton>
                         </IonButtons>
 
@@ -88,7 +97,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                     </IonButtons>
                     <hr />
                 </p>
-                <IonRippleEffect/>
+                <IonRippleEffect />
             </div>
             <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
         </div>
@@ -154,7 +163,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                 likes = [...likes, post.email]
             }
             fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
-        }  
+        }
     }
 
 
