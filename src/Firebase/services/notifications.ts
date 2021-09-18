@@ -33,7 +33,7 @@ export async  function sendManyNotifications(param: { notification: Notification
 
     const tokens = await getTokens(emails)
     if (tokens.length > 0) {
-        axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { tokens, data, notification }).catch(alert).then(alert)
+        axios.post('https://socialiteapp-backend.herokuapp.com/message/multiple', { tokens, data, notification }).catch(alert).then(alert)
     }
 
 }
