@@ -31,8 +31,47 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
     const [readmore, setreadmore] = useState<boolean>(false);
     const [liked, setliked] = useState(false);
+    const [postLikes, setpostLikes] = useState(post.likes);
+    const [postDislikes, setpostDislikes] = useState(post.dislikes);
     const [disliked, setdisliked] = useState(false);
     const user: UserInterface = useSelector(selectUser);
+
+    useEffect(() => {
+        if ((post.likes || []).filter(email => (email == user.email)).length > 0) {
+            setliked(true)
+        }
+        else {
+            setliked(false)
+        }
+        if ((post.dislikes || []).filter(email => (email == user.email)).length > 0) {
+            setdisliked(true)
+        }
+        else {
+            setdisliked(false)
+        }
+    }, [])
+    function likePost() {
+        let newPostLikes = [...(post.likes || []), user.email]
+        if (liked) {
+            newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
+
+        }
+        newPostLikes = newPostLikes.filter((email, index) => (!newPostLikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ likes: newPostLikes });
+        setpostLikes(newPostLikes);
+        setliked(!liked);
+    }
+    function disLikePost() {
+        let newpostDislikes = [...(post.dislikes || []), user.email]
+        if (!disliked) {
+            newpostDislikes = [...(post.dislikes || []).filter(email => !(email == user.email))];
+
+        }
+        newpostDislikes = newpostDislikes.filter((email, index) => (!newpostDislikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ dislikes: newpostDislikes });
+        setpostDislikes(newpostDislikes);
+        setdisliked(!disliked);
+    }
     return (
         <div className={`stories-card comfortaa`}>
             <IonList>
@@ -63,19 +102,19 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                         </div>
 
                         <IonButtons  >
-                            <IonButton onClick={()=>setliked(!liked)} color={`light`}>
-                                <IonIcon slot='start' color={!liked?'light':'secondary'} icon={!liked?thumbsUpOutline:thumbsUp}></IonIcon>
+                            <IonButton onClick={() => { likePost() }} color={`light`}>
+                                <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
                                 <IonLabel>
                                     {
-                                        post.likes?.length
+                                        postLikes?.length
                                     }
                                 </IonLabel>
                             </IonButton>
-                            <IonButton onClick={()=>setdisliked(!disliked)} color={`light`}>
-                                <IonIcon slot='start' color={!disliked?'light':'secondary'} icon={thumbsDownOutline}></IonIcon>
+                            <IonButton onClick={() => { disLikePost() }} color={`light`}>
+                                <IonIcon slot='start' color={!disliked ? 'light' : 'secondary'} icon={thumbsDownOutline}></IonIcon>
                                 <IonLabel>
                                     {
-                                        post.dislikes?.length
+                                        postDislikes?.length
                                     }
                                 </IonLabel>
                             </IonButton>
@@ -116,18 +155,21 @@ export function GetHoursAgo(props: { timestamp: number }) {
 
 export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface, title: string }> = function ({ isOpen, onDidDismiss, post, title }) {
     const [addcomment, setaddcomment] = useState(false)
-    const [reactions, setreactions] = useState<reactionInterface | undefined>()
     const [viewProfile, setviewProfile] = useState(false)
     const [profile, setprofile] = useState<UserInterface>()
-    const rootState: any = useSelector(state => state)
     const [commenttext, setcommenttext] = useState<string>(``)
-    const user: UserInterface | undefined = rootState.userReducer;
+    const user: UserInterface = useSelector(selectUser);
     const [comments, setcomments] = useState<commentInterface[]>([])
     const contentRef = useRef<HTMLIonContentElement>(null)
     const countryInfo: countryInfoInterface = useSelector(selectCountry)
     const commentTitle = title.replace(` `, ``).trim()
     const [moveInputUp, setmoveInputUp] = useState(false)
     const commentItemRef = useRef<HTMLDivElement>(null)
+    const [liked, setliked] = useState(false);
+    const [postLikes, setpostLikes] = useState(post.likes);
+    const [postDislikes, setpostDislikes] = useState(post.dislikes);
+    const [disliked, setdisliked] = useState(false);
+
 
     useEffect(() => {
         const unsub = fstore.collection(`posts/${countryInfo.name || `South Africa`}/${commentTitle}-reactions`).doc(`${post.id}`).collection(`comments`).orderBy(`timestamp`, `asc`).onSnapshot((res) => {
@@ -138,47 +180,45 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
         handleKeyBoard()
         return (() => unsub())
     }, [])
-    function getReactions() {
-        fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).onSnapshot((res) => {
-            const data: reactionInterface | any = res.data()
-            if (data) {
-                setreactions(data)
-            }
-        })
-    }
+
+    useEffect(() => {
+        if ((post.likes || []).filter(email => (email == user.email)).length > 0) {
+            setliked(true)
+        }
+        else {
+            setliked(false)
+        }
+        if ((post.dislikes || []).filter(email => (email == user.email)).length > 0) {
+            setdisliked(true)
+        }
+        else {
+            setdisliked(false)
+        }
+    }, [])
     function likePost() {
+        let newPostLikes = [...(post.likes || []), user.email]
+        if (liked) {
+            newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
 
-        if (!user) return;
-        sendReactionNotificaton('', user, post);
-
-        let likes = reactions?.likes || [];
-
-
-        if (user?.email) {
-            if (likes.indexOf(user.email) >= 0) {
-                likes.splice(likes.indexOf(user.email), 1)
-            }
-            else {
-                likes = [...likes, post.email]
-            }
-            fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, likes }).then(() => { console.log(`liked`) }).catch(console.log)
         }
+        newPostLikes = newPostLikes.filter((email, index) => (!newPostLikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ likes: newPostLikes });
+        setpostLikes(newPostLikes);
+        setliked(!liked);
+    }
+    function disLikePost() {
+        let newpostDislikes = [...(post.dislikes || []), user.email]
+        if (!disliked) {
+            newpostDislikes = [...(post.dislikes || []).filter(email => !(email == user.email))];
+
+        }
+        newpostDislikes = newpostDislikes.filter((email, index) => (!newpostDislikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ dislikes: newpostDislikes });
+        setpostDislikes(newpostDislikes);
+        setdisliked(!disliked);
     }
 
 
-    function dislikePost() {
-        let dislikes = reactions?.dislikes || []
-
-        if (user?.email) {
-            if (dislikes.indexOf(user.email) >= 0) {
-                dislikes.splice(dislikes.indexOf(user.email), 1)
-            }
-            else {
-                dislikes = [...dislikes, post.email]
-            }
-            fstore.collection(`posts/${countryInfo.name}/${commentTitle}-reactions`).doc(`${post.id}`).set({ ...reactions, dislikes }).then(() => { console.log(`disliked`) }).catch(console.log)
-        }
-    }
     function updateComment(text: string) {
         if (!user?.email || !user) return;
 
@@ -224,7 +264,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     }
 
     return (
-        <IonModal cssClass={`story-modal`} onDidPresent={getReactions} onDidDismiss={onDidDismiss} isOpen={isOpen}>
+        <IonModal cssClass={`story-modal`} onDidDismiss={onDidDismiss} isOpen={isOpen}>
             <IonHeader>
                 <IonToolbar style={{ paddingTop: `18px` }} color={`primary`} >
                     <IonButtons className={`ion-margin-end`} slot={`start`} >
@@ -280,12 +320,14 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                         <IonRow style={{ textAlign: `center` }}>
                             <IonCol>
                                 <IonButton onClick={likePost} fill={`clear`}>
-                                    <LikeIcon user={user} likes={(reactions?.likes || [])} ></LikeIcon>
+                                    <IonIcon slot='start' color={!liked ? 'primary' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
+
                                 </IonButton>
                             </IonCol>
                             <IonCol>
-                                <IonButton onClick={dislikePost} fill={`clear`}>
-                                    <DisLikeIcon user={user} dislikes={(reactions?.dislikes || [])} ></DisLikeIcon>
+                                <IonButton fill={`clear`} onClick={() => { disLikePost() }} color={`primary`}>
+                                    <IonIcon slot='start' color={!disliked ? 'primary' : 'secondary'} icon={thumbsDownOutline}></IonIcon>
+
                                 </IonButton>
                             </IonCol>
                             <IonCol>
@@ -296,13 +338,17 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                         </IonRow>
                         <IonRow style={{ textAlign: `center` }}>
                             <IonCol>
-                                <IonLabel >
-                                    {reactions?.likes?.length || 0}
+                                <IonLabel>
+                                    {
+                                        postLikes?.length
+                                    }
                                 </IonLabel>
                             </IonCol>
                             <IonCol>
-                                <IonLabel >
-                                    {reactions?.dislikes?.length || 0}
+                                <IonLabel>
+                                    {
+                                        postDislikes?.length
+                                    }
                                 </IonLabel>
                             </IonCol>
                             <IonCol>
@@ -319,7 +365,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                         <Comment></Comment>
                         <Comment></Comment> */}
                         <FlipMove  >
-                            {comments.map((comment, index) => {
+                            {comments.map((comment) => {
                                 return <Comment key={comment.id} comment={comment}></Comment>
                             })
                             }
@@ -409,41 +455,8 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
     </IonToolbar>
 }
 
-function LikeIcon(props: { user: UserInterface | undefined, likes: string[] }) {
-    const { user, likes } = props
-    let icon = thumbsUpOutline
-    if (user?.email)
-        if (likes.indexOf(user.email) >= 0) {
-            icon = thumbsUp
-        }
-    return (
-        <IonIcon icon={icon} />
-    )
-}
 
-function DisLikeIcon(props: { user: UserInterface | undefined, dislikes: string[] }) {
-    const { user, dislikes } = props
-    let icon = thumbsDownOutline
-    if (user?.email)
-        if (dislikes.indexOf(user.email) >= 0) {
-            icon = thumbsDown
-        }
-    return (
-        <IonIcon icon={icon} />
-    )
-}
 
-function ViewIcon(props: { user: UserInterface | undefined, dislikes: string[] }) {
-    const { user, dislikes } = props
-    let icon = thumbsDownOutline
-    if (user?.email)
-        if (dislikes.indexOf(user.email) >= 0) {
-            icon = thumbsDown
-        }
-    return (
-        <IonIcon icon={icon} />
-    )
-}
 
 
 function Comment(props: { comment: commentInterface }) {
