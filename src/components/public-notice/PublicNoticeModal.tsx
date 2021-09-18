@@ -170,8 +170,18 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                     <p style={{ whiteSpace: `pre-line` }}> {post.description}</p>
                 </IonToolbar>
                 <IonToolbar>
-                    <IonSlides options={{ slidesPerView: 2 }}>
+                    <IonSlides options={{ slidesPerView: 2 }} style={{height:'100px'}} >
                         {post.images.map((img, index) => {
+                             if (post.images.length == 1) return (
+                                <>
+                                    <IonSlide key={index}>
+                                        <ViewImage img={img}></ViewImage>
+                                    </IonSlide>
+                                    <IonSlide>
+                                        <div style={{width:'100px'}} ></div>
+                                    </IonSlide>
+                                </>
+                            )
                             return <IonSlide key={index}>
                                 <ViewImage img={img}></ViewImage>
                             </IonSlide>

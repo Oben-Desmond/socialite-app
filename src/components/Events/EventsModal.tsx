@@ -192,12 +192,18 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                     <p style={{ whiteSpace: `pre-line` }}> {post.description}</p>
                 </IonToolbar>
                 <IonToolbar>
-                    <IonSlides options={{ slidesPerView: 2 }}>
+                    <IonSlides style={{ height: '200px' }} options={{ slidesPerView: 2 }}>
                         {post.images.map((img, index) => {
+
                             return <IonSlide key={index}>
                                 <ViewImage img={img}></ViewImage>
                             </IonSlide>
                         })}
+                        {
+                            post.images.length == 1 && <IonSlide>
+                                <div style={{ width: '100px' }} ></div>
+                            </IonSlide>
+                        }
                     </IonSlides>
                 </IonToolbar>
                 <IonToolbar className={`rating`}>

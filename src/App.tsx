@@ -93,7 +93,6 @@ const App: React.FC = () => {
             </IonTabButton>
             <IonTabButton tab={`classifieds`} href={`/classifieds/default`}>
               <IonIcon icon={shirtOutline} />
-              <IonBadge color={`danger`}>3</IonBadge>
               <IonLabel>Classifieds</IonLabel>
             </IonTabButton>
           </IonTabBar>
@@ -139,7 +138,7 @@ export function initializePushNotification() {
   // On success, we should be able to receive notifications
   PushNotifications.addListener('registration',
     (token: Token) => {
-      alert('Push registration success, token: ' + token.value);
+      // alert('Push registration success, token: ' + token.value);
     }
   );
 

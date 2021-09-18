@@ -32,7 +32,7 @@ const EditEventsFab: React.FC<{ post: PostInterface, comments: commentInterface[
             onDelete()
             DeleteItemFromDB(post, comments, commentTitle).then(() => {
                 Toast.show({ text: `Event deleted` })
-            }).catch(err => alert(JSON.stringify(err)))
+            }).catch(err => alert(err.message||err))
         }
     }
     return (

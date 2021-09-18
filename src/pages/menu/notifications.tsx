@@ -24,7 +24,7 @@ function Notifications() {
     return (
         <IonPage className={`notifications`}>
             <IonHeader>
-                <IonToolbar color={`primary`}>
+                <IonToolbar className='ion-padding-top' color={`primary`}>
                     <IonButtons onClick={goBack} slot={`start`}>
                         <IonButton>
                             <IonIcon icon={arrowBack}></IonIcon>
@@ -34,7 +34,7 @@ function Notifications() {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <IonList>
+                {/* <IonList>
                     <IonItemDivider>Stories</IonItemDivider>
                     <NotificationItem />
                     <NotificationItem />
@@ -53,7 +53,7 @@ function Notifications() {
                     <NotificationItem />
                     <NotificationItem />
                     <NotificationItem />
-                </IonList>
+                </IonList> */}
             </IonContent>
         </IonPage>
     );

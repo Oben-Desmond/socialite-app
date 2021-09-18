@@ -201,7 +201,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
 
         }
-        sendReactionNotificaton('',user,post);
+        sendReactionNotificaton('', user, post);
 
         newPostLikes = newPostLikes.filter((email, index) => (!newPostLikes.includes(email, index + 1)))
         fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ likes: newPostLikes });
@@ -308,13 +308,19 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                     </div>
                     <p style={{ whiteSpace: `pre-line` }}> {post.description}</p>
                 </IonToolbar>
-                <IonToolbar>
+                <IonToolbar style={{ height: '200px' }}>
                     <IonSlides options={{ slidesPerView: 2 }}>
                         {post.images.map((img, index) => {
+
                             return <IonSlide key={index}>
                                 <ViewImage img={img}></ViewImage>
                             </IonSlide>
                         })}
+                        {
+                            post.images.length == 1 && <IonSlide>
+                                <div style={{ width: '100px' }} ></div>
+                            </IonSlide>
+                        }
                     </IonSlides>
                 </IonToolbar>
                 <IonToolbar className={`rating`}>
