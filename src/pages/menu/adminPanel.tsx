@@ -2,6 +2,9 @@
 import { TextareaChangeEventDetail } from '@ionic/core';
 import { IonButton, IonCardContent, IonCardTitle, IonChip, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonPage, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/react'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
+import { accountInterface } from '../../components/service/serviceTypes';
+import { selectLocation } from '../../states/reducers/location-reducer';
 import "../style/admin.css";
 const AdminPanel: React.FC = function () {
     const [generated, setgenerated] = useState(Math.floor(Math.random() * 1000000).toString());
@@ -11,7 +14,7 @@ const AdminPanel: React.FC = function () {
     const [company, setcompany] = useState('');
     const [contact, setcontact] = useState('');
     const [code, setcode] = useState(Math.floor(Math.random() * 1000000).toString());
- 
+    const location:{long:number, lat:number} = useSelector(selectLocation)
  
     function PermittedChange(e: any) {
         let str = e.detail.value || '';
@@ -28,7 +31,23 @@ const AdminPanel: React.FC = function () {
 
     }
 
-    function addAccount() {
+    function addAccount(e: any) {
+        e.preventDefault();
+        const account:accountInterface={
+           code,
+           country,
+           location,
+           name:company,
+           tel:contact,
+           timestamp:Date.now(),
+           type, 
+           users:permitted
+        }
+
+
+        
+
+
 
     }
     return (
