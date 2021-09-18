@@ -100,6 +100,18 @@ function incidentEmailTemplate(incident: reportInterface) {
             margin: 20px auto;
             max-height: 40vh;
         }
+        button {
+            padding: 10px;
+            border: none;
+            background-color: rgb(189, 136, 36);
+            color: white;
+            margin: 10px 20px;
+            outline: none;
+            box-shadow: 1px 2px 10px rgba(135, 135, 135, 0.571);
+        }
+        button:active {
+            opacity: 0.7;
+        }
     </style>
     <div>
         <h2>Socialite Incident Report</h2>
@@ -108,13 +120,12 @@ function incidentEmailTemplate(incident: reportInterface) {
         </div>
         <div class="intro">Incident Reported By <b>${incident.author}</b></div>
         <div style="text-align: center;">
-            <img src="https://images.pexels.com/photos/370202/gun-revolver-fire-firing-370202.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+            <img src="${incident.images.length > 0 ? incident.images[0] : ''}"
                 alt="">
         </div>
         <p>
-            ${
-                     incident.description
-            }    
+            ${incident.description
+        }    
         </p>
         <a href="https://socionet.co.za/reports/${incident.id}">
         <button>VIEW FULL REPORT IN APP</button>
