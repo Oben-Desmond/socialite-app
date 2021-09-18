@@ -31,7 +31,7 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
         return fstore.collection('business').doc(`${country}-${provider.code}`).collection('reports').add(incident);
     })
     const reporter_query = fstore.collection('users').doc(`${incident.author}`).collection('reports').doc(incident.id).set(incident);
-    axios.post('https://socialiteapp-backend.herokuapp.com/incident/report', { emails, incident })
+    emailIncident(emails,incident)
 
     scheduleNotif();
     return (Promise.all([reporter_query, provider_queries]))
@@ -50,4 +50,10 @@ export async function markThisIncidentAsRead(report: reportInterface, serviceAcc
     }];
     const reporter_query = fstore.collection('users').doc(`${report.author}`).collection('reports').doc(report.id).update({ seenBy: seenByArr });
 
+}
+
+
+function emailIncident(emails:string[], incident:reportInterface){
+
+    axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { emails, incident })
 }
