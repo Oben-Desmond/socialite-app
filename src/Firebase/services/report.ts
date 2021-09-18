@@ -18,7 +18,7 @@ export function getServicesNearBy(place: string, category: string) {
             const docs = snapshot.docs.map(doc => doc.data());
             resolve(docs)
             if (docs.length <= 0) {
-                Dialog.alert({ message: 'no avalaible service Providers near by', title: 'service providers in your country' });
+                Dialog.alert({ message: 'no avalaible service Providers near by', title: 'No service providers in your country' });
             }
         }).catch(reject)
     }));

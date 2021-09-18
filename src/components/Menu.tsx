@@ -259,7 +259,7 @@ async function interpreteCode(code: string, country: string, user: UserInterface
 
   return (new Promise((resolve, reject) => {
     if (code.length != 6) {
-      reject({ message: `SERVICE CODE must not be 6 characters` })
+      reject({ message: `Service code MUST BE 6 characters long` })
       return;
     }
 
