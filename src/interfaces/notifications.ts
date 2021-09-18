@@ -5,5 +5,6 @@ export interface dbReactionNotification{
     message:string,
     post_id:string,
     timestamp:number,
-    id:string
+    id:string,
+    path:string
 }
