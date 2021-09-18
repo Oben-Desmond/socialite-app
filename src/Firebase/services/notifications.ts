@@ -1,3 +1,4 @@
+import { Dialog } from "@capacitor/dialog";
 import axios from "axios"
 import { db } from "../Firebase"
 
@@ -20,7 +21,7 @@ export async  function sendNotification(param: { notification: NotificationPaylo
     db.ref('tokens').child(email.replaceAll('.','')).once('value', (snapshot) => {
         const token = snapshot.val()
         if (token) {
-            axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token, data, notification }).catch(alert).then(alert)
+            axios.post('https://socialiteapp-backend.herokuapp.com/message/single', { token, data, notification }).catch((err)=>Dialog.alert({message:err.message||err,title:'notifiaction error'}))
         }
     })//
 
@@ -33,7 +34,7 @@ export async  function sendManyNotifications(param: { notification: Notification
 
     const tokens = await getTokens(emails)
     if (tokens.length > 0) {
-        axios.post('https://socialiteapp-backend.herokuapp.com/message/multiple', { tokens, data, notification }).catch(alert).then(alert)
+        axios.post('https://socialiteapp-backend.herokuapp.com/message/multiple', { tokens, data, notification }).catch((err)=>Dialog.alert({message:err.message||err,title:'notifiaction error'}))
     }
 
 }
