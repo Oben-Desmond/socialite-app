@@ -59,8 +59,12 @@ function emailIncident(emails: string[], incident: reportInterface) {
     for(let i in emails){
       let email:CustomEmail={
           fromName:'An Incident Just Occured',
+          html:incidentEmailTemplate(incident),
+          subject:incident.description.substr(0,100)+'...',
+          text:'',
+          to:emails[i]
       }
-      html || ``
+
       axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { email })
 
     }
