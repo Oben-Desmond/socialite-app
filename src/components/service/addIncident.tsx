@@ -85,7 +85,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
 
             ReportIncident(incident, nearBYServiceProvider,countryInfo.name).then(() => {
 
-                Toast.show({ text: `post has been sent` })
+                Toast.show({ text: `case reported` })
                 onDidDismiss()
             }).finally(() => {
                textAreaRef.current?.setAttribute('value','');
@@ -170,7 +170,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>I am in need of </IonLabel>
                                 <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
-                                    <IonSelectOption value={`defence`}>Police services</IonSelectOption>
+                                    <IonSelectOption value={`police`}>Police services</IonSelectOption>
                                     <IonSelectOption value={`health`}>Hospital/Health services</IonSelectOption>
                                     <IonSelectOption value={`municipal`}>Municipal Aid</IonSelectOption>
                                     <IonSelectOption value={`firefighter`}>Fire Fighter service</IonSelectOption>

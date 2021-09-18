@@ -58,7 +58,7 @@ const AdminPanel: React.FC = function () {
         try {
 
 
-            let query1 = fstore.collection('service-accounts').doc(available_entry.name).collection(account.type).doc(account.code).set(available_entry);
+            let query1 = fstore.collection('service-accounts').doc(account.country).collection(account.type).doc(account.code).set(available_entry);
             let query2 = fstore.collection('business').doc(account.country + '-' + account.code).set(account);
 
             await Promise.all([query1, query2]);

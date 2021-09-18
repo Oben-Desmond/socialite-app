@@ -2,7 +2,7 @@ import { Dialog } from "@capacitor/dialog";
 import { accountInterface, availableAccount } from "../../components/service/serviceTypes";
 import { reportInterface } from "../../interfaces/reportTypes";
 import { UserInterface } from "../../interfaces/users";
-import { db, fstore } from "../Firebase";
+import { db, fstore, storage } from "../Firebase";
 import axios from "axios";
 import { scheduleNotif } from "../../components/notifications/notifcation";
 import { CustomEmail } from "../../interfaces/emailtypes";
@@ -11,7 +11,7 @@ import { sendNotification } from "./notifications";
 
 
 export function getServicesNearBy(place: string, category: string) {
-    return (new Promise((resolve, reject) => {
+    return (new Promise(async (resolve, reject) => {
         console.log(`business/${place}/${category}`)
 
         fstore.collection(`service-accounts`).doc(place).collection(category).get().then(snapshot => {
@@ -28,14 +28,21 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
     let emails: string[] = [], em = nearByServices.map(p => p.emails);
     em.map(eml => {
         emails = [...emails, ...eml];
+
     })
+    const urls:any[]= await uploadImages(incident.images, incident.author,incident.country)
+    incident={
+        ...incident, images:urls
+    }
     const provider_queries = nearByServices.map(provider => {
         return fstore.collection('business').doc(`${country}-${provider.code}`).collection('reports').add(incident);
     })
+
     const reporter_query = fstore.collection('users').doc(`${incident.author}`).collection('reports').doc(incident.id).set(incident);
+    alert(JSON.stringify(emails))
     emailIncident(emails, incident)
 
-    scheduleNotif();
+    // scheduleNotif();
     return (Promise.all([reporter_query, provider_queries]))
 }
 
@@ -57,32 +64,53 @@ export async function markThisIncidentAsRead(report: reportInterface, serviceAcc
 
 function emailIncident(emails: string[], incident: reportInterface) {
 
-    for(let i in emails){
-      let email:CustomEmail={
-          fromName:'An Incident Just Occured',
-          html:incidentEmailTemplate(incident),
-          subject:incident.description.substr(0,100)+'...',
-          text:'',
-          to:emails[i]
-      }
+    for (let i in emails) {
+        let email: CustomEmail = {
+            fromName: 'An Incident Just Occured',
+            html: incidentEmailTemplate(incident),
+            subject: incident.description.substr(0, 100) + '...',
+            text: '',
+            to: emails[i]
+        }
 
-      axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { email })
-      sendNotification({
-          data:{
-              id:incident.id,
-              type:'report',
-          },
-          email:emails[i],
-          notification:{
-              body:incident.description,
-              image:incident.images.length>0?incident.images[0]:'https://media.istockphoto.com/photos/closeup-of-kids-helmet-and-bike-on-a-pedestrian-lines-after-danger-picture-id1060880044?s=612x612',
-              title:'New Incident reported by '+incident.username
-          }
-      })
+        axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { email })
+        sendNotification({
+            data: {
+                id: incident.id,
+                type: 'report',
+            },
+            email: emails[i],
+            notification: {
+                body: incident.description,
+                image: incident.images.length > 0 ? incident.images[0] : 'https://media.istockphoto.com/photos/closeup-of-kids-helmet-and-bike-on-a-pedestrian-lines-after-danger-picture-id1060880044?s=612x612',
+                title: 'New Incident reported by ' + incident.username
+            }
+        })
 
     }
 }
 
+
+function uploadImages(images: string[], user: string, country: string) {
+    try {
+
+        const queries = images.map((image) => {
+
+            return fetch(image).then(async res => {
+                let blob = await res.blob();
+                let uploadTask = storage.ref('reports').child(country).child(user).child((new Date()).toDateString()).put(blob);
+                return (await uploadTask).ref.getDownloadURL()
+            })
+        })
+
+        return Promise.all(queries)
+    }
+    catch (err) {
+        alert(err.message || err);
+    }
+    return new Promise((resolve) => resolve([]));
+
+}
 
 function incidentEmailTemplate(incident: reportInterface) {
     return (
