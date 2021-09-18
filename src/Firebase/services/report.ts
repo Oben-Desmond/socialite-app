@@ -30,9 +30,9 @@ export async function ReportIncident(incident: reportInterface, nearByServices: 
         emails = [...emails, ...eml];
 
     })
-    const urls:any= await uploadImages(incident.images, incident.author,incident.country)
-    incident={
-        ...incident, images:urls
+    const urls: any = await uploadImages(incident.images, incident.author, incident.country)
+    incident = {
+        ...incident, images: urls
     }
     const provider_queries = nearByServices.map(provider => {
         return fstore.collection('business').doc(`${country}-${provider.code}`).collection('reports').add(incident);
@@ -94,13 +94,12 @@ function emailIncident(emails: string[], incident: reportInterface) {
 function uploadImages(images: string[], user: string, country: string) {
     try {
 
-        const queries = images.map((image) => {
+        const queries = images.map(async (image) => {
 
-            return fetch(image).then(async res => {
-                let blob = await res.blob();
-                let uploadTask = storage.ref('reports').child(country).child(user).child((new Date()).toDateString()).put(blob);
-                return (await uploadTask).ref.getDownloadURL()
-            })
+            let blob = await(await fetch(image)).blob();
+            let uploadTask = storage.ref('reports').child(country).child(user).child((new Date()).toDateString()).put(blob);
+            return (await uploadTask).ref.getDownloadURL()
+
         })
 
         return Promise.all(queries)
