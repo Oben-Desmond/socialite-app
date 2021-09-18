@@ -5,6 +5,7 @@ import { UserInterface } from "../../interfaces/users";
 import { fstore } from "../Firebase";
 import axios from "axios";
 import { scheduleNotif } from "../../components/notifications/notifcation";
+import { CustomEmail } from "../../interfaces/emailtypes";
 
 
 
@@ -55,7 +56,14 @@ export async function markThisIncidentAsRead(report: reportInterface, serviceAcc
 
 function emailIncident(emails: string[], incident: reportInterface) {
 
-    axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { emails, incident })
+    for(let i in emails){
+      let email:CustomEmail={
+          fromName:'An Incident Just Occured',
+      }
+      html || ``
+      axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { email })
+
+    }
 }
 
 
@@ -77,8 +85,8 @@ function incidentEmailTemplate(incident: reportInterface) {
         div.chip {
             padding: 6px;
             max-width: max-content;
-            border: 1px solid orange;
-            color: orange;
+            border: 1px solid red;
+            color: red;
             border-radius: 30px;
             font-size: 13px;
         }
