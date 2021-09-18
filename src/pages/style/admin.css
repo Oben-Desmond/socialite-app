@@ -1,0 +1,7 @@
+.admin *{
+    -ion-color-primary: var(-ion-color-secondary)
+}
+
+.admin ion-input{
+    font-family: Comfortaa;
+}

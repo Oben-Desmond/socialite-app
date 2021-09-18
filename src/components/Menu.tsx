@@ -21,7 +21,7 @@ import {
 } from '@ionic/react';
 
 import { useHistory, useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, peopleOutline, personOutline, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, people, peopleOutline, personOutline, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 import { Pictures } from '../pages/images/images';
 import { useEffect, useState } from 'react';
@@ -75,8 +75,8 @@ const appPages: AppPage[] = [
   {
     title: 'Admin',
     url: '/admin',
-    iosIcon: flagOutline,
-    mdIcon: flagOutline
+    iosIcon: peopleOutline,
+    mdIcon: peopleOutline
   },
 
 
@@ -183,7 +183,7 @@ const Menu: React.FC = () => {
   }
   return (
     <IonMenu className={`menu`} contentId="main" type="overlay">
-      <IonToolbar color={`none`}>
+      <IonToolbar style={{minHeight:'20vh'}} color={`none`}>
         <div className={`country-flag`}>
           <IonImg src={user?.photoUrl || Pictures.bg} />
         </div>
