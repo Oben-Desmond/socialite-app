@@ -2,10 +2,11 @@ import { Dialog } from "@capacitor/dialog";
 import { accountInterface, availableAccount } from "../../components/service/serviceTypes";
 import { reportInterface } from "../../interfaces/reportTypes";
 import { UserInterface } from "../../interfaces/users";
-import { fstore } from "../Firebase";
+import { db, fstore } from "../Firebase";
 import axios from "axios";
 import { scheduleNotif } from "../../components/notifications/notifcation";
 import { CustomEmail } from "../../interfaces/emailtypes";
+import { sendNotification } from "./notifications";
 
 
 
@@ -66,6 +67,18 @@ function emailIncident(emails: string[], incident: reportInterface) {
       }
 
       axios.post('https://socialiteapp-backend.herokuapp.com/email/custom', { email })
+      sendNotification({
+          data:{
+              id:incident.id,
+              type:'report',
+          },
+          email:emails[i],
+          notification:{
+              body:incident.description,
+              image:incident.images.length>0?incident.images[0]:'https://media.istockphoto.com/photos/closeup-of-kids-helmet-and-bike-on-a-pedestrian-lines-after-danger-picture-id1060880044?s=612x612',
+              title:'New Incident reported by '+incident.username
+          }
+      })
 
     }
 }
