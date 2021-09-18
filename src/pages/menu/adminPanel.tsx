@@ -6,6 +6,13 @@ import "../style/admin.css";
 const AdminPanel: React.FC = function () {
     const [generated, setgenerated] = useState(Math.floor(Math.random() * 1000000).toString());
     const [permitted, setpermitted] = useState<string[]>([]);
+    const [type, settype] = useState('police');
+    const [country, setcountry] = useState('South Africa');
+    const [company, setcompany] = useState('');
+    const [contact, setcontact] = useState('');
+    const [code, setcode] = useState(Math.floor(Math.random() * 1000000).toString());
+ 
+ 
     function PermittedChange(e: any) {
         let str = e.detail.value || '';
         if (str[str.length - 1] == ' ' || str[str.length - 1] == ',' || str[str.length - 1] == '\n') {
@@ -40,19 +47,19 @@ const AdminPanel: React.FC = function () {
                         <IonItem  >
 
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} >
-                                Business Category
+                                Account Type
                                  </IonLabel>
-                            <IonSelect slot='end' interface='action-sheet' >
-                                <IonSelectOption>
+                            <IonSelect value={type} onIonChange={(e) => settype(e.detail.value || '')} slot='end' interface='action-sheet' >
+                                <IonSelectOption value='police'>
                                     Police
                                 </IonSelectOption>
-                                <IonSelectOption>
+                                <IonSelectOption value='health'>
                                     Health Care
                                 </IonSelectOption>
-                                <IonSelectOption>
+                                <IonSelectOption value='municipal'>
                                     Municipality
                                 </IonSelectOption>
-                                <IonSelectOption>
+                                <IonSelectOption value='company'>
                                     Company
                                 </IonSelectOption>
                             </IonSelect>
@@ -61,28 +68,28 @@ const AdminPanel: React.FC = function () {
 
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} >
                                 Country   </IonLabel>
-                            <IonSelect slot='end' interface='action-sheet' >
-                                <IonSelectOption>
+                            <IonSelect slot='end' interface='action-sheet' value={country} onIonChange={(e) => setcountry(e.detail.value || '')} >
+                                <IonSelectOption value='South Africa'>
                                     South Africa  </IonSelectOption>
-                                <IonSelectOption>
+                                <IonSelectOption value='Cameroon'>
                                     Cameroon </IonSelectOption>
-                                <IonSelectOption>
+                                <IonSelectOption value='Nigeria'>
                                     Nigeria</IonSelectOption>
-                                <IonSelectOption>
+                                <IonSelectOption value='Ghana'>
                                     Ghana    </IonSelectOption>
                             </IonSelect>
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'>Company Name</IonLabel>
-                            <IonInput onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} ></IonInput>
+                            <IonInput value={company} onIonChange={(e) => setcompany(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} ></IonInput>
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'>Emergency Contact</IonLabel>
-                            <IonInput onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }}></IonInput>
+                            <IonInput value={contact} onIonChange={(e) => setcontact(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }}></IonInput>
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'> 6 Digit Code</IonLabel>
-                            <IonInput onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} value={generated} onIonChange={(e) => setgenerated(e.detail.value || '')} ></IonInput>
+                            <IonInput value={code} onIonChange={(e) => setcode(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} ></IonInput>
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'> permitted users</IonLabel>
