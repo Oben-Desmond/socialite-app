@@ -64,7 +64,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
 
                         <IonButtons  >
                             <IonButton onClick={()=>setliked(!liked)} color={`light`}>
-                                <IonIcon slot='start' color={!liked?'primary':'secondary'} icon={!liked?thumbsUpOutline:thumbsUp}></IonIcon>
+                                <IonIcon slot='start' color={!liked?'light':'secondary'} icon={!liked?thumbsUpOutline:thumbsUp}></IonIcon>
                                 <IonLabel>
                                     {
                                         post.likes?.length
@@ -72,7 +72,7 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
                                 </IonLabel>
                             </IonButton>
                             <IonButton onClick={()=>setdisliked(!disliked)} color={`light`}>
-                                <IonIcon slot='start' color={!liked?'primary':'secondary'} icon={thumbsDownOutline}></IonIcon>
+                                <IonIcon slot='start' color={!disliked?'light':'secondary'} icon={thumbsDownOutline}></IonIcon>
                                 <IonLabel>
                                     {
                                         post.dislikes?.length
