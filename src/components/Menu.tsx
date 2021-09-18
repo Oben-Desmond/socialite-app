@@ -21,7 +21,7 @@ import {
 } from '@ionic/react';
 
 import { useHistory, useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, people, peopleOutline, personOutline, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, hammerOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, people, peopleOutline, personOutline, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 import { Pictures } from '../pages/images/images';
 import { useEffect, useState } from 'react';
@@ -75,8 +75,8 @@ const appPages: AppPage[] = [
   {
     title: 'Admin',
     url: '/admin',
-    iosIcon: peopleOutline,
-    mdIcon: peopleOutline
+    iosIcon:hammerOutline,
+    mdIcon:hammerOutline
   },
 
 

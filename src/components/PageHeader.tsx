@@ -1,5 +1,5 @@
  
-import { IonHeader, IonToolbar, IonMenuButton, IonButton, IonTitle, IonButtons, IonLabel } from '@ionic/react';
+import { IonHeader, IonToolbar, IonMenuButton, IonButton, IonTitle, IonButtons, IonLabel, IonBadge } from '@ionic/react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { countryInfoInterface } from '../interfaces/country';
@@ -15,7 +15,11 @@ function PageHeader() {
         <div>
                <div style={{height:`25px`,background:`var(--ion-color-primary)`}} className="status-bar"></div>
                 <IonToolbar color={`primary`} >
-                    <IonMenuButton slot={`start`}></IonMenuButton>
+                    <IonMenuButton slot={`start`}>
+                    </IonMenuButton>
+                    <IonBadge style={{transform:'translate(-14px,0)',borderRadius:'50%',}} slot='start' color='danger'>
+                        <div style={{width:'1px',height:'3px'}}></div>
+                    </IonBadge>
                     <IonButton fill={`outline`} size={`small`} slot={`end`} routerLink={`/report`} color={`danger`}>REPORT</IonButton>
                     <IonTitle> Socionet</IonTitle>
                     {/* <IonButtons className={`weather`} slot={`end`}>

@@ -1,7 +1,10 @@
 import { CustomEmail } from "../../interfaces/emailtypes";
 import { PostInterface } from "../../interfaces/posts";
 import { UserInterface } from "../../interfaces/users";
+import { db } from "../Firebase";
 import { sendNotification } from "./notifications";
+import * as uuid from "uuid";
+import { dbReactionNotification } from "../../interfaces/notifications";
 
 export function sendCommentReaction(text = '', user: UserInterface, post: PostInterface) {
 
@@ -18,7 +21,7 @@ export function sendCommentReaction(text = '', user: UserInterface, post: PostIn
         }
 
     })
-    sendReactionEmail({text,user,post})
+    sendReactionEmail({ text, user, post })
 
 }
 
@@ -39,12 +42,22 @@ export function sendReactionNotificaton(text = '', user: UserInterface, post: Po
         }
 
     })
-    sendReactionEmail({text,user,post})
+    sendReactionEmail({ text, user, post })
+    const notif_id = uuid.v4();
+    const dbnotification: dbReactionNotification = {
+        sender: user.email,
+        sender_photo: user.photoUrl,
+        message: user.name + ' recently reacted to your post',
+        post_id: post.id,
+        timestamp: Date.now(),
+        id: notif_id
+    }
+    db.ref('notifications').child(post.email).child(notif_id).push(dbnotification)
 
 }
 
-export function sendReactionEmail(props: { user: UserInterface, post: PostInterface, text:string }) {
-    const { user, post,text } = props
+export function sendReactionEmail(props: { user: UserInterface, post: PostInterface, text: string }) {
+    const { user, post, text } = props
     let email: CustomEmail = {
         fromName: user.name + ' on Socionet says...',
         html: `
