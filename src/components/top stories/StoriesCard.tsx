@@ -201,6 +201,8 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
 
         }
+        sendReactionNotificaton('',user,post);
+
         newPostLikes = newPostLikes.filter((email, index) => (!newPostLikes.includes(email, index + 1)))
         fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ likes: newPostLikes });
         setpostLikes(newPostLikes);

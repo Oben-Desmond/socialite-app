@@ -1,5 +1,5 @@
 import { IonAvatar, IonButton, IonButtons, IonCardSubtitle, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonRefresher, IonRefresherContent, IonText, IonToolbar } from '@ionic/react';
-import { add, thumbsDownOutline, thumbsUpOutline } from 'ionicons/icons';
+import { add, thumbsDownOutline, thumbsUp, thumbsUpOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
@@ -106,7 +106,49 @@ export default Events;
 
 const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
     const [openNotice, setopenNotice] = useState(false)
-    const user: UserInterface = useSelector(selectUser)
+    const [readmore, setreadmore] = useState<boolean>(false);
+    const [liked, setliked] = useState(false);
+    const [postLikes, setpostLikes] = useState(post.likes);
+    const [postDislikes, setpostDislikes] = useState(post.dislikes);
+    const [disliked, setdisliked] = useState(false);
+    const user: UserInterface = useSelector(selectUser);
+
+    useEffect(() => {
+        if ((post.likes || []).filter(email => (email == user.email)).length > 0) {
+            setliked(true)
+        }
+        else {
+            setliked(false)
+        }
+        if ((post.dislikes || []).filter(email => (email == user.email)).length > 0) {
+            setdisliked(true)
+        }
+        else {
+            setdisliked(false)
+        }
+    }, [])
+    function likePost() {
+        let newPostLikes = [...(post.likes || []), user.email]
+        if (liked) {
+            newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
+
+        }
+        newPostLikes = newPostLikes.filter((email, index) => (!newPostLikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ likes: newPostLikes });
+        setpostLikes(newPostLikes);
+        setliked(!liked);
+    }
+    function disLikePost() {
+        let newpostDislikes = [...(post.dislikes || []), user.email]
+        if (!disliked) {
+            newpostDislikes = [...(post.dislikes || []).filter(email => !(email == user.email))];
+
+        }
+        newpostDislikes = newpostDislikes.filter((email, index) => (!newpostDislikes.includes(email, index + 1)))
+        fstore.collection(`posts/${post.location}/feed`).doc(post.id).update({ dislikes: newpostDislikes });
+        setpostDislikes(newpostDislikes);
+        setdisliked(!disliked);
+    }
     return (
         <div onClick={() => setopenNotice(true)} style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
             <IonToolbar className='image-container'>
@@ -125,14 +167,23 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
                         <IonText color='light'>
                             {post.author_name}
                         </IonText>
-                        <IonButtons slot='end'>
-                            <IonButton color='light' >
-                                <IonLabel></IonLabel>
-                                <IonIcon icon={thumbsUpOutline}></IonIcon>
+                        
+                        <IonButtons slot='end' >
+                            <IonButton onClick={() => { likePost() }} color={`light`}>
+                                <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
+                                <IonLabel>
+                                    {
+                                        postLikes?.length
+                                    }
+                                </IonLabel>
                             </IonButton>
-                            <IonButton color='light'>
-                                <IonLabel></IonLabel>
-                                <IonIcon icon={thumbsDownOutline}></IonIcon>
+                            <IonButton onClick={() => { disLikePost() }} color={`light`}>
+                                <IonIcon slot='start' color={!disliked ? 'light' : 'secondary'} icon={thumbsDownOutline}></IonIcon>
+                                <IonLabel>
+                                    {
+                                        postDislikes?.length
+                                    }
+                                </IonLabel>
                             </IonButton>
                         </IonButtons>
                     </IonItem>
