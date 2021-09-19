@@ -52,6 +52,8 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     }, [])
     function likePost() {
         let newPostLikes = [...(post.likes || []), user.email]
+        sendReactionNotificaton('', user, post);
+
         if (liked) {
             newPostLikes = [...(post.likes || []).filter(email => !(email == user.email))];
 
