@@ -1,51 +1,78 @@
-import { IonContent, IonLabel, IonPage, IonRange } from "@ionic/react";
-import React, { FC, useEffect, useState } from "react";
+import React from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { IonContent, IonPage } from '@ionic/react';
 
-import GoogleMapReact from 'google-map-react';
-import './style/ripple.css';
-import { useSelector } from "react-redux";
-import { selectLocation } from "../states/reducers/location-reducer";
+const Maps = () => {
 
-const Maps: FC = function () {
-    const location=useSelector(selectLocation)
+    const mapStyles = {
+        height: "100vh",
+        width: "100%"
+    };
 
-    const [defaultProps, setdefaultProps] = useState({
-        center: {
-            lat: location.lat,
-            lng: location.long
-        },
-        zoom: 18
-    });
+    const defaultCenter = {
+        lat: 41.3851, lng: 2.1734
+    }
 
-    useEffect(() => {
-        console.log(location)
-        setdefaultProps({...defaultProps, center:{lat:location.lat, lng:location.long}})
-    }, [location])
     return (
         <IonPage>
             <IonContent>
-                <IonLabel>Maps</IonLabel>
-                <IonRange max={18} value={defaultProps.zoom}  onIonChange={(e:any)=>setdefaultProps({...defaultProps,zoom:(e.target.value)})} min={5} ></IonRange>
-                <GoogleMapReact
-                    bootstrapURLKeys={{ key: `AIzaSyBLuEonWXa8ftaMsTUbKkbY6viRboNkxrg` }}
-                    defaultCenter={defaultProps.center}
-                    defaultZoom={defaultProps.zoom}
-                >
-                    <AnyReactComponent
-                        lat={location.lat||defaultProps.center.lat}
-                        lng={location.long||defaultProps.center.lng}
-                        text="My Marker"
-                    />
-                </GoogleMapReact>
+                <LoadScript
+                    googleMapsApiKey='AIzaSyBLuEonWXa8ftaMsTUbKkbY6viRboNkxrg'>
+                    <GoogleMap
+                        mapContainerStyle={mapStyles}
+                        zoom={13}
+                        center={defaultCenter}
+                    >
+                        {
+                            locations.map(item => {
+                                return (
+                                    <Marker key={item.name} position={item.location} />
+                                )
+                            })
+                        }
+                    </GoogleMap>
+                </LoadScript>
             </IonContent>
-
         </IonPage>
     )
 }
 
+export default Maps;
 
-
-
-const AnyReactComponent = (props: { lat: number; lng: number; text: string; }) => <div className="ripple"></div>;
-
-export default Maps
+const locations = [
+    {
+        name: "Location 1",
+        location: {
+            lat: 41.3954,
+            lng: 2.162
+        },
+    },
+    {
+        name: "Location 2",
+        location: {
+            lat: 41.3917,
+            lng: 2.1649
+        },
+    },
+    {
+        name: "Location 3",
+        location: {
+            lat: 41.3773,
+            lng: 2.1585
+        },
+    },
+    {
+        name: "Location 4",
+        location: {
+            lat: 41.3797,
+            lng: 2.1682
+        },
+    },
+    {
+        name: "Location 5",
+        location: {
+            lat: 41.4055,
+            lng: 2.1915
+        },
+    }
+];
