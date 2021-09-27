@@ -10,7 +10,9 @@ export interface PostInterface {
      id: string,
      email: string,
      likes?:string[],
-     dislikes?:string[]
+     dislikes?:string[],
+     coords?:number[]
+
 }
 
 

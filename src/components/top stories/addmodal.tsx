@@ -14,6 +14,7 @@ import { StoreStateInteface } from "../../interfaces/redux";
 import { countryInfoInterface } from "../../interfaces/country";
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from "../PhotoOptionsModal";
 import { Dialog } from "@capacitor/dialog";
+import { selectLocation } from "../../states/reducers/location-reducer";
 
 
 
@@ -25,6 +26,7 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
     const countryInfo: countryInfoInterface = rootState.countryReducer
     const [images, setimages] = useState<any[]>([]);
     const contentRef= useRef<HTMLIonContentElement>(null)
+    const locationInfo:{long:number, lat:number}= useSelector(selectLocation)
 
     const [loading, setloading] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
@@ -48,7 +50,7 @@ const Addmodal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = ({ onD
         if (user.email) {
             setloading(true)
 
-            UploadContent(data, images, user, countryInfo).then(() => {
+            UploadContent(data, images, user, countryInfo, locationInfo).then(() => {
                  
                 Toast.show({ text: `post has been sent` })
                 onDidDismiss()

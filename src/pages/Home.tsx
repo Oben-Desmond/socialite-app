@@ -199,7 +199,7 @@ const Home: React.FC = function () {
                 {stories.length > 0 && !noData &&
 
                     stories.map((post, index) => {
-                        return (
+                      return (
                             <StoriesCard key={post.id} post={post}></StoriesCard>
                         )
                     })
