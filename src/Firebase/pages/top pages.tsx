@@ -3,15 +3,11 @@ import { countryInfoInterface } from "../../interfaces/country"
 import { PostInterface } from "../../interfaces/posts"
 import { UserInterface } from "../../interfaces/users"
 import { fstore, storage } from "../Firebase"
-import  geofire  from "geofire-common";
+import geofire, { geohashForLocation } from "geofire-common";
 
 export async function UploadContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined, location: { long: number, lat: number }) {
 
-    console.log([location.lat, location.long])
-    console.log( geofire.geohashForLocation([location.lat, location.long]))
-    return
-    const hash = geofire.geohashForLocation([location.lat, location.long]);
-    alert(hash)
+    const hash = geohashForLocation([location.lat, location.long])
 
     const country_name = country?.name || `South Africa`;
     const post: PostInterface = {
