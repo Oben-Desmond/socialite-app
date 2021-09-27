@@ -3,8 +3,15 @@ import { countryInfoInterface } from "../../interfaces/country"
 import { PostInterface } from "../../interfaces/posts"
 import { UserInterface } from "../../interfaces/users"
 import { fstore, storage } from "../Firebase"
+import  geofire  from "geofire-common";
 
-export async function UploadContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined, location:{long:number, lat:number}) {
+export async function UploadContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined, location: { long: number, lat: number }) {
+
+    console.log([location.lat, location.long])
+    console.log( geofire.geohashForLocation([location.lat, location.long]))
+    return
+    const hash = geofire.geohashForLocation([location.lat, location.long]);
+    alert(hash)
 
     const country_name = country?.name || `South Africa`;
     const post: PostInterface = {
@@ -17,7 +24,8 @@ export async function UploadContent(data: { category: string, title: string, sto
         author_url: user.photoUrl,
         id: Date.now() + user.email,
         email: user.email,
-        coords:[location.lat, location.long]
+        coords: [location.lat, location.long],
+        geohash: hash
     }
     return (new Promise(async (resolve, reject) => {
 
@@ -109,21 +117,21 @@ export async function UploadEventContent(data: { category: string, title: string
 }
 
 
-export function fetchPostById(id:string, country:string, callBack: (val:PostInterface|any)=>void, failed:(err:any)=>void){
-     
-        fstore.collection(`posts`).doc(country).collection(`feed`).doc(id)
-        .get().then(snapshot=>{
-            if(snapshot.data()){
+export function fetchPostById(id: string, country: string, callBack: (val: PostInterface | any) => void, failed: (err: any) => void) {
+
+    fstore.collection(`posts`).doc(country).collection(`feed`).doc(id)
+        .get().then(snapshot => {
+            if (snapshot.data()) {
                 callBack(snapshot.data());
                 return
             }
-            failed({message:`no data`})
-            Dialog.alert({title:`Error getting Post`,message:`Post does not Exist. it may have been deleted`})
-        }).catch((err)=>{
-            Dialog.alert({title:`Error getting Post`,message:err.message||err||``})
+            failed({ message: `no data` })
+            Dialog.alert({ title: `Error getting Post`, message: `Post does not Exist. it may have been deleted` })
+        }).catch((err) => {
+            Dialog.alert({ title: `Error getting Post`, message: err.message || err || `` })
             failed(err)
         })
-     
+
 }
 
 export { };
