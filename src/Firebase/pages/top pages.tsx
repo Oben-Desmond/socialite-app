@@ -4,7 +4,7 @@ import { PostInterface } from "../../interfaces/posts"
 import { UserInterface } from "../../interfaces/users"
 import { fstore, storage } from "../Firebase"
 
-export async function UploadContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined) {
+export async function UploadContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined, location:{long:number, lat:number}) {
 
     const country_name = country?.name || `South Africa`;
     const post: PostInterface = {
@@ -16,7 +16,8 @@ export async function UploadContent(data: { category: string, title: string, sto
         author_name: user.name,
         author_url: user.photoUrl,
         id: Date.now() + user.email,
-        email: user.email
+        email: user.email,
+        coords:[location.lat, location.long]
     }
     return (new Promise(async (resolve, reject) => {
 
