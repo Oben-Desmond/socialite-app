@@ -47,6 +47,7 @@ import AppUrlListener from './components/deep-linking/AppUrlListener';
 import ReportAnIncident from './pages/ReportAnIncident';
 import Profile from './pages/menu/Profile';
 import AdminPanel from './pages/menu/adminPanel';
+import Maps from './pages/maps';
 
 const App: React.FC = () => {
 
@@ -101,6 +102,7 @@ const App: React.FC = () => {
         <Route path="/admin" component={AdminPanel} exact={true} />
         <Route path="/signup" component={SignUp} exact={true} />
         <Route path="/profile" component={Profile} exact={true} />
+        <Route path="/maps" component={Maps} exact={true} />
         <Route path="/incident-report" component={IncidentReport} exact={true} />
         <Route path="/report" component={ReportAnIncident} exact={true} />
         
