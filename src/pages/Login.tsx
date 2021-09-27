@@ -86,9 +86,7 @@ const Login: React.FC = () => {
                         </IonList>
 
                     </form>
-                    <IonButton routerLink={`/maps`} color={`danger`}>
-                        <IonIcon icon={locateOutline}/>
-                    </IonButton>
+                    
                 </IonList>
 
             </IonContent>
