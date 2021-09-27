@@ -11,7 +11,8 @@ export interface PostInterface {
      email: string,
      likes?:string[],
      dislikes?:string[],
-     coords?:number[]
+     coords?:number[],
+     geohash?:string
 
 }
 
