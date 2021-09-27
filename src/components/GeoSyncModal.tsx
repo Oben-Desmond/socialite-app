@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Circle, GoogleMap, InfoWindow, LoadScript, Marker } from '@react-google-maps/api';
-import { IonButton, IonButtons, IonCardHeader, IonCardSubtitle, IonContent, IonFooter, IonItem, IonPage, IonRange, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCardHeader, IonCardSubtitle, IonContent, IonFooter, IonItem, IonModal,  IonPage, IonRange, IonToolbar } from '@ionic/react';
 import { selectLocation } from '../states/reducers/location-reducer';
 import { useSelector } from 'react-redux';
 
-const Maps = () => {
+interface GeoSyncModal{
+   isOpen:boolean,
+   onDidDismiss:(val:number)=>void,
+
+}
+
+const GeoSyncModal:React.FC<GeoSyncModal> = ({isOpen, onDidDismiss}) => {
     const location: { long: number, lat: number } = useSelector(selectLocation)
     const [distance, setdistance] = useState(500)
-    const [selected, setselected] = useState<{location:{lng:number,lat:number},name:string}|undefined>()
+    const [selected, setselected] = useState<{ location: { lng: number, lat: number }, name: string } | undefined>()
 
     const mapStyles = {
         height: "100vh",
@@ -22,7 +28,7 @@ const Maps = () => {
     }, [location])
 
     return (
-        <IonPage>
+        <IonModal  isOpen={isOpen} onDidDismiss={()=>onDidDismiss(distance)}>
             <IonContent>
                 <LoadScript
                     googleMapsApiKey='AIzaSyBLuEonWXa8ftaMsTUbKkbY6viRboNkxrg'>
@@ -32,7 +38,7 @@ const Maps = () => {
                         center={defaultCenter}
 
 
-                    >  <Marker onClick={()=>setselected({location:defaultCenter,name:`your current location`})} clickable position={defaultCenter} options={{}} />
+                    >  <Marker onClick={() => setselected({ location: defaultCenter, name: `your current location` })} clickable position={defaultCenter} options={{}} />
                         <Circle
                             center={defaultCenter}
                             radius={distance}
@@ -45,7 +51,7 @@ const Maps = () => {
                             (
                                 <InfoWindow
                                     position={selected.location}
-                                   
+
                                     onCloseClick={() => setselected(undefined)}
                                 >
                                     <p>{selected.name}</p>
@@ -59,16 +65,16 @@ const Maps = () => {
                 <IonToolbar>
                     <IonItem lines={`none`}>
                         <IonCardSubtitle>Sync feed to  {distance} kilometers</IonCardSubtitle>
-                        <IonButton color={`secondary`}  slot={`end`} >Sync</IonButton>
+                        <IonButton color={`secondary`} slot={`end`} >Sync</IonButton>
                     </IonItem>
-                    <IonRange step={10}  ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange>
+                    <IonRange step={10} ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange>
                 </IonToolbar>
             </IonFooter>
-        </IonPage>
+        </IonModal>
     )
 }
 
-export default Maps;
+export default GeoSyncModal;
 
 const locations = [
     {

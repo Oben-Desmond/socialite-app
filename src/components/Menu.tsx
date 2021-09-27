@@ -182,7 +182,7 @@ const Menu: React.FC = () => {
 
   }
   return (
-    <IonMenu className={`menu`} contentId="main" type="overlay">
+    <IonMenu swipeGesture={false} className={`menu`} contentId="main" type="overlay">
       <IonToolbar style={{minHeight:'20vh'}} color={`none`}>
         <div className={`country-flag`}>
           <IonImg src={user?.photoUrl || Pictures.bg} />

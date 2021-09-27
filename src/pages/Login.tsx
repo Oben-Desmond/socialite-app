@@ -1,6 +1,6 @@
 // @flow strict
 import { IonButton, IonCard, IonCardHeader, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonLoading, IonNote, IonPage, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
-import { arrowForward, keyOutline, lockClosedOutline, mailOpenOutline, personOutline } from 'ionicons/icons';
+import { arrowForward, keyOutline, locateOutline, lockClosedOutline, mailOpenOutline, personOutline } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -86,6 +86,9 @@ const Login: React.FC = () => {
                         </IonList>
 
                     </form>
+                    <IonButton routerLink={`/maps`} color={`danger`}>
+                        <IonIcon icon={locateOutline}/>
+                    </IonButton>
                 </IonList>
 
             </IonContent>
