@@ -20,7 +20,7 @@ import { countryInfoInterface } from '../interfaces/country';
 import { Toast } from '@capacitor/toast';
 import { Dialog } from '@capacitor/dialog';
 import { useHistory, useParams } from 'react-router';
-import { fetchPostById } from '../Firebase/pages/top pages';
+import { fetchPostById, getSyncedFeed } from '../Firebase/pages/top pages';
 import { ActionPerformed, LocalNotifications } from '@capacitor/local-notifications';
 import { PushNotifications, PushNotificationSchema, Token } from '@capacitor/push-notifications';
 import { UserInterface } from '../interfaces/users';
@@ -28,6 +28,7 @@ import { selectUser } from '../states/reducers/userReducers';
 import axios from 'axios';
 import { getCountry } from '../states/storage/storage-getters';
 import GeoSyncModal from '../components/GeoSyncModal';
+import { selectLocation } from '../states/reducers/location-reducer';
 
 
 
@@ -39,6 +40,7 @@ const Home: React.FC = function () {
     const [openSinkMap, setopenSinkMap] = useState(false)
     
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
+    const locationInfo: {long:number, lat:number} = useSelector(selectLocation)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const params: { postid: string } = useParams()
     const user: UserInterface = useSelector(selectUser)
@@ -186,6 +188,10 @@ const Home: React.FC = function () {
     useEffect(() => {
         PushNotif();
     }, [])
+    function SyncFeedWithDistance(radius:number){
+        const feed= getSyncedFeed(radius,countryinfo.name,locationInfo);
+        console.log(feed)
+    }
 
 
 
@@ -193,7 +199,7 @@ const Home: React.FC = function () {
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
-                <GeoSyncModal isOpen={openSinkMap} onDidDismiss={()=>setopenSinkMap(false)}></GeoSyncModal>
+                <GeoSyncModal isOpen={openSinkMap} onDidDismiss={radius=>SyncFeedWithDistance(radius)}></GeoSyncModal>
             <IonToolbar>
                     <IonItem lines={`none`}>
                         <IonCardSubtitle>Sync feed to your location</IonCardSubtitle>

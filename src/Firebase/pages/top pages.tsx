@@ -152,7 +152,7 @@ export async function getSyncedFeed(distance: number, country: string, location:
     }
 
     // Collect all the query results together into a single list
-    Promise.all(promises).then((snapshots) => {
+   return  Promise.all(promises).then((snapshots) => {
         const matchingDocs = [];
 
         for (const snap of snapshots) {
@@ -171,9 +171,9 @@ export async function getSyncedFeed(distance: number, country: string, location:
         }
 
         return matchingDocs;
-    }).then((matchingDocs) => {
-        // Process the matching documents
-        // ...
+    }).catch(err=>{
+      Dialog.alert({message:err.message||err, title:'Error Occured'});
+      return []
     });
 
 
