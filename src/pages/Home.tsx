@@ -1,5 +1,5 @@
 // @flow strict
-import { IonButton, IonButtons, IonCardSubtitle, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonImg, IonLabel, IonMenuButton, IonPage, IonRefresher, IonRefresherContent, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCardSubtitle, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenuButton, IonPage, IonRange, IonRefresher, IonRefresherContent, IonTitle, IonToolbar } from '@ionic/react';
 import React, { createContext, useEffect, useRef, useState } from 'react';
 import { WiDaySunny } from "../package/weather-icons-react";
 import "./style/Home.css";
@@ -27,13 +27,17 @@ import { UserInterface } from '../interfaces/users';
 import { selectUser } from '../states/reducers/userReducers';
 import axios from 'axios';
 import { getCountry } from '../states/storage/storage-getters';
+import GeoSyncModal from '../components/GeoSyncModal';
 
 
 
 const Home: React.FC = function () {
     const [addStory, setaddStory] = useState(false)
     const [noData, setnoData] = useState(false)
+    const [distance, setdistance] = useState(500)
     const [stories, setstories] = useState<PostInterface[]>([])
+    const [openSinkMap, setopenSinkMap] = useState(false)
+    
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const params: { postid: string } = useParams()
@@ -189,6 +193,14 @@ const Home: React.FC = function () {
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
+                <GeoSyncModal isOpen={openSinkMap} onDidDismiss={()=>setopenSinkMap(false)}></GeoSyncModal>
+            <IonToolbar>
+                    <IonItem lines={`none`}>
+                        <IonCardSubtitle>Sync feed to your location</IonCardSubtitle>
+                        <IonButton color={`secondary`} onClick={()=>setopenSinkMap(true)} slot={`end`} >Sync</IonButton>
+                    </IonItem>
+                    {/* <IonRange step={10} ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange> */}
+                </IonToolbar>
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getFeed(() => refresherRef.current?.complete())} slot={`fixed`}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
