@@ -18,6 +18,7 @@ import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
 import { UserInterface } from '../interfaces/users';
 import { selectCountry } from '../states/reducers/countryReducer';
+import { selectLocation } from '../states/reducers/location-reducer';
 import { selectUser } from '../states/reducers/userReducers';
 import { getCountry } from '../states/storage/storage-getters';
 import { Pictures } from './images/images';
@@ -33,6 +34,7 @@ const Events: React.FC = function () {
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const params: { postid: string } = useParams()
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
+    const  locationInfo:{long:number, lat:number} = useSelector(selectLocation);
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
