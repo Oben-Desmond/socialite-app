@@ -24,6 +24,7 @@ import { Pictures } from './images/images';
 const PublicNotice: React.FC = function () {
 
     const [addNotice, setaddNotice] = useState(false)
+    const [loaded, setloaded] = useState(false)
     const [notices, setnotices] = useState<PostInterface[]>([])
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const [noData, setnoData] = useState(false)
@@ -31,14 +32,19 @@ const PublicNotice: React.FC = function () {
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const user: UserInterface = useSelector(selectUser);
 
-    useEffect(() => {
-        if (params.postid == `default` || !params.postid) return;
-        setTimeout(() => {
-            getPost(params.postid);
-        }, 1300);
-
-
-    }, [params])
+    useEffect(()=>{
+        if (params.postid == `default` || !params.postid) {
+            if (countryinfo ) {
+                getNotice(()=>{});
+            }
+            setloaded(true);
+            return;
+        }
+        setTimeout(  () => {
+            getPost(params.postid)
+            
+        }, 1200);
+    } , [params])
     async function getPost(postid: string) {
         setnotices([])
 
@@ -58,6 +64,10 @@ const PublicNotice: React.FC = function () {
 
     useEffect(() => {
         console.log(`fetching...`)
+        if(!loaded){
+            setloaded(true);
+            return;
+        }
         if (countryinfo) {
             getNotice(() => { })
         }

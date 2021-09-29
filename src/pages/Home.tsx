@@ -39,6 +39,7 @@ const Home: React.FC = function () {
     const [distance, setdistance] = useState(0)
     const [stories, setstories] = useState<PostInterface[]>([])
     const [openSinkMap, setopenSinkMap] = useState(false)
+    const [loaded, setloaded] = useState(false)
 
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const locationInfo: { long: number, lat: number } = useSelector(selectLocation)
@@ -48,10 +49,17 @@ const Home: React.FC = function () {
     const history = useHistory();
     useEffect(() => {
         
-        if (params.postid == `default` || !params.postid) return;
-        setTimeout(() => {
+        if (params.postid == `default` || !params.postid) {
+            if (countryinfo ) {
+                getFeed(() => { })
+            }
+            setloaded(true);
+            return;
+        }
+        setTimeout(  () => {
             getPost(params.postid)
-        }, 1300);
+            
+        }, 1200);
 
     }, [params])
     async function getPost(postid: string) {
@@ -72,6 +80,10 @@ const Home: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         let unsub = () => { }
+        if(!loaded) {
+            setloaded(true)
+            return
+        }
         if (countryinfo) {
             unsub = getFeed(() => { })
         }
@@ -142,6 +154,7 @@ const Home: React.FC = function () {
 
 
     useEffect(() => {
+
         if (Capacitor.isNative)
             PushNotif(user, history);
     }, [])

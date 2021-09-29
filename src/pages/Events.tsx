@@ -70,7 +70,10 @@ const Events: React.FC = function () {
 
     useEffect(() => {
         console.log(`fetching...`)
-        if(!loaded) return;
+        if(!loaded) {
+            setloaded(true)
+            return
+        };
         if (countryinfo ) {
             getEvent(() => { })
         }
