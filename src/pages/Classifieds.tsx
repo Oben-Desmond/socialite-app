@@ -1,7 +1,7 @@
 // @flow strict
 
 import { Geolocation } from '@capacitor/geolocation';
-import { IonActionSheet, IonAvatar, IonBackdrop, IonBadge, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { IonActionSheet, IonAvatar, IonBackdrop, IonBadge, IonButton, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { add, addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline, sync } from 'ionicons/icons';
 import React, { createContext, useContext, useEffect, useRef , useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,8 +12,10 @@ import { fetchMyItems } from '../components/classified/classifieds-fetch';
 import SearchModal from '../components/classified/searchModal';
 import UploadClassified from '../components/classified/UploadClassified';
 import { fetchItemById, getItemsMatching } from '../components/classified/uploadClassifiedToDB';
+import GeoSyncModal from '../components/GeoSyncModal';
 import SkeletonHome from '../components/top stories/dummy';
 import { fstore } from '../Firebase/Firebase';
+import { getSyncedClassifieds } from '../Firebase/pages/classifieds';
 import { classifiedItemInterface } from '../interfaces/classifiedItems';
 import { PostInterface } from '../interfaces/posts';
 import { UserInterface } from '../interfaces/users';
@@ -40,13 +42,16 @@ const Classifieds: React.FC = () => {
     const user: UserInterface = useSelector(selectUser)
     const favorites = useSelector(selectFavorites)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
+    const [distance, setdistance] = useState<number>(0)
+    const [openSyncMap, setopenSyncMap] = useState(false)
+    const  locationInfo:{long:number, lat:number} = useSelector(selectLocation);
 
 
     const params: { postid: string } = useParams()
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
-        // getPost(params.postid)
+        getPost(params.postid)
 
     }, [params])
     function getPost(postid: string) {
@@ -80,7 +85,7 @@ const Classifieds: React.FC = () => {
         setloading(true)
         console.log(category)
         setsearchTabText(``)
-        return
+         
         if (selectedTab.cat == `latest`) {
             getLatestClassifieds(()=>{})
 
@@ -169,18 +174,34 @@ const Classifieds: React.FC = () => {
         setshowMenu(false)
         setsearchTabText(`Your Favorites`)
     }
+    async function SyncPostWithDistance(radius: number) {
+        setdistance(radius);
+        setnotFound(false)
+        setclassifiedList([])
+        setopenSyncMap(false)
+        setloading(true)
+        const posts: any[] = await getSyncedClassifieds(radius, locationInfo);
+        
+        if (posts.length <= 0) {
+            setnotFound(true)
+        }
+        setclassifiedList([...posts])
+        console.log(posts)
+        setloading(false)
+    }
+   
     return (
         <IonPage className={`classifieds`}>
             <SelectedTabContext.Provider value={[selectedTab, setselectedTab]}>
                 <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
-                {loading && <IonProgressBar color={`secondary`} type={`indeterminate`}></IonProgressBar>}
+                {/* {loading && <IonProgressBar color={`secondary`} type={`indeterminate`}></IonProgressBar>} */}
                 <div className={`header`} style={{ background: `white` }}>
                     <div className="title">
                         <IonLabel>Classifieds</IonLabel>
-                        <div  onClick={() => setshowMenu(true)}>
+                        <div  onClick={() => setopenSyncMap(true)}>
                             <IonButton fill={`clear`}>
                                 <IonIcon icon={sync} />
-                                <IonBadge color={`success`} >20km</IonBadge>
+                                <IonBadge color={`success`} >{distance>0&&distance+`km`}</IonBadge>
                             </IonButton>
                         </div>
                         <div className="menu" onClick={() => setshowMenu(true)}>
@@ -196,6 +217,8 @@ const Classifieds: React.FC = () => {
                     <IonRefresher ref={refresherRef} onIonRefresh={() => getLatestClassifieds(() => refresherRef.current?.complete())} slot={`fixed`}>
                         <IonRefresherContent></IonRefresherContent>
                     </IonRefresher>
+                    <GeoSyncModal displayText={`Sync feed to`} isOpen={openSyncMap} onDidDismiss={radius => { if (radius) SyncPostWithDistance(radius) }}></GeoSyncModal>
+               
                     <IonContent scrollY={false} style={{ height: `45px`, width: `100%` }} scrollX className={`category-tab`}>
                         <div style={{ width: `600vw` }}>
                             <Categories getClassified={getClassified}></Categories>

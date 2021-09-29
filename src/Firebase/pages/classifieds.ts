@@ -8,16 +8,7 @@ export async function getSyncedClassifieds(distance: number,location:{long:numbe
     // Find cities within 50km of London
     const center = [location.lat, location.long];
     const radiusInM = distance;
-    fstore.collection(`classified`).get().then(res=>{
-       const docs:any[]= res.docs.map(doc=>doc.data())
-       let classifieds:classifiedItemInterface[]=docs;
-       classifieds.map(item=>{
-           const geohash= geohashForLocation([item.item_location.lat, item.item_location.long])
-        fstore.collection(`classified`).doc(item.item_id).update({geohash})
-       })
-
-    })
-    return;
+    
     // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
     // a separate query for each pair. There can be up to 9 pairs of bounds
     // depending on overlap, but in most cases there are 4.
@@ -37,8 +28,9 @@ export async function getSyncedClassifieds(distance: number,location:{long:numbe
 
         for (const snap of snapshots) {
             for (const doc of snap.docs) {
-                const lat = doc.get('coords')[0];
-                const lng = doc.get('coords')[1];
+                const lat = doc.get('item_location.lat') ;
+                const lng = doc.get('item_location.long');
+                console.log(lat,lng,`lat long pair`);
 
                 // We have to filter out a few false positives due to GeoHash
                 // accuracy, but most will match
