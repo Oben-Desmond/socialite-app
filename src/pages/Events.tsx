@@ -36,18 +36,27 @@ const Events: React.FC = function () {
     const params: { postid: string } = useParams()
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const  locationInfo:{long:number, lat:number} = useSelector(selectLocation);
+    const [loaded, setloaded] = useState(false)
 
     useEffect(() => {
-        if (params.postid == `default` || !params.postid) return;
-        setTimeout(() => {
+        if (params.postid == `default` || !params.postid) {
+            if (countryinfo ) {
+                getEvent(() => { })
+            }
+            setloaded(true);
+            return;
+        }
+        setTimeout(  () => {
             getPost(params.postid)
-        }, 1300);
+            
+        }, 1200);
+       
 
     }, [params])
     async function getPost(postid: string) {
         setevents([])
+        setnoData(false)
         let country = countryinfo.name || (await getCountry())?.name || 'South Africa';
-
         fetchEventById(postid, country, (post: PostInterface) => {
             setevents([])
             setevents([post])
@@ -61,9 +70,11 @@ const Events: React.FC = function () {
 
     useEffect(() => {
         console.log(`fetching...`)
-        if (countryinfo) {
+        if(!loaded) return;
+        if (countryinfo ) {
             getEvent(() => { })
         }
+        
 
     }, [countryinfo])
 

@@ -3,7 +3,7 @@
 import { Geolocation } from '@capacitor/geolocation';
 import { IonActionSheet, IonAvatar, IonBackdrop, IonBadge, IonButton, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { add, addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline, sync } from 'ionicons/icons';
-import React, { createContext, useContext, useEffect, useRef , useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { maincategories, subcategories } from '../components/classified/categories-data';
@@ -38,26 +38,37 @@ const Classifieds: React.FC = () => {
     const [loading, setloading] = useState(false)
     const [notFound, setnotFound] = useState(false)
     const [selectedTab, setselectedTab] = useState<categoryPayloadInterface>({ cat: `latest`, subcat: subcategories[maincategories[0].name] || `other` })
+    const [prevTab, setprevTab] = useState<categoryPayloadInterface>({ cat: ``, subcat: `` })
     const user_location = useSelector(selectLocation)
     const user: UserInterface = useSelector(selectUser)
     const favorites = useSelector(selectFavorites)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const [distance, setdistance] = useState<number>(0)
     const [openSyncMap, setopenSyncMap] = useState(false)
-    const  locationInfo:{long:number, lat:number} = useSelector(selectLocation);
+    const locationInfo: { long: number, lat: number } = useSelector(selectLocation);
 
 
     const params: { postid: string } = useParams()
 
     useEffect(() => {
-        if (params.postid == `default` || !params.postid) return;
-        getPost(params.postid)
+        if (params.postid == `default` || !params.postid) {
+            getItemsFromTab(selectedTab)
+            setprevTab(selectedTab);
+            return;
+        }
+        setTimeout(  () => {
+           
+            getPost(params.postid)
+            
+        }, 1200);
 
     }, [params])
     function getPost(postid: string) {
+        setloading(true)
         setclassifiedList([])
         fetchItemById(postid, (post: classifiedItemInterface) => {
             setclassifiedList([])
+            setloading(false)
             setclassifiedList([post])
             if ([post].length <= 0) {
                 setnotFound(true)
@@ -79,15 +90,24 @@ const Classifieds: React.FC = () => {
     }
 
     useEffect(() => {
+        if (prevTab.subcat == ``) {
+            setprevTab(selectedTab);
+            return;
+        }
+        getItemsFromTab(selectedTab)
+        // return (() => unsub())
 
+    }, [selectedTab])
+
+    function getItemsFromTab(selectedTab: categoryPayloadInterface) {
         const category = selectedTab
         console.log(selectedTab)
         setloading(true)
         console.log(category)
         setsearchTabText(``)
-         
+
         if (selectedTab.cat == `latest`) {
-            getLatestClassifieds(()=>{})
+            getLatestClassifieds(() => { })
 
         } else {
             if (category.subcat && category.subcat != `order`) {
@@ -114,11 +134,9 @@ const Classifieds: React.FC = () => {
                     })
             }
         }
-        // return (() => unsub())
+    }
 
-    }, [selectedTab])
-
-    function getLatestClassifieds(callback:()=>void){
+    function getLatestClassifieds(callback: () => void) {
         setclassifiedList([])
         fstore.collection(`classified`).orderBy(`timestamp`, `desc`).limit(20).get().then(res => {
             const docs: any[] = res.docs.map((doc) => doc.data())
@@ -181,7 +199,7 @@ const Classifieds: React.FC = () => {
         setopenSyncMap(false)
         setloading(true)
         const posts: any[] = await getSyncedClassifieds(radius, locationInfo);
-        
+
         if (posts.length <= 0) {
             setnotFound(true)
         }
@@ -189,7 +207,7 @@ const Classifieds: React.FC = () => {
         console.log(posts)
         setloading(false)
     }
-   
+
     return (
         <IonPage className={`classifieds`}>
             <SelectedTabContext.Provider value={[selectedTab, setselectedTab]}>
@@ -198,10 +216,10 @@ const Classifieds: React.FC = () => {
                 <div className={`header`} style={{ background: `white` }}>
                     <div className="title">
                         <IonLabel>Classifieds</IonLabel>
-                        <div  onClick={() => setopenSyncMap(true)}>
+                        <div onClick={() => setopenSyncMap(true)}>
                             <IonButton fill={`clear`}>
                                 <IonIcon icon={sync} />
-                                <IonBadge color={`success`} >{distance>0&&distance+`km`}</IonBadge>
+                                <IonBadge color={`success`} >{distance > 0 && distance + `km`}</IonBadge>
                             </IonButton>
                         </div>
                         <div className="menu" onClick={() => setshowMenu(true)}>
@@ -218,7 +236,7 @@ const Classifieds: React.FC = () => {
                         <IonRefresherContent></IonRefresherContent>
                     </IonRefresher>
                     <GeoSyncModal displayText={`Sync feed to`} isOpen={openSyncMap} onDidDismiss={radius => { if (radius) SyncPostWithDistance(radius) }}></GeoSyncModal>
-               
+
                     <IonContent scrollY={false} style={{ height: `45px`, width: `100%` }} scrollX className={`category-tab`}>
                         <div style={{ width: `600vw` }}>
                             <Categories getClassified={getClassified}></Categories>
@@ -233,7 +251,20 @@ const Classifieds: React.FC = () => {
 
                     </IonToolbar>}
                     <IonGrid>
-                        <IonRow>
+                        <IonRow>{(classifiedList || []).length == 1 &&
+                            <IonCol>
+                                {
+                                    classifiedList?.map((item: classifiedItemInterface, index: number) => {
+                                        return (
+                                            <ClassifiedItem key={index} item={item}></ClassifiedItem>
+                                        )
+                                    })
+                                }
+                            </IonCol>}
+                        </IonRow>
+
+
+                        {(classifiedList || []).length > 1 && <IonRow>
                             <IonCol size={`6`}>
                                 {
                                     classifiedList?.map((item: classifiedItemInterface, index: number) => {
@@ -266,7 +297,7 @@ const Classifieds: React.FC = () => {
                             <ClassifiedItem photoUrl={`https://images.unsplash.com/photo-1602810320073-1230c46d89d4?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fHNoaXJ0fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`} />
                             <ClassifiedItem photoUrl={`https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8c2hpcnR8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`}></ClassifiedItem>
                         </IonCol> */}
-                        </IonRow>
+                        </IonRow>}
                     </IonGrid>
 
                 </IonContent>
@@ -426,4 +457,3 @@ export const categoryData: { name: string, url: string, color: string }[] = [
         , color: `success`
     }
 ]
- 

@@ -19,7 +19,7 @@ const ClassifiedItem: React.FC<{ item: classifiedItemInterface }> = ({ item }) =
     return (
         <>
             <div onClick={() => setviewItem(true)} className="card">
-                <img src={item.item_images[0]}  ></img>
+                <img style={{minHeight:`20vh`}} src={item.item_images[0]}  ></img>
                 <div className="info">
                     <span className="label">{item.item_name}</span>
                     {item.item_features.length > 0 && <span className="desc">{item.item_features[0].substr(0,20)}</span>}
