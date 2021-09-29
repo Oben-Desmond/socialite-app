@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import AddEventModal from '../components/Events/addEventModal';
 import { fetchEventById } from '../components/Events/event-functions';
 import EventsModal from '../components/Events/EventsModal';
+import GeoSyncModal from '../components/GeoSyncModal';
 import LetteredAvatar from '../components/LetterAvatar';
 import PageHeader from '../components/PageHeader';
 import SkeletonHome from '../components/top stories/dummy';
@@ -26,6 +27,8 @@ const Events: React.FC = function () {
     const [addEvent, setaddEvent] = useState(false)
     const [noData, setnoData] = useState(false)
     const [events, setevents] = useState<PostInterface[]>([])
+    const [distance, setdistance] = useState<number>(0)
+    const [openSyncMap, setopenSyncMap] = useState(false)
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const params: { postid: string } = useParams()
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
@@ -71,6 +74,10 @@ const Events: React.FC = function () {
             callback()
         })
     }
+    function SyncPostWithDistance(radius: number) {
+        setdistance(radius);
+
+    }
     return (
         <IonPage>
             <PageHeader></PageHeader>
@@ -78,6 +85,17 @@ const Events: React.FC = function () {
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getEvent(() => refresherRef.current?.complete())} slot={`fixed`}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
+                <GeoSyncModal displayText={`Sync feed to`} isOpen={openSyncMap} onDidDismiss={radius => { if (radius) SyncPostWithDistance(radius) }}></GeoSyncModal>
+                <IonToolbar>
+                    <IonItem lines={`none`}>
+                        {distance <= 0 && <IonCardSubtitle>Sync Events to your location</IonCardSubtitle>}
+                        <IonCardSubtitle  >
+                            {distance > 0 && <small>sync currently at radius {distance}km</small>}
+                        </IonCardSubtitle>
+                        <IonButton fill={`outline`} color={`secondary`} onClick={() => setopenSyncMap(true)} slot={`end`} >{distance == 0 ? <>Sync</> : <>change</>}</IonButton>
+                    </IonItem>
+                    {/* <IonRange step={10} ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange> */}
+                </IonToolbar>
                 {events.length <= 0 && !noData && <SkeletonHome></SkeletonHome>}
                 <>{
                     events.map((post, index) => {
@@ -156,7 +174,7 @@ const EventCard: React.FC<{ post: PostInterface }> = function ({ post }) {
         <div style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
             <IonToolbar className='image-container'>
                 <div onClick={() => setopenNotice(true)} style={{ textAlign: `center`, maxHeight: `30vh` }}>
-                    <img style={{height:'46vh',objectFit:'cover'}} src={post.images[0]} />
+                    <img style={{ height: '46vh', objectFit: 'cover' }} src={post.images[0]} />
                 </div>
                 <div className="reactions">
                     <IonItem color='none' lines='none'>
