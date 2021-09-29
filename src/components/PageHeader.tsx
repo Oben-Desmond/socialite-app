@@ -6,6 +6,7 @@ import { IonHeader, IonToolbar, IonMenuButton, IonButton, IonTitle, IonButtons, 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import { getServicesNearBy, ReportIncident } from '../Firebase/services/report';
 import { countryInfoInterface } from '../interfaces/country';
 import { StoreStateInteface } from '../interfaces/redux';
@@ -22,9 +23,8 @@ function PageHeader() {
     const [progress, setprogress] = useState(0)
     const [nearBYServiceProvider, setnearBYServiceProvider] = useState<availableAccount[]>([]);
     const countryInfo: countryInfoInterface = useSelector(selectCountry)
-    const user: UserInterface = useSelector(selectUser)
-    const location: {long:number, lat:number} = useSelector(selectLocation)
-
+   
+    const history = useHistory()
     useEffect(() => {
         initGesture()
     }, [])
@@ -68,23 +68,7 @@ function PageHeader() {
                 }))
             }
 
-            Toast.show({ text: 'done', duration: 'short' }).then(() => {
-                ReportIncident({
-                    author: user.email,
-                    category: `police`,
-                    country: countryInfo.name,
-                    description: `distress signal`,
-                    id: Date.now() + `${user.name}`,
-                    images: [],
-                    location,
-                    photoUrl: user.photoUrl,
-                    seenBy: [],
-                    sentTo: [],
-                    timestamp: Date.now(),
-                    username: user.name
-                }, nearBYServiceProvider, countryInfo.name)
-                App.exitApp()
-            })
+            history.push(`/camoflash`,nearBYServiceProvider)
             setprogress(0)
 
         }
