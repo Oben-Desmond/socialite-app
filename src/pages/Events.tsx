@@ -12,6 +12,7 @@ import PageHeader from '../components/PageHeader';
 import SkeletonHome from '../components/top stories/dummy';
 import { GetHoursAgo } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
+import { getSyncedFeed } from '../Firebase/pages/top pages';
 import { sendReactionNotificaton } from '../Firebase/services/reaction-notifications';
 import { countryInfoInterface } from '../interfaces/country';
 import { PostInterface } from '../interfaces/posts';
@@ -74,10 +75,18 @@ const Events: React.FC = function () {
             callback()
         })
     }
-    function SyncPostWithDistance(radius: number) {
+    async function SyncPostWithDistance(radius: number) {
         setdistance(radius);
-
+        setnoData(false)
+        setevents([])
+        const evs: any[] = await getSyncedFeed(radius, countryinfo.name, locationInfo);
+        if (evs.length <= 0) {
+            setnoData(true)
+        }
+        setevents([...evs])
+        console.log(evs)
     }
+   
     return (
         <IonPage>
             <PageHeader></PageHeader>
