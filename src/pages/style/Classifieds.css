@@ -10,7 +10,7 @@
      padding: 3px 3px 0 3px;
      font-size: 20px;
      color: var(--ion-color-primary);
-     grid-template-columns: auto auto;
+     grid-template-columns: auto 10% auto;
      margin: 0;
      /* background-color: green; */
 }

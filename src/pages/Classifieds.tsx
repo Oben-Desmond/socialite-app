@@ -1,8 +1,8 @@
 // @flow strict
 
 import { Geolocation } from '@capacitor/geolocation';
-import { IonActionSheet, IonAvatar, IonBackdrop, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
-import { add, addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline } from 'ionicons/icons';
+import { IonActionSheet, IonAvatar, IonBackdrop, IonBadge, IonButton, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { add, addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline, sync } from 'ionicons/icons';
 import React, { createContext, useContext, useEffect, useRef , useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
@@ -46,7 +46,7 @@ const Classifieds: React.FC = () => {
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
-        getPost(params.postid)
+        // getPost(params.postid)
 
     }, [params])
     function getPost(postid: string) {
@@ -80,6 +80,7 @@ const Classifieds: React.FC = () => {
         setloading(true)
         console.log(category)
         setsearchTabText(``)
+        return
         if (selectedTab.cat == `latest`) {
             getLatestClassifieds(()=>{})
 
@@ -176,6 +177,12 @@ const Classifieds: React.FC = () => {
                 <div className={`header`} style={{ background: `white` }}>
                     <div className="title">
                         <IonLabel>Classifieds</IonLabel>
+                        <div  onClick={() => setshowMenu(true)}>
+                            <IonButton fill={`clear`}>
+                                <IonIcon icon={sync} />
+                                <IonBadge color={`success`} >20km</IonBadge>
+                            </IonButton>
+                        </div>
                         <div className="menu" onClick={() => setshowMenu(true)}>
                             <IonButton fill={`clear`}>
                                 <IonIcon icon={ellipsisVertical} />

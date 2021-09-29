@@ -87,6 +87,7 @@ const Events: React.FC = function () {
             setnoData(true)
         }
         setevents([...evs])
+        setopenSyncMap(false)
         console.log(evs)
     }
    
