@@ -168,7 +168,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>category</IonLabel>
-                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category} name={`category`} >
+                                <IonSelect interface="action-sheet" onIonChange={(e) => setcategory(e.detail.value)} value={category} name={`category`} >
 
                                     {
                                         [...maincategories,{name:`other`,url:``}].map(data => {

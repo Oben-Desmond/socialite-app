@@ -19,8 +19,8 @@
 }
  
 .classifieds .header .title .menu{
-    text-align: center;
-    margin-right: 20px;
+    text-align: end;
+    margin-right: 10px;
 }
 .classifieds .header ion-searchbar{
     margin-top: -7px;

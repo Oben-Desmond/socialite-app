@@ -15,6 +15,7 @@ export interface classifiedItemInterface{
       item_cost:string,
       country_code:string,
       sub_category:string,
+      geohash:string
 }
 
 

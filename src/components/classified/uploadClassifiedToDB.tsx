@@ -1,5 +1,6 @@
 import { Dialog } from "@capacitor/dialog";
 import { Geolocation } from "@capacitor/geolocation";
+import { geohashForLocation } from "geofire-common";
 import { storage, fstore, db } from "../../Firebase/Firebase";
 import { classifiedItemInterface } from "../../interfaces/classifiedItems";
 import { countryInfoInterface } from "../../interfaces/country";
@@ -16,6 +17,7 @@ export async function UploadClassifiedItem(data: dataInterface, images: string[]
     console.log(location)
     const country_name = country?.name || `South Africa`;
     const item_id = Date.now() + removeOccurence(`${user.email}`, [`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`])
+    const geohash= geohashForLocation([location.lat, location.long])
 
     const post: classifiedItemInterface = {
         item_category: data.category,
@@ -24,13 +26,14 @@ export async function UploadClassifiedItem(data: dataInterface, images: string[]
         timestamp: Date.now(),
         item_name: data.name,
         item_desc: data.desc,
-        item_contact: { user_email: user.email, user_name: user.name, user_tel: user.tel || `677277277`, user_photo: `` },
+        item_contact: { user_email: user.email, user_name: user.name, user_tel: user.tel || `+1 000 000 000`, user_photo: `` },
         item_id,
         item_cost: data.cost,
         item_features: features,
-        country_code: country?.country || `SA`,
+        country_code: country?.country || `ZA`,
         item_views: 0,
-        sub_category: data.subcategory
+        sub_category: data.subcategory,
+        geohash
     }
 
     return (new Promise(async (resolve, reject) => {
