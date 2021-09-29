@@ -3,7 +3,7 @@ import { countryInfoInterface } from "../../interfaces/country"
 import { PostInterface } from "../../interfaces/posts"
 import { UserInterface } from "../../interfaces/users"
 import { fstore, storage } from "../Firebase"
-import geofire, { geohashForLocation } from "geofire-common";
+import { distanceBetween, geohashForLocation, geohashQueryBounds } from "geofire-common";
 
 export async function UploadContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined, location: { long: number, lat: number }) {
 
@@ -140,7 +140,7 @@ export async function getSyncedFeed(distance: number, country: string, location:
     // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
     // a separate query for each pair. There can be up to 9 pairs of bounds
     // depending on overlap, but in most cases there are 4.
-    const bounds = geofire.geohashQueryBounds(center, radiusInM);
+    const bounds = geohashQueryBounds(center, radiusInM);
     const promises = [];
     for (const b of bounds) {
         const q =  fstore.collection(`posts`).doc(country).collection(`feed`)
@@ -162,7 +162,7 @@ export async function getSyncedFeed(distance: number, country: string, location:
 
                 // We have to filter out a few false positives due to GeoHash
                 // accuracy, but most will match
-                const distanceInKm = geofire.distanceBetween([lat, lng], center);
+                const distanceInKm = distanceBetween([lat, lng], center);
                 const distanceInM = distanceInKm * 1000;
                 if (distanceInM <= radiusInM) {
                     matchingDocs.push(doc);
@@ -170,7 +170,7 @@ export async function getSyncedFeed(distance: number, country: string, location:
             }
         }
 
-        return matchingDocs;
+        return matchingDocs.map(doc=>doc.data());
     }).catch(err=>{
       Dialog.alert({message:err.message||err, title:'Error Occured'});
       return []

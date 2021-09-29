@@ -29,22 +29,23 @@ import axios from 'axios';
 import { getCountry } from '../states/storage/storage-getters';
 import GeoSyncModal from '../components/GeoSyncModal';
 import { selectLocation } from '../states/reducers/location-reducer';
+import { Capacitor } from '@capacitor/core';
 
 
 
 const Home: React.FC = function () {
     const [addStory, setaddStory] = useState(false)
     const [noData, setnoData] = useState(false)
-    const [distance, setdistance] = useState(500)
+    const [distance, setdistance] = useState(0)
     const [stories, setstories] = useState<PostInterface[]>([])
     const [openSinkMap, setopenSinkMap] = useState(false)
-    
+
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
-    const locationInfo: {long:number, lat:number} = useSelector(selectLocation)
+    const locationInfo: { long: number, lat: number } = useSelector(selectLocation)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
     const params: { postid: string } = useParams()
     const user: UserInterface = useSelector(selectUser)
-    const history= useHistory();
+    const history = useHistory();
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
         getPost(params.postid)
@@ -53,7 +54,7 @@ const Home: React.FC = function () {
     async function getPost(postid: string) {
         setstories([])
 
-        let country = countryinfo.name|| (await getCountry())?.name ||'South Africa';
+        let country = countryinfo.name || (await getCountry())?.name || 'South Africa';
         fetchPostById(postid, country, (post: PostInterface) => {
             setstories([])
             setstories([post])
@@ -102,9 +103,6 @@ const Home: React.FC = function () {
         })
     }
     async function schedule() {
-
-
-
         await LocalNotifications.checkPermissions()
             .then(res => console.log(res, 'then------------'))
             .catch(res => console.log(res, 'catch------------'))
@@ -138,59 +136,22 @@ const Home: React.FC = function () {
         })
     }
 
-    function PushNotif() {
 
-        PushNotifications.requestPermissions().then(result => {
-            if (result.receive === 'granted') {
-                // Register with Apple / Google to receive push via APNS/FCM
-                PushNotifications.register();
-            } else {
-                // Show some error
-            }
-        });
-
-        // On success, we should be able to receive notifications
-        PushNotifications.addListener('registration',
-            (token: Token) => {
-                // alert('Push registration success, token: ' + token.value);
-                console.log(token.value);
-                const formatEmail = user.email.replaceAll('.', '');
-                db.ref('tokens').child(formatEmail).set(token.value)
-            }
-        );
-
-        // Some issue with our setup and push will not work
-        PushNotifications.addListener('registrationError',
-            (error: any) => {
-                // alert('Error on registration: ' + JSON.stringify(error));
-            }
-        );
-
-        // Show us the notification payload if the app is open on our device
-        PushNotifications.addListener('pushNotificationReceived',
-            (notification: PushNotificationSchema) => {
-                // alert('Push received: ' + JSON.stringify(notification));
-            }
-        );
-
-        // Method called when tapping on a notification
-        PushNotifications.addListener('pushNotificationActionPerformed',
-            (notification: any) => {
-                //    alert('Pussssh action performed: ' + JSON.stringify(notification));
-                // alert('Push performed: ' + JSON.stringify(Object.keys(notification)));
-                // alert('Push performed: ' + JSON.stringify((notification)));
-                const {type,id}=notification.notification.data
-                history.push(`/${type}/${id}`);
-            }
-        );
-
-    }
     useEffect(() => {
-        PushNotif();
+        if (Capacitor.isNative)
+            PushNotif(user, history);
     }, [])
-    function SyncFeedWithDistance(radius:number){
-        const feed= getSyncedFeed(radius,countryinfo.name,locationInfo);
+    async function SyncFeedWithDistance(radius: number) {
+        setnoData(false)
+        setstories([])
+        const feed: any[] = await getSyncedFeed(radius, countryinfo.name, locationInfo);
+        if (feed.length <= 0) {
+            setnoData(true)
+        }
+        setstories([...feed])
         console.log(feed)
+        setopenSinkMap(false)
+        setdistance(radius)
     }
 
 
@@ -199,11 +160,13 @@ const Home: React.FC = function () {
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
-                <GeoSyncModal isOpen={openSinkMap} onDidDismiss={radius=>SyncFeedWithDistance(radius)}></GeoSyncModal>
-            <IonToolbar>
+                <GeoSyncModal isOpen={openSinkMap} onDidDismiss={radius => SyncFeedWithDistance(radius)}></GeoSyncModal>
+                <IonToolbar>
                     <IonItem lines={`none`}>
-                        <IonCardSubtitle>Sync feed to your location</IonCardSubtitle>
-                        <IonButton color={`secondary`} onClick={()=>setopenSinkMap(true)} slot={`end`} >Sync</IonButton>
+                        <IonCardSubtitle>Sync feed to your location</IonCardSubtitle> <IonCardSubtitle color='secondary' >
+                            {distance > 0 && <small className={`ion-margin-start`}> currently at {distance}km</small>}
+                        </IonCardSubtitle>
+                        <IonButton color={`secondary`} onClick={() => setopenSinkMap(true)} slot={`end`} >Sync</IonButton>
                     </IonItem>
                     {/* <IonRange step={10} ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange> */}
                 </IonToolbar>
@@ -217,7 +180,7 @@ const Home: React.FC = function () {
                 {stories.length > 0 && !noData &&
 
                     stories.map((post, index) => {
-                      return (
+                        return (
                             <StoriesCard key={post.id} post={post}></StoriesCard>
                         )
                     })
@@ -244,3 +207,51 @@ const Home: React.FC = function () {
 
 export default Home;
 
+
+function PushNotif(user: any, history: any) {
+
+    PushNotifications.requestPermissions().then(result => {
+        if (result.receive === 'granted') {
+            // Register with Apple / Google to receive push via APNS/FCM
+            PushNotifications.register();
+        } else {
+            // Show some error
+        }
+    });
+
+    // On success, we should be able to receive notifications
+    PushNotifications.addListener('registration',
+        (token: Token) => {
+            // alert('Push registration success, token: ' + token.value);
+            console.log(token.value);
+            const formatEmail = user.email.replaceAll('.', '');
+            db.ref('tokens').child(formatEmail).set(token.value)
+        }
+    );
+
+    // Some issue with our setup and push will not work
+    PushNotifications.addListener('registrationError',
+        (error: any) => {
+            // alert('Error on registration: ' + JSON.stringify(error));
+        }
+    );
+
+    // Show us the notification payload if the app is open on our device
+    PushNotifications.addListener('pushNotificationReceived',
+        (notification: PushNotificationSchema) => {
+            // alert('Push received: ' + JSON.stringify(notification));
+        }
+    );
+
+    // Method called when tapping on a notification
+    PushNotifications.addListener('pushNotificationActionPerformed',
+        (notification: any) => {
+            //    alert('Pussssh action performed: ' + JSON.stringify(notification));
+            // alert('Push performed: ' + JSON.stringify(Object.keys(notification)));
+            // alert('Push performed: ' + JSON.stringify((notification)));
+            const { type, id } = notification.notification.data
+            history.push(`/${type}/${id}`);
+        }
+    );
+
+}
