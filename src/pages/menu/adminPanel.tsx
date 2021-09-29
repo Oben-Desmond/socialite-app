@@ -1,5 +1,6 @@
 
 import { Dialog } from '@capacitor/dialog';
+import { Toast } from '@capacitor/toast';
 import { TextareaChangeEventDetail } from '@ionic/core';
 import { IonButton, IonCardContent, IonCardTitle, IonChip, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonLoading, IonPage, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/react'
 import { geohashForLocation } from 'geofire-common';
@@ -61,7 +62,9 @@ const AdminPanel: React.FC = function () {
         setloading(true)
         try {
 
-            
+            if(permitted.length<=0){
+                throw  new Error(`There must be atleast one permitted email to access this account`);
+            }
             let query1 = fstore.collection('service-accounts').doc(account.country).collection(account.type).doc(account.code).set(available_entry);
             let query2 = fstore.collection('business').doc(account.country + '-' + account.code).set(account);
 
@@ -70,6 +73,8 @@ const AdminPanel: React.FC = function () {
             setcompany(``);
             setpermitted([]);
             setcontact(``);
+            setcode(Math.floor(Math.random() * 1000000).toString())
+            Toast.show({text:`code has been copied`,duration:`long`,})
         }
         catch (err) {
             Dialog.alert({ message: err.message || err || 'unexpected error occured', title: 'Error Creating Account' });
@@ -127,15 +132,15 @@ const AdminPanel: React.FC = function () {
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'>Company Name</IonLabel>
-                            <IonInput value={company} onIonChange={(e) => setcompany(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} ></IonInput>
+                            <IonInput required value={company} onIonChange={(e) => setcompany(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} ></IonInput>
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'>Emergency Contact</IonLabel>
-                            <IonInput value={contact} onIonChange={(e) => setcontact(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }}></IonInput>
+                            <IonInput  required value={contact} onIonChange={(e) => setcontact(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }}></IonInput>
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'> 6 Digit Code</IonLabel>
-                            <IonInput value={code} onIonChange={(e) => setcode(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} ></IonInput>
+                            <IonInput  required value={code} onIonChange={(e) => setcode(e.detail.value || '')} onClick={(e: any) => { e.target.scrollIntoView({ behavior: 'smooth' }) }} ></IonInput>
                         </IonItem>
                         <IonItem  >
                             <IonLabel style={{ fontFamily: 'Comfortaa' }} position='floating'> permitted users</IonLabel>

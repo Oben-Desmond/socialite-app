@@ -54,7 +54,8 @@ export async function markThisIncidentAsRead(report: reportInterface, serviceAcc
         emergency__contact: serviceAccount.tel,
         location: serviceAccount.location,
         name: serviceAccount.name,
-        emails: []
+        emails: [],
+        geohash:serviceAccount.geohash
     }];
     const reporter_query = fstore.collection('users').doc(`${report.author}`).collection('reports').doc(report.id).update({ seenBy: seenByArr });
 

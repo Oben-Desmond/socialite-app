@@ -31,5 +31,5 @@ export interface availableAccount{
     location:{long:number, lat:number},
     code:string,
     emails:string[],
-    geohash:string
+    geohash?:string
 }
