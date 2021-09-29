@@ -8,6 +8,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { accountInterface, availableAccount } from '../../components/service/serviceTypes';
 import { fstore } from '../../Firebase/Firebase';
+import {Clipboard} from '@capacitor/clipboard';
 import { selectLocation } from '../../states/reducers/location-reducer';
 import "../style/admin.css";
 const AdminPanel: React.FC = function () {
@@ -73,8 +74,10 @@ const AdminPanel: React.FC = function () {
             setcompany(``);
             setpermitted([]);
             setcontact(``);
-            setcode(Math.floor(Math.random() * 1000000).toString())
             Toast.show({text:`code has been copied`,duration:`long`,})
+             Clipboard.write({string:code})
+            setcode(Math.floor(Math.random() * 1000000).toString())
+
         }
         catch (err) {
             Dialog.alert({ message: err.message || err || 'unexpected error occured', title: 'Error Creating Account' });
