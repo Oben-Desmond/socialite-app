@@ -40,7 +40,7 @@ const Events: React.FC = function () {
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) {
-            if (countryinfo ) {
+            if (countryinfo && !loaded ) {
                 getEvent(() => { })
             }
             setloaded(true);

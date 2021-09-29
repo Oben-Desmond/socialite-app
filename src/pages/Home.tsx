@@ -50,7 +50,7 @@ const Home: React.FC = function () {
     useEffect(() => {
         
         if (params.postid == `default` || !params.postid) {
-            if (countryinfo ) {
+            if (countryinfo  && !loaded) {
                 getFeed(() => { })
             }
             setloaded(true);
@@ -59,7 +59,7 @@ const Home: React.FC = function () {
         setTimeout(  () => {
             getPost(params.postid)
             
-        }, 1200);
+        }, 1400);
 
     }, [params])
     async function getPost(postid: string) {
@@ -80,7 +80,7 @@ const Home: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         let unsub = () => { }
-        if(!loaded) {
+        if(!loaded && countryinfo) {
             setloaded(true)
             return
         }
