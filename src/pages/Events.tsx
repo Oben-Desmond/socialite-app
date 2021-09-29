@@ -39,7 +39,9 @@ const Events: React.FC = function () {
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) return;
-        getPost(params.postid)
+        setTimeout(() => {
+            getPost(params.postid)
+        }, 1300);
 
     }, [params])
     async function getPost(postid: string) {

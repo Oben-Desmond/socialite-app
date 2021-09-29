@@ -47,8 +47,11 @@ const Home: React.FC = function () {
     const user: UserInterface = useSelector(selectUser)
     const history = useHistory();
     useEffect(() => {
+        
         if (params.postid == `default` || !params.postid) return;
-        getPost(params.postid)
+        setTimeout(() => {
+            getPost(params.postid)
+        }, 1300);
 
     }, [params])
     async function getPost(postid: string) {
