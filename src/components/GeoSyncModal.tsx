@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 interface GeoSyncModal{
    isOpen:boolean,
    onDidDismiss:(val:number)=>void,
-
+   displayText:string,
 }
 
-const GeoSyncModal:React.FC<GeoSyncModal> = ({isOpen, onDidDismiss}) => {
+const GeoSyncModal:React.FC<GeoSyncModal> = ({isOpen, onDidDismiss,displayText}) => {
     const location: { long: number, lat: number } = useSelector(selectLocation)
     const [distance, setdistance] = useState(500)
     const [selected, setselected] = useState<{ location: { lng: number, lat: number }, name: string } | undefined>()
@@ -64,7 +64,7 @@ const GeoSyncModal:React.FC<GeoSyncModal> = ({isOpen, onDidDismiss}) => {
             <IonFooter>
                 <IonToolbar>
                     <IonItem lines={`none`}>
-                        <IonCardSubtitle>Sync feed to  {distance} kilometers</IonCardSubtitle>
+                        <IonCardSubtitle>{displayText} {distance} kilometers</IonCardSubtitle>
                         <IonButton onClick={()=>onDidDismiss(distance)} color={`secondary`} slot={`end`} >Sync</IonButton>
                     </IonItem>
                     <IonRange step={10} ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange>

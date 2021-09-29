@@ -81,6 +81,7 @@ const Home: React.FC = function () {
         const country_name = countryinfo.name || `South Africa`
         setnoData(false)
         setstories([])
+        setdistance(0)
         const unsub = fstore.collection(`posts/${country_name}/feed`).orderBy(`timestamp`, `desc`).onSnapshot((res) => {
             const data: any[] = res.docs.map(doc => {
                 return doc.data()
@@ -160,13 +161,14 @@ const Home: React.FC = function () {
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
-                <GeoSyncModal isOpen={openSinkMap} onDidDismiss={radius => SyncFeedWithDistance(radius)}></GeoSyncModal>
+                <GeoSyncModal displayText={`Sync feed to`}  isOpen={openSinkMap} onDidDismiss={radius => SyncFeedWithDistance(radius)}></GeoSyncModal>
                 <IonToolbar>
                     <IonItem lines={`none`}>
-                        <IonCardSubtitle>Sync feed to your location</IonCardSubtitle> <IonCardSubtitle color='secondary' >
-                            {distance > 0 && <small className={`ion-margin-start`}> currently at {distance}km</small>}
+                        {distance<=0&&<IonCardSubtitle>Sync feed to your location</IonCardSubtitle> }
+                        <IonCardSubtitle  >
+                            {distance > 0 && <small>sync currently at radius {distance}km</small>}
                         </IonCardSubtitle>
-                        <IonButton color={`secondary`} onClick={() => setopenSinkMap(true)} slot={`end`} >Sync</IonButton>
+                        <IonButton fill={`outline`}  color={`secondary`} onClick={() => setopenSinkMap(true)} slot={`end`} >{distance == 0? <>Sync</>:<>change</>}</IonButton>
                     </IonItem>
                     {/* <IonRange step={10} ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange> */}
                 </IonToolbar>
