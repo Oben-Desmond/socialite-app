@@ -21,8 +21,6 @@ import WeatherModal from './WeatherModal';
 function PageHeader() {
     const [showWeather, setshowWeather] = React.useState(false)
     const [progress, setprogress] = useState(0)
-    const [nearBYServiceProvider, setnearBYServiceProvider] = useState<availableAccount[]>([]);
-    const countryInfo: countryInfoInterface = useSelector(selectCountry)
    
     const history = useHistory()
     useEffect(() => {
@@ -41,7 +39,7 @@ function PageHeader() {
             el: button,
             threshold: 0,
             onStart: () => {
-                getNearBy()
+                 
                 onStart();
             },
             onEnd: () => {
@@ -68,7 +66,7 @@ function PageHeader() {
                 }))
             }
 
-            history.push(`/camoflash`,nearBYServiceProvider)
+            history.push(`/camoflash`)
             setprogress(0)
 
         }
@@ -87,16 +85,7 @@ function PageHeader() {
             }
         }
     }
-
-    async function getNearBy() {
-        if (nearBYServiceProvider.length <= 0)
-            try {
-                const serAcc: any = await getServicesNearBy(countryInfo.name, `police`);
-                setnearBYServiceProvider([...serAcc]);
-            } catch (err) {
-                Dialog.alert({ message: err.message || err || 'Unexpected error occured', title: 'Error getting nearby police stations' })
-            }
-    }
+   
 
     return (
         <div>
