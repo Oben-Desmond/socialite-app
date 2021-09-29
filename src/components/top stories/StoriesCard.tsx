@@ -282,12 +282,12 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             </IonHeader>
             <IonContent ref={contentRef} >
                 <div className="background  k hero-img">
-                    <img width={`100%`} src={post.images[0]}></img>
+                    <img style={{maxHeight:`40vh`,objectFit:`cover`}} width={`100%`} src={post.images[0]}></img>
                 </div>
                 <IonToolbar className={`story-card`}>
                     <IonItem style={{ transform: !post.author_url ? `translate(0,10px)` : `auto` }} className={`author`} lines={`none`} color={`none`}>
                         {!!post.author_url && <IonAvatar slot={`start`}>
-                            <img src={post.author_url} />
+                            <img style={{maxHeight:`30vh`}} src={post.author_url} />
                         </IonAvatar>}
                         {
                             !post.author_url && post.author_name && <IonButtons slot={`start`}  >
