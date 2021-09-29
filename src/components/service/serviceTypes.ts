@@ -9,7 +9,9 @@ export interface accountInterface{
     location:{
         lat:number,
         long:number
-    }
+    };
+    geohash:string
+
 
 }
 
@@ -27,5 +29,6 @@ export interface availableAccount{
     emergency__contact:string,
     location:{long:number, lat:number},
     code:string,
-    emails:string[]
+    emails:string[],
+    geohash:string
 }

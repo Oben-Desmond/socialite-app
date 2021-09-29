@@ -48,17 +48,17 @@ const Home: React.FC = function () {
     const user: UserInterface = useSelector(selectUser)
     const history = useHistory();
     useEffect(() => {
-        
+
         if (params.postid == `default` || !params.postid) {
-            if (countryinfo  && !loaded) {
+            if (countryinfo && !loaded) {
                 getFeed(() => { })
+                setloaded(true);
             }
-            setloaded(true);
             return;
         }
-        setTimeout(  () => {
+        setTimeout(() => {
             getPost(params.postid)
-            
+
         }, 1400);
 
     }, [params])
@@ -80,7 +80,7 @@ const Home: React.FC = function () {
     useEffect(() => {
         console.log(`fetching...`)
         let unsub = () => { }
-        if(!loaded && countryinfo) {
+        if (!loaded && countryinfo) {
             setloaded(true)
             return
         }
@@ -177,14 +177,14 @@ const Home: React.FC = function () {
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
-                <GeoSyncModal displayText={`Sync feed to`}  isOpen={openSinkMap} onDidDismiss={radius => {if (radius)SyncFeedWithDistance(radius)}}></GeoSyncModal>
+                <GeoSyncModal displayText={`Sync feed to`} isOpen={openSinkMap} onDidDismiss={radius => { if (radius) SyncFeedWithDistance(radius) }}></GeoSyncModal>
                 <IonToolbar>
                     <IonItem lines={`none`}>
-                        {distance<=0&&<IonCardSubtitle>Sync feed to your location</IonCardSubtitle> }
+                        {distance <= 0 && <IonCardSubtitle>Sync feed to your location</IonCardSubtitle>}
                         <IonCardSubtitle  >
                             {distance > 0 && <small>sync currently at radius {distance}km</small>}
                         </IonCardSubtitle>
-                        <IonButton fill={`outline`}  color={`secondary`} onClick={() => setopenSinkMap(true)} slot={`end`} >{distance == 0? <>Sync</>:<>change</>}</IonButton>
+                        <IonButton fill={`outline`} color={`secondary`} onClick={() => setopenSinkMap(true)} slot={`end`} >{distance == 0 ? <>Sync</> : <>change</>}</IonButton>
                     </IonItem>
                     {/* <IonRange step={10} ticks onIonChange={(e: any) => setdistance(e.target.value || 100)} value={distance} min={100} max={5000}></IonRange> */}
                 </IonToolbar>

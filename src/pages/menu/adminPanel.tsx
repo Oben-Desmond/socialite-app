@@ -2,6 +2,7 @@
 import { Dialog } from '@capacitor/dialog';
 import { TextareaChangeEventDetail } from '@ionic/core';
 import { IonButton, IonCardContent, IonCardTitle, IonChip, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonLoading, IonPage, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/react'
+import { geohashForLocation } from 'geofire-common';
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { accountInterface, availableAccount } from '../../components/service/serviceTypes';
@@ -36,6 +37,8 @@ const AdminPanel: React.FC = function () {
 
     async function addAccount(e: any) {
         e.preventDefault();
+        const geohash= geohashForLocation([location.lat, location.long])
+
         const account: accountInterface = {
             code,
             country,
@@ -44,24 +47,29 @@ const AdminPanel: React.FC = function () {
             tel: contact,
             timestamp: Date.now(),
             type,
-            users: permitted
+            users: permitted,
+            geohash
         }
-
         const available_entry: availableAccount = {
             name: company,
             emergency__contact: contact,
             code,
             emails: permitted,
-            location
+            location,
+            geohash
         }
         setloading(true)
         try {
 
-
+            
             let query1 = fstore.collection('service-accounts').doc(account.country).collection(account.type).doc(account.code).set(available_entry);
             let query2 = fstore.collection('business').doc(account.country + '-' + account.code).set(account);
 
             await Promise.all([query1, query2]);
+            Dialog.alert({ message: `Account with service code ${code} has been successfully created`, title: 'Successfully Created Account' });
+            setcompany(``);
+            setpermitted([]);
+            setcontact(``);
         }
         catch (err) {
             Dialog.alert({ message: err.message || err || 'unexpected error occured', title: 'Error Creating Account' });
