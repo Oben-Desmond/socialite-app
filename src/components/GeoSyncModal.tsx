@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 interface GeoSyncModal{
    isOpen:boolean,
-   onDidDismiss:(val:number)=>void,
+   onDidDismiss:(val:number|undefined)=>void,
    displayText:string,
 }
 
@@ -28,7 +28,7 @@ const GeoSyncModal:React.FC<GeoSyncModal> = ({isOpen, onDidDismiss,displayText})
     }, [location])
 
     return (
-        <IonModal  isOpen={isOpen} onDidDismiss={()=>onDidDismiss(distance)}>
+        <IonModal  isOpen={isOpen} onDidDismiss={()=>onDidDismiss(undefined)}>
             <IonContent>
                 <LoadScript
                     googleMapsApiKey='AIzaSyBLuEonWXa8ftaMsTUbKkbY6viRboNkxrg'>
