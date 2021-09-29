@@ -12,6 +12,7 @@ import PageHeader from '../components/PageHeader';
 import SkeletonHome from '../components/top stories/dummy';
 import { GetHoursAgo } from '../components/top stories/StoriesCard';
 import { fstore } from '../Firebase/Firebase';
+import { getSyncedEvents } from '../Firebase/pages/events';
 import { getSyncedFeed } from '../Firebase/pages/top pages';
 import { sendReactionNotificaton } from '../Firebase/services/reaction-notifications';
 import { countryInfoInterface } from '../interfaces/country';
@@ -81,7 +82,7 @@ const Events: React.FC = function () {
         setdistance(radius);
         setnoData(false)
         setevents([])
-        const evs: any[] = await getSyncedFeed(radius, countryinfo.name, locationInfo);
+        const evs: any[] = await getSyncedEvents(radius, countryinfo.name, locationInfo);
         if (evs.length <= 0) {
             setnoData(true)
         }
