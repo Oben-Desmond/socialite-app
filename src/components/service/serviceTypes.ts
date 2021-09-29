@@ -10,7 +10,7 @@ export interface accountInterface{
         lat:number,
         long:number
     };
-    geohash:string
+    geohash?:string
 
 
 }
@@ -21,6 +21,7 @@ export interface accUser{
     photoUrl:string,
     email:string,
     last_signIn:number
+    
 }
 
 
