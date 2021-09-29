@@ -10,7 +10,7 @@
      padding: 3px 3px 0 3px;
      font-size: 20px;
      color: var(--ion-color-primary);
-     grid-template-columns: auto 10% auto;
+     grid-template-columns: 50% auto auto;
      margin: 0;
      /* background-color: green; */
 }
@@ -19,7 +19,8 @@
 }
  
 .classifieds .header .title .menu{
-    text-align: right;
+    text-align: center;
+    margin-right: 20px;
 }
 .classifieds .header ion-searchbar{
     margin-top: -7px;
