@@ -77,6 +77,7 @@ export async function UploadEventContent(data: { category: string, title: string
         email: user.email,
         geohash:hash
     }
+    
     return (new Promise(async (resolve, reject) => {
 
         const main = images[0]
