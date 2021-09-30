@@ -14,7 +14,9 @@ export const sendInAppNotification =async  (param:{notification:InAppNotificatio
 export const getInAppNotifications =async  (param:{ user_email:string, country:string, callBack:(notifications:InAppNotification[])=>void})=>{
     const {user_email, country, callBack}=param;
     
-    db.ref('notification-channels').child(country).child(sanitizeDBId(user_email)).once('value',(snapshot)=>{
+    db.ref('notification-channels').child(country)
+    .child(sanitizeDBId(user_email))
+    .on('value',(snapshot)=>{
           const value = snapshot.val()
           if(value){
               const temp:any[] = Object.values(value);
@@ -37,6 +39,7 @@ export const getInAppNotifications =async  (param:{ user_email:string, country:s
           if(value){
                const notification:InAppNotification=value
                console.log(value)
+               alert(JSON.stringify(value))
             }
           else{
               callBack([])

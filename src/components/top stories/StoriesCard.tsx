@@ -25,7 +25,9 @@ import { Share } from '@capacitor/share';
 import { selectUser } from '../../states/reducers/userReducers';
 import { sendNotification } from '../../Firebase/services/notifications';
 import { sendReactionNotificaton, sendCommentReaction } from '../../Firebase/services/reaction-notifications';
-
+import { InAppNotification } from '../../interfaces/notifications';
+import * as uuid from "uuid";
+import { sendInAppNotification } from '../../Firebase/pages/inAppNotifications';
 
 const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
     const { post } = props
@@ -228,14 +230,14 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
 
 
         sendCommentReaction(text, user, post);
-
+        const id=uuid.v4() ;
         const commentObj: commentInterface = {
             author_name: user?.name,
             description: text,
             photoUrl: user?.photoUrl,
             subcomments: [],
             timestamp: Date.now(),
-            id: Date.now() + user.email
+            id
         }
         console.log(commentObj)
         const commentTitle = title.replace(` `, ``).trim()
@@ -244,6 +246,22 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             commentItemRef.current?.scrollIntoView({ behavior: `smooth` })
 
         }).catch(alert)
+
+        const inAppInfo:InAppNotification={
+           category:'feed',
+           id,
+           message:text,
+           path:`http://socionet.co.za/feed/${post.id}`,
+           post_id:post.id,
+           post_title:post.title,
+           sender:user.email,
+           sender_name:user.name,
+           sender_photo:user.photoUrl,
+           timestamp:Date.now(),
+           type:'comment'
+
+        }
+        sendInAppNotification({country:countryInfo.name, notification:inAppInfo,reciever:post.email})
 
     }
     function getProfileInfo(email: string) {
