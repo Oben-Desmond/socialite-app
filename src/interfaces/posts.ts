@@ -12,7 +12,7 @@ export interface PostInterface {
      likes?:string[],
      dislikes?:string[],
      coords?:number[],
-     geohash?:string
+     geohash:string
 
 }
 

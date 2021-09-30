@@ -1,1 +1,1 @@
-git add . && git commit -m  "fixing routing" && git push -u origin main
+git add . && git commit -m  "fixing geohashing issues" && git push -u origin main
