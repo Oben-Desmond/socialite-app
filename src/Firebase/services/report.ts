@@ -25,11 +25,16 @@ export function getServicesNearBy(place: string, category: string) {
 }
 
 export async function ReportIncident(incident: reportInterface, nearByServices: availableAccount[], country: string,) {
-    let emails: string[] = [], em = nearByServices.map(p => p.emails);
-    em.map(eml => {
-        emails = [...emails, ...eml];
+    let emails: string[] = [], em;
+    try {
+        em = nearByServices.map(p => p.emails);
+        em.map(eml => {
+            emails = [...emails, ...eml];
 
-    })
+        })
+    } catch {
+       emails=[]
+    }
     const urls: any = await uploadImages(incident.images, incident.author, incident.country)
     incident = {
         ...incident, images: urls
@@ -55,7 +60,7 @@ export async function markThisIncidentAsRead(report: reportInterface, serviceAcc
         location: serviceAccount.location,
         name: serviceAccount.name,
         emails: [],
-        geohash:serviceAccount.geohash
+        geohash: serviceAccount.geohash
     }];
     const reporter_query = fstore.collection('users').doc(`${report.author}`).collection('reports').doc(report.id).update({ seenBy: seenByArr });
 

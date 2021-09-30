@@ -1,10 +1,10 @@
 import { IonContent, IonPage, useIonViewDidEnter } from '@ionic/react'
 import image from './comofash.jpeg'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { App } from '@capacitor/app'
 import { Toast } from '@capacitor/toast'
 import { useSelector } from 'react-redux'
-import { ReportIncident } from '../Firebase/services/report'
+import { getServicesNearBy, ReportIncident } from '../Firebase/services/report'
 import { UserInterface } from '../interfaces/users'
 import { selectLocation } from '../states/reducers/location-reducer'
 import { selectUser } from '../states/reducers/userReducers'
@@ -12,6 +12,7 @@ import { countryInfoInterface } from '../interfaces/country'
 import { useHistory } from 'react-router'
 import { availableAccount } from '../components/service/serviceTypes'
 import { selectCountry } from '../states/reducers/countryReducer'
+import { Dialog } from '@capacitor/dialog'
 
 function Camoflash() {
     const user: UserInterface = useSelector(selectUser)
@@ -21,22 +22,24 @@ function Camoflash() {
     const [nearBYServiceProvider, setnearBYServiceProvider] = useState<availableAccount[]>([]);
     const nearByServiceProvider: availableAccount[] | any = history.location.state
 
-    useIonViewDidEnter(() => {
+    useEffect(() => {
         getNearBy().then(() => {
             sendDistress()
         });
 
-    }, [])
+    } )
+   
 
     async function getNearBy() {
-        if (nearBYServiceProvider.length <= 0)
+        if (nearBYServiceProvider.length <= 0) {
             try {
                 alert(countryInfo.name)
-                // const serAcc: any = await getServicesNearBy(countryInfo.name, `police`);
-                // setnearBYServiceProvider([...serAcc]);
+                const serAcc: any = await getServicesNearBy(countryInfo.name, `police`);
+                setnearBYServiceProvider([...serAcc]);
             } catch (err) {
-                // Dialog.alert({ message: err.message || err || 'Unexpected error occured', title: 'Error getting nearby police stations' })
+                Dialog.alert({ message: err.message || err || 'Unexpected error occured', title: 'Error getting nearby police stations' })
             }
+        }
     }
     async function sendDistress() {
 

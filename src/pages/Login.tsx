@@ -1,5 +1,5 @@
 // @flow strict
-import { IonButton, IonCard, IonCardHeader, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonLoading, IonNote, IonPage, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
+import { IonButton, IonCard, IonCardHeader, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonLoading, IonNote, IonPage, IonPopover, IonTitle, IonToolbar, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
 import { arrowForward, keyOutline, locateOutline, lockClosedOutline, mailOpenOutline, personOutline } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -17,13 +17,15 @@ const Login: React.FC = () => {
     const dispatch = useDispatch()
     const history = useHistory()
 
+    const [email, setemail] = useState('')
     const [loading, setloading] = useState(false)
+
 
     function loginUser(event: any) {
         event.preventDefault()
         const email = event.target.email.value.toLowerCase();
         const pass = event.target.pass.value;
-       console.log(pass)
+        console.log(pass)
         if (email && pass) {
             setloading(true)
             auth.signInWithEmailAndPassword(email, pass).then(() => {
@@ -32,7 +34,7 @@ const Login: React.FC = () => {
                     if (user?.email) {
                         dispatch(updateUser(user))
                         Storage.set({ key: `user`, value: JSON.stringify(user) })
-                       history.push(`/feed/default`)
+                        history.push(`/feed/default`)
                     }
                 }).catch(err => Dialog.alert({ message: `${err.message}`, title: `Authentication Error` }))
                     .finally(() => setloading(false))
@@ -40,6 +42,13 @@ const Login: React.FC = () => {
 
         }
 
+    }
+    function recoverAccount() {
+        try {
+            auth.sendPasswordResetEmail(email)
+        } catch(err) {
+            Dialog.alert({message:err.message||err, title:'Account recovery Error'});
+        }
     }
     return (
         <IonPage>
@@ -66,7 +75,7 @@ const Login: React.FC = () => {
 
                                 <IonItem key={`1`} lines={`inset`}>
                                     <IonIcon color={`primary`} icon={mailOpenOutline}></IonIcon>
-                                    <IonInput name={`email`} required placeholder={`Enter your email`}></IonInput>
+                                    <IonInput value={email} onIonChange={(e) => setemail(e.detail.value || '')} name={`email`} required placeholder={`Enter your email`}></IonInput>
                                 </IonItem>
 
                                 <IonItem key={`2`} lines={`inset`}>
@@ -86,9 +95,20 @@ const Login: React.FC = () => {
                         </IonList>
 
                     </form>
-                    
-                </IonList>
 
+                </IonList>
+                <IonPopover isOpen={true}>
+                    <IonContent>
+                        <IonCardHeader>Please enter your email</IonCardHeader>
+                        <IonItem>
+                            <IonLabel style={{ fontSize: "13", fontFamily: 'comfortaa' }} position='floating'>Enter Email</IonLabel>
+                            <IonInput value={email} onIonChange={(e) => setemail(e.detail.value || '')}></IonInput>
+                        </IonItem>
+                        <IonToolbar style={{ textAlign: 'center', paddingTop: '20px' }}>
+                            <IonButton onClick={recoverAccount} size='small'>Recover</IonButton>
+                        </IonToolbar>
+                    </IonContent>
+                </IonPopover>
             </IonContent>
         </IonPage>
     );
