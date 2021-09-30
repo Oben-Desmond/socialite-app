@@ -12,6 +12,7 @@ import { UploadContent, UploadEventContent } from '../../Firebase/pages/top page
 import { countryInfoInterface } from '../../interfaces/country';
 import { StoreStateInteface } from '../../interfaces/redux';
 import { UserInterface } from '../../interfaces/users';
+import { selectLocation } from '../../states/reducers/location-reducer';
 import ImageSlide from '../image slides';
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../PhotoOptionsModal';
 
@@ -24,7 +25,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
     const [images, setimages] = useState<any[]>([]);
     const titleRef = useRef<HTMLDivElement>(null), descRef = useRef<HTMLDivElement>(null);
     const [PhotoOptions, setPhotoOptions] = useState(false)
-
+    const location:{long:number, lat:number}= useSelector(selectLocation)
     const [loading, setloading] = useState(false)
     const [showImg, setshowImg] = useState<number | undefined>()
     const addPost = function (e: any) {
@@ -46,7 +47,7 @@ const AddEventModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = f
         if (user.email) {
             setloading(true)
 
-            UploadEventContent(data, images, user, countryInfo).then(() => {
+            UploadEventContent(data, images, user, countryInfo, location).then(() => {
                 Toast.show({ text: `Event has been posted` })
                 onDidDismiss()
             }).finally(() => {

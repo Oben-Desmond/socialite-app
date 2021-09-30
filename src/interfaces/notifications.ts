@@ -11,12 +11,14 @@ export interface dbReactionNotification{
 
 export interface InAppNotification{
     sender:string,
+    sender_name:string,
     sender_photo:string,
     message:string,
     post_id:string,
+    post_title:string,
     timestamp:number,
     id:string,
-    category:string
+    category:'events'|'feed'|'public notice' | 'classified'|'incident'
     path:string,
     type:'reaction'|'comment'|'review'|'incident'
 }
