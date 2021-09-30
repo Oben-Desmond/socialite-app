@@ -43,7 +43,8 @@ import { update_location } from '../states/reducers/location-reducer';
 import { Dialog } from '@capacitor/dialog';
 import { accountInterface } from './service/serviceTypes';
 import { update_account } from '../states/reducers/service-reducer';
-import { scheduleNotif } from './notifications/notifcation';
+import { scheduleNotif, showInAppNotification } from './notifications/notifcation';
+import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -75,8 +76,8 @@ const appPages: AppPage[] = [
   {
     title: 'Admin',
     url: '/admin',
-    iosIcon:hammerOutline,
-    mdIcon:hammerOutline
+    iosIcon: hammerOutline,
+    mdIcon: hammerOutline
   },
 
 
@@ -124,7 +125,7 @@ const Menu: React.FC = () => {
       const country: countryInfoInterface | undefined = (await res.json())
       if (country) {
         dispatch(updateCountry(country))
-        Storage.set({key:'country', value:JSON.stringify(country)});
+        Storage.set({ key: 'country', value: JSON.stringify(country) });
       }
     }).catch(console.log)
     Storage.get({ key: `favorites` }).then((res) => {
@@ -178,12 +179,16 @@ const Menu: React.FC = () => {
       Dialog.alert({ title: 'Unable to get Location', message: 'Please make sure to turn on your location and have a stable connection' })
     }
 
-
-
   }
+
+  useEffect(() => {
+    if (countryInfo?.country && user.email) {
+      ListenForInAppNotifications({ callBack: (info) => {showInAppNotification(info) }, country:countryInfo.name,user_email:user.email})
+    }
+  }, [countryInfo])
   return (
     <IonMenu swipeGesture={false} className={`menu`} contentId="main" type="overlay">
-      <IonToolbar style={{minHeight:'20vh'}} color={`none`}>
+      <IonToolbar style={{ minHeight: '20vh' }} color={`none`}>
         <div className={`country-flag`}>
           <IonImg src={user?.photoUrl || Pictures.bg} />
         </div>
@@ -211,7 +216,7 @@ const Menu: React.FC = () => {
               <IonMenuToggle color={`dark`} key={index} autoHide={false}>
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
                   <IonIcon color={location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel color={`dark`}  style={{fontFamily:'Comfortaa', color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
+                  <IonLabel color={`dark`} style={{ fontFamily: 'Comfortaa', color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );
@@ -219,13 +224,13 @@ const Menu: React.FC = () => {
           <IonMenuToggle color={`dark`} autoHide={false}>
             <IonItem color={`dark`} onClick={() => loginToService()} routerDirection="forward" lines={`full`} detail={false}>
               <IonIcon slot="start" ios={peopleOutline} md={peopleOutline} />
-              <IonLabel style={{fontFamily:"Comfortaa"}}>Business Account</IonLabel>
+              <IonLabel style={{ fontFamily: "Comfortaa" }}>Business Account</IonLabel>
             </IonItem>
           </IonMenuToggle>
           <IonMenuToggle onClick={() => auth.signOut()} color={`dark`} autoHide={false}>
             <IonItem color={`dark`} className={location.pathname === `/login` ? 'selected' : ''} routerLink={`/login`} routerDirection="forward" lines={`full`} detail={false}>
               <IonIcon slot="start" ios={exit} md={exitOutline} />
-              <IonLabel style={{fontFamily:"Comfortaa"}}>Logout</IonLabel>
+              <IonLabel style={{ fontFamily: "Comfortaa" }}>Logout</IonLabel>
             </IonItem>
           </IonMenuToggle>
         </div>

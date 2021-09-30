@@ -230,7 +230,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
 
 
         sendCommentReaction(text, user, post);
-        const id=uuid.v4() ;
+        const id= Date.now()+ uuid.v4().substr(0.6) ;
         const commentObj: commentInterface = {
             author_name: user?.name,
             description: text,
