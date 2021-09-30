@@ -64,7 +64,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
     async function shareItem() {
             await Share.share({
                 title: `${item.item_name}`,
-                text: `Checkout this cool item from Socialite app`,
+                text: `Checkout this cool item from Socionet app`,
                 url: `https://socionet.co.za/classifieds/${item.item_id}`,
                 dialogTitle: 'Share with friends and Family',
             });
