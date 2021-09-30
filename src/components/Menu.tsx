@@ -46,7 +46,7 @@ import { selectServiceAccount, update_account } from '../states/reducers/service
 import { scheduleNotif, showInAppNotification } from './notifications/notifcation';
 import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { getServiceAccount } from '../states/storage/storage-getters';
+import { getServiceAccount, setServiceAccount } from '../states/storage/storage-getters';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -111,8 +111,10 @@ const Menu: React.FC = () => {
   }, [])
 
   async function initializeService(){
-       const code = await getServiceAccount()
-       if(acc)
+       const acc = await getServiceAccount()
+       if(acc?.code){
+         dispatch(acc)
+       }
   }
 
   async function loginToService(code = user.domainCode) {
@@ -126,6 +128,7 @@ const Menu: React.FC = () => {
     try {
       let account: accountInterface | any = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
       dispatch(update_account(account))
+      setServiceAccount(account)
       history.push(`/service/${account.type}`)
     }
     catch (err) {
@@ -221,7 +224,7 @@ const Menu: React.FC = () => {
         </IonToolbar>
       </IonToolbar>
       <IonContent>
-        <IonAlert buttons={[{ text: `send`, handler: submitCode }, { text: `cancel` }]} inputs={[{ type: `number` }]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={() => setgetCode(false)} isOpen={getCode} />
+        <IonAlert buttons={[{ text: `send`,  handler: submitCode }, { text: `cancel` }]} inputs={[{ type: `number`,value:servAccount.code,  }]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={() => setgetCode(false)} isOpen={getCode} />
         <IonLoading message={`loading...`} onDidDismiss={() => setloading(false)} isOpen={loading}></IonLoading>
         <div className={`list`}>
           {appPages.map((appPage, index) => {

@@ -40,7 +40,7 @@ export const getServiceAccount =async ():Promise<accountInterface|undefined>=>{
 } 
 
 
-export const setServiceCode =async (value:accountInterface)=>{
+export const setServiceAccount =async (value:accountInterface)=>{
     const str= JSON.stringify(value)
     Storage.set({key:'service-code',value:str})
 } 
