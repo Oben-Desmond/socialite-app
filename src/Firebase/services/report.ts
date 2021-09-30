@@ -153,7 +153,7 @@ function incidentEmailTemplate(incident: reportInterface) {
     </style>
     <div>
         <h2 style='font-size: 14px;
-        color: grey;'>Socialite Incident Report</h2>
+        color: grey;'>Socionet Incident Report</h2>
         <div class="chip" style='padding: 6px;
         max-width: max-content;
         border: 1px solid red;

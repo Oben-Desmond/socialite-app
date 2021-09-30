@@ -19,6 +19,7 @@ const Login: React.FC = () => {
 
     const [email, setemail] = useState('')
     const [loading, setloading] = useState(false)
+    const [verify, setverify] = useState(false)
 
 
     function loginUser(event: any) {
@@ -43,11 +44,16 @@ const Login: React.FC = () => {
         }
 
     }
-    function recoverAccount() {
+    async function recoverAccount(): Promise<any> {
         try {
-            auth.sendPasswordResetEmail(email)
-        } catch(err) {
-            Dialog.alert({message:err.message||err, title:'Account recovery Error'});
+            setloading(true);
+            await auth.sendPasswordResetEmail(email)
+            setloading(false);
+            Dialog.alert({ message: 'Please Check your email ' + email + ' to reset password', title: 'Reset link Sent to your mail' });
+            setverify(false)
+
+        } catch (err) {
+            Dialog.alert({ message: err.message || err, title: 'Account recovery Error' });
         }
     }
     return (
@@ -87,7 +93,7 @@ const Login: React.FC = () => {
                                 <IonButton type={`submit`}>Sign In</IonButton>
                             </IonToolbar>
                             <IonToolbar className={`ion-padding-horizontal forgot`} style={{ textAlign: `end` }} color={`none`}>
-                                <IonNote><a href="#">Forgot ?</a></IonNote>
+                                <IonButton onClick={()=>setverify(true)} style={{textTransform:'Capitalize'}} fill='clear'> <IonNote color={'secondary'} ><u>Forgot ?</u></IonNote></IonButton>
                             </IonToolbar>
                             <IonToolbar className={`ion-padding-horizontal`} color={`none`}>
                                 <IonNote><Link to="/signup">Register</Link></IonNote>
@@ -97,7 +103,7 @@ const Login: React.FC = () => {
                     </form>
 
                 </IonList>
-                <IonPopover isOpen={true}>
+                <IonPopover isOpen={verify} onDidDismiss={() => setverify(false)}>
                     <IonContent>
                         <IonCardHeader>Please enter your email</IonCardHeader>
                         <IonItem>
