@@ -44,18 +44,16 @@ export async function showInAppNotification(notification: InAppNotification) {
 
         // Clear old notifications in prep for refresh (OPTIONAL)
         const pending = await LocalNotifications.getPending();
-        // if (pending.notifications.length > 0)
-        //     await LocalNotifications.cancel(pending);
-        const obj:any={}
-        pending.notifications.map(info=>{
-            obj[info.title]=info;
-        })
-        const notifs:PendingLocalNotificationSchema[]|any[]= Object.values(obj);
+        if (pending.notifications.length > 0)
+            await LocalNotifications.cancel(pending);
+        // const obj:any={}
+        // pending.notifications.map(info=>{
+        //     obj[info.title]=info;
+        // })
+        // const notifs:PendingLocalNotificationSchema[]|any[]= Object.values(obj);
  
         await LocalNotifications.schedule({
             notifications: [
-                ...notifs
-                ,
                 commentNotification(notification)
             ]
         });

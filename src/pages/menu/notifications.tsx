@@ -22,14 +22,16 @@ import { countryInfoInterface } from '../../interfaces/country';
 function Notifications() {
     const [feeds, setfeeds] = useState<InAppNotification[]>([])
     const [notices, setnotices] = useState<InAppNotification[]>([])
+    const [incidents, setincidents] = useState<InAppNotification[]>([])
     const [events, setevents] = useState<InAppNotification[]>([])
     const [classifieds, setclassifieds] = useState<InAppNotification[]>([])
-    const user:UserInterface = useSelector(selectUser)
-    const countryInfo:countryInfoInterface = useSelector(selectCountry)
+    const user: UserInterface = useSelector(selectUser)
+    const countryInfo: countryInfoInterface = useSelector(selectCountry)
 
-    const [notifications, setnotifications]= useState<InAppNotification[]> ([])
+    const [notifications, setnotifications] = useState<InAppNotification[]>([])
 
     useEffect(() => {
+        setincidents([...notifications.filter(info => info.category == 'incident')])
         setfeeds([...notifications.filter(info => info.category == 'feed')])
         setnotices([...notifications.filter(info => info.category == 'public notice')])
         setevents([...notifications.filter(info => info.category == 'events')])
@@ -37,7 +39,7 @@ function Notifications() {
     }, [notifications])
 
     useEffect(() => {
-        getInAppNotifications({user_email:user.email, country: countryInfo.name, callBack:setnotifications})
+        getInAppNotifications({ user_email: user.email, country: countryInfo.name, callBack: setnotifications })
     }, [])
     const history = useHistory()
     function goBack() {
@@ -62,6 +64,14 @@ function Notifications() {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
+                {incidents.length > 0 && <IonList>
+                    <IonItemDivider>Incidents</IonItemDivider>
+                    {
+                        incidents.map((info) => {
+                            return (<NotificationItem notification={info} />);
+                        })
+                    }
+                </IonList>}
                 {feeds.length > 0 && <IonList>
                     <IonItemDivider>Feed</IonItemDivider>
                     {
@@ -118,6 +128,17 @@ const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notif
             </IonItem>
         )
     }
+    if (notification.type == 'incident') {
+        return (
+            <IonItem button onClick={showToast}>
+                <Avatar name={notification.sender_name.trim()} photoUrl={notification.sender_photo} usePicture={!!notification.sender_photo} ></Avatar>
+                <IonNote><b>{notification.sender_name}</b> reported an Incident <b><i>"{notification.message}"</i></b></IonNote>
+                <IonNote className={`ion-margin-start`}>
+                    <TimeAgo timestamp={notification.timestamp}></TimeAgo>
+                </IonNote>
+            </IonItem>
+        )
+    }
     return (
         <IonItem button onClick={showToast}>
             <IonAvatar slot={`start`}>
@@ -143,7 +164,7 @@ function Avatar(props: { usePicture: boolean, photoUrl: string, name: string }) 
 }
 
 
-const info=[
+const info = [
     {
         category: 'feed',
         id: 'jhsjhjd',

@@ -7,6 +7,8 @@ import axios from "axios";
 import { scheduleNotif } from "../../components/notifications/notifcation";
 import { CustomEmail } from "../../interfaces/emailtypes";
 import { sendNotification } from "./notifications";
+import { InAppNotification } from "../../interfaces/notifications";
+import { sendInAppNotification } from "../pages/inAppNotifications";
 
 
 
@@ -91,6 +93,22 @@ function emailIncident(emails: string[], incident: reportInterface) {
                 title: 'New Incident reported by ' + incident.username
             }
         })
+        const inAppInfo:InAppNotification={
+            category:'incident',
+            id:incident.id,
+            message:incident.description,
+            path:`http://socionet.co.za/incident/${incident.country}/${incident.id}`,
+            post_id:incident.id,
+            post_title:'Urgently in need of your services',
+            sender:incident.author,
+            sender_name:incident.author,
+            sender_photo:incident.photoUrl,
+            timestamp:Date.now(),
+            type:'incident'
+ 
+         }
+         sendInAppNotification({country:incident.country, notification:inAppInfo,reciever:emails[i]});
+ 
 
     }
 }
