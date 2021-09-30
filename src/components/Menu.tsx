@@ -45,6 +45,7 @@ import { accountInterface } from './service/serviceTypes';
 import { update_account } from '../states/reducers/service-reducer';
 import { scheduleNotif, showInAppNotification } from './notifications/notifcation';
 import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -98,6 +99,12 @@ const Menu: React.FC = () => {
 
   useEffect(() => {
     initLocation()
+    LocalNotifications.addListener('localNotificationActionPerformed',()=>{
+      history.push('/notifications')
+    })
+    LocalNotifications.addListener('localNotificationReceived',()=>{
+      history.push('/notifications')
+    })
   }, [])
 
   async function loginToService(code = user.domainCode) {
