@@ -6,7 +6,7 @@ import { db } from "../Firebase";
 export const sendInAppNotification =async  (param:{notification:InAppNotification, reciever:string, country:string})=>{
    const {notification, reciever, country}=param;
    
-   return db.ref('notification-channels').child(country).child(sanitizeDBId(reciever)).child(notification.id).set(notification)
+   return db.ref('notification-channels').child(country).child(sanitizeDBId(reciever)).child(sanitizeDBId(notification.id)).set(notification)
 
 }
 

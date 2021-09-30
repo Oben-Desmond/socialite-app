@@ -4,10 +4,11 @@ import { UserInterface } from "../../interfaces/users";
 import { db } from "../Firebase";
 import { sendNotification } from "./notifications";
 import * as uuid from "uuid";
-import { dbReactionNotification } from "../../interfaces/notifications";
+import { dbReactionNotification, InAppNotification } from "../../interfaces/notifications";
 
 export function sendCommentReaction(text = '', user: UserInterface, post: PostInterface) {
 
+    
     sendNotification({
         data: {
             id: post.id,
