@@ -2,7 +2,7 @@
 
 import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonItemDivider, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonTitle, IonToolbar, useIonRouter, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
-import   React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Pictures } from '../images/images';
 import { Toast } from '@capacitor/toast';
@@ -11,6 +11,12 @@ import { hideTabBar } from '../../App';
 import { InAppNotification } from '../../interfaces/notifications';
 import TimeAgo from '../../components/timeago';
 import LetteredAvatar from '../../components/LetterAvatar';
+import { getInAppNotifications } from '../../Firebase/pages/inAppNotifications';
+import { UserInterface } from '../../interfaces/users';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../states/reducers/userReducers';
+import { selectCountry } from '../../states/reducers/countryReducer';
+import { countryInfoInterface } from '../../interfaces/country';
 
 
 function Notifications() {
@@ -18,29 +24,21 @@ function Notifications() {
     const [notices, setnotices] = useState<InAppNotification[]>([])
     const [events, setevents] = useState<InAppNotification[]>([])
     const [classifieds, setclassifieds] = useState<InAppNotification[]>([])
+    const user:UserInterface = useSelector(selectUser)
+    const countryInfo:countryInfoInterface = useSelector(selectCountry)
 
+    const [notifications, setnotifications]= useState<InAppNotification[]> ([])
 
-    const notifications: InAppNotification[] = [
-        {
-            category: 'feed',
-            id: 'jhsjhjd',
-            message: 'you are the best thing that happened to me',
-            path: 'https://socionet.co.za/feed',
-            post_id: '',
-            sender: 'obend678@gmail.com',
-            sender_photo: '',
-            timestamp: Date.now(),
-            type: 'comment',
-            post_title: 'Emerging Cameroon',
-            sender_name: 'Oben Desmond'
-        }
-    ]
-    useEffect(() => { 
-        setfeeds([...notifications.filter(info=>info.category=='feed')])
-        setnotices([...notifications.filter(info=>info.category=='public notice')])
-        setevents([...notifications.filter(info=>info.category=='events')])
-        setclassifieds([...notifications.filter(info=>info.category=='classified')])
+    useEffect(() => {
+        setfeeds([...notifications.filter(info => info.category == 'feed')])
+        setnotices([...notifications.filter(info => info.category == 'public notice')])
+        setevents([...notifications.filter(info => info.category == 'events')])
+        setclassifieds([...notifications.filter(info => info.category == 'classified')])
     }, [notifications])
+
+    useEffect(() => {
+        getInAppNotifications({user_email:user.email, country: countryInfo.name, callBack:setnotifications})
+    }, [])
     const history = useHistory()
     function goBack() {
         history.goBack()
@@ -64,31 +62,39 @@ function Notifications() {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <IonList>
-                    <IonItemDivider>Stories</IonItemDivider>
+                {feeds.length > 0 && <IonList>
+                    <IonItemDivider>Feed</IonItemDivider>
                     {
-                        notifications.map((info) => {
+                        feeds.map((info) => {
                             return (<NotificationItem notification={info} />);
                         })
                     }
-                    {/* <NotificationItem />
-                    <NotificationItem />
-                    <NotificationItem /> */}
-                </IonList>
-                {/* <IonList>
-                    <IonItemDivider>Public notice</IonItemDivider>
-                    <NotificationItem />
-                    <NotificationItem />
-                    <NotificationItem />
-                    <NotificationItem />
-                    <NotificationItem />
-                </IonList>
-                <IonList>
+                </IonList>}
+                {notices.length > 0 && <IonList>
+                    <IonItemDivider>Public Notice</IonItemDivider>
+                    {
+                        notices.map((info) => {
+                            return (<NotificationItem notification={info} />);
+                        })
+                    }
+                </IonList>}
+                {events.length > 0 && <IonList>
                     <IonItemDivider>Events</IonItemDivider>
-                    <NotificationItem />
-                    <NotificationItem />
-                    <NotificationItem />
-                </IonList> */}
+                    {
+                        events.map((info) => {
+                            return (<NotificationItem notification={info} />);
+                        })
+                    }
+                </IonList>}
+
+                {classifieds.length > 0 && <IonList>
+                    <IonItemDivider>Classifieds</IonItemDivider>
+                    {
+                        events.map((info) => {
+                            return (<NotificationItem notification={info} />);
+                        })
+                    }
+                </IonList>}
             </IonContent>
         </IonPage>
     );
@@ -130,8 +136,52 @@ function Avatar(props: { usePicture: boolean, photoUrl: string, name: string }) 
     return (
         <> {usePicture ? <IonAvatar slot={`start`}>
             <IonImg src={photoUrl} />
-        </IonAvatar> : <div style={{marginBottom:5, marginRight:10, transform:'translateY(-5px) scale(0.8)'}} >
+        </IonAvatar> : <div style={{ marginBottom: 5, marginRight: 10, transform: 'translateY(-5px) scale(0.8)' }} >
             <LetteredAvatar name={name[0]} ></LetteredAvatar>
         </div>}</>
     )
 }
+
+
+const info=[
+    {
+        category: 'feed',
+        id: 'jhsjhjd',
+        message: 'you are the best thing that happened to me',
+        path: 'https://socionet.co.za/feed',
+        post_id: '',
+        sender: 'obend678@gmail.com',
+        sender_photo: '',
+        timestamp: Date.now(),
+        type: 'comment',
+        post_title: 'Emerging Cameroon',
+        sender_name: 'Oben Desmond'
+    },
+    {
+        category: 'events',
+        id: 'jhsjhjd',
+        message: 'you are the best thing that happened to me',
+        path: 'https://socionet.co.za/feed',
+        post_id: '',
+        sender: 'obend678@gmail.com',
+        sender_photo: '',
+        timestamp: Date.now(),
+        type: 'comment',
+        post_title: 'Emerging Cameroon',
+        sender_name: 'Lorem Ipsum'
+    },
+    {
+        category: 'events',
+        id: 'jhsjhjd',
+        message: 'you are the best thing that happened to me',
+        path: 'https://socionet.co.za/feed',
+        post_id: '',
+        sender: 'obend678@gmail.com',
+        sender_photo: '',
+        timestamp: Date.now(),
+        type: 'comment',
+        post_title: 'Odenze comes to life',
+        sender_name: 'Agbor Ken'
+    }
+
+]
