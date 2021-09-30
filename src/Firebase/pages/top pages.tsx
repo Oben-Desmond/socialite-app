@@ -60,9 +60,10 @@ export async function UploadContent(data: { category: string, title: string, sto
 
 }
 
-export async function UploadEventContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined) {
+export async function UploadEventContent(data: { category: string, title: string, story: string }, images: string[], user: UserInterface, country: countryInfoInterface | undefined, location:{long:number, lat:number}) {
 
     const country_name = country?.name || `South Africa`;
+    const hash = geohashForLocation([location.lat, location.long])
     const post: PostInterface = {
 
         images: images,
@@ -73,7 +74,8 @@ export async function UploadEventContent(data: { category: string, title: string
         author_name: user.name,
         author_url: user.photoUrl,
         id: Date.now() + user.email,
-        email: user.email
+        email: user.email,
+        geohash:hash
     }
     return (new Promise(async (resolve, reject) => {
 

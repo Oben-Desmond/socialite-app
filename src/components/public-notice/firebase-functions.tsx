@@ -20,7 +20,8 @@ export async function UploadPublicNotice(data: { category: string, title: string
         author_name: user.name,
         author_url: user.photoUrl,
         id: Date.now() + user.email,
-        email: user.email
+        email: user.email,
+        geohash:'0000'
     }
     return (new Promise(async (resolve, reject) => {
 
