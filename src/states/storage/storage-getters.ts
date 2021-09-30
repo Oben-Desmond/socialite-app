@@ -1,4 +1,5 @@
 import { Storage } from "@capacitor/storage"
+import { accountInterface } from "../../components/service/serviceTypes";
 
 
  export const getCountry=async()=>{
@@ -27,4 +28,19 @@ export const getLocation=async()=>{
     }
 
         return undefined
+} 
+
+
+export const getServiceAccount =async ():Promise<accountInterface|undefined>=>{
+    const value =  (await Storage.get({key:'service-code'})).value
+    if(value){
+        return (JSON.parse(value))
+    }
+    return undefined
+} 
+
+
+export const setServiceCode =async (value:accountInterface)=>{
+    const str= JSON.stringify(value)
+    Storage.set({key:'service-code',value:str})
 } 

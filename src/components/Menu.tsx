@@ -42,10 +42,11 @@ import { Geolocation } from '@capacitor/geolocation';
 import { update_location } from '../states/reducers/location-reducer';
 import { Dialog } from '@capacitor/dialog';
 import { accountInterface } from './service/serviceTypes';
-import { update_account } from '../states/reducers/service-reducer';
+import { selectServiceAccount, update_account } from '../states/reducers/service-reducer';
 import { scheduleNotif, showInAppNotification } from './notifications/notifcation';
 import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { getServiceAccount } from '../states/storage/storage-getters';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -96,6 +97,7 @@ const Menu: React.FC = () => {
   const dispatch = useDispatch()
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
+  const servAccount:accountInterface = useSelector(selectServiceAccount)
 
   useEffect(() => {
     initLocation()
@@ -103,7 +105,15 @@ const Menu: React.FC = () => {
       history.push('/notifications')
     })
      
+    initializeService()
+    
+     
   }, [])
+
+  async function initializeService(){
+       const code = await getServiceAccount()
+       if(acc)
+  }
 
   async function loginToService(code = user.domainCode) {
 
