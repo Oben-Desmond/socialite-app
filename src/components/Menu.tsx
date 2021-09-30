@@ -113,7 +113,7 @@ const Menu: React.FC = () => {
   async function initializeService(){
        const acc = await getServiceAccount()
        if(acc?.code){
-         dispatch(acc)
+         dispatch(update_account(acc))
        }
   }
 
