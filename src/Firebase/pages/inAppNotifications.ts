@@ -34,7 +34,7 @@ export const getInAppNotifications = async (param: { user_email: string, country
 export const ListenForInAppNotifications = async (param: { user_email: string, country: string, callBack: (notifications: InAppNotification) => void }) => {
     const { user_email, country, callBack } = param;
     let initial = true;
-    db.ref('notification-channels').child(country).child(sanitizeDBId(user_email)).limitToLast(1).on('value', (snapshot) => {
+    db.ref('notification-channels').child(country).child(sanitizeDBId(user_email)).limitToLast(1).on('child_added', (snapshot) => {
         const value: any = snapshot.val()
         if (value) {
             const notification: InAppNotification = value

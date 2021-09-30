@@ -102,9 +102,7 @@ const Menu: React.FC = () => {
     LocalNotifications.addListener('localNotificationActionPerformed',()=>{
       history.push('/notifications')
     })
-    LocalNotifications.addListener('localNotificationReceived',()=>{
-      history.push('/notifications')
-    })
+     
   }, [])
 
   async function loginToService(code = user.domainCode) {

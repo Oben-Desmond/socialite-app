@@ -21,9 +21,12 @@ import { countryInfoInterface } from '../../interfaces/country';
 import { Keyboard } from '@capacitor/keyboard';
 import EditEventsFab from './EditEventsFab';
 import { getRandomColor } from '../text formaters/getRandomColor';
+import * as uuid from "uuid";
 import { Share } from '@capacitor/share';
 import { sendCommentReaction, sendReactionNotificaton } from '../../Firebase/services/reaction-notifications';
 import { selectUser } from '../../states/reducers/userReducers';
+import { sendInAppNotification } from '../../Firebase/pages/inAppNotifications';
+import { InAppNotification } from '../../interfaces/notifications';
 
 
 const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface }> = function ({ isOpen, onDidDismiss, post }) {
@@ -104,13 +107,14 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
         if (!user?.email || !user) return;
         sendCommentReaction(text, user, post);
 
+        const id = Date.now() + uuid.v4().substr(0.6);
         const commentObj: commentInterface = {
             author_name: user?.name,
             description: text,
             photoUrl: user?.photoUrl,
             subcomments: [],
             timestamp: Date.now(),
-            id: Date.now() + user.email
+            id
         }
         console.log(commentObj)
         uploadCommentToFirebase(commentObj, commentTitle, countryInfo, post.id).then(() => {
@@ -119,6 +123,23 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
             setaddcomment(false);
 
         }).catch(alert)
+        const inAppInfo: InAppNotification = {
+            category: 'events',
+            id,
+            message: text,
+            path: `http://socionet.co.za/events/${post.id}`,
+            post_id: post.id,
+            post_title: post.title,
+            sender: user.email,
+            sender_name: user.name,
+            sender_photo: user.photoUrl,
+            timestamp: Date.now(),
+            type: 'comment'
+
+        }
+
+        sendInAppNotification({ country: countryInfo.name, notification: inAppInfo, reciever: post.email })
+
 
     }
     function getProfileInfo(email: string) {

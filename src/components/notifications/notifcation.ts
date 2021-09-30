@@ -1,4 +1,4 @@
-import { LocalNotifications } from '@capacitor/local-notifications'
+import { LocalNotifications, PendingLocalNotificationSchema } from '@capacitor/local-notifications'
 import { InAppNotification } from '../../interfaces/notifications';
 
 
@@ -46,10 +46,15 @@ export async function showInAppNotification(notification: InAppNotification) {
         const pending = await LocalNotifications.getPending();
         // if (pending.notifications.length > 0)
         //     await LocalNotifications.cancel(pending);
-
+        const obj:any={}
+        pending.notifications.map(info=>{
+            obj[info.title]=info;
+        })
+        const notifs:PendingLocalNotificationSchema[]|any[]= Object.values(obj);
+ 
         await LocalNotifications.schedule({
             notifications: [
-                ...pending.notifications
+                ...notifs
                 ,
                 commentNotification(notification)
             ]
@@ -61,7 +66,7 @@ export async function showInAppNotification(notification: InAppNotification) {
 
 
 const commentNotification = (notification: InAppNotification) => ({
-    title: notification.sender_name + ' commented on your post',
+    title: notification.sender_name||notification.sender||'Someone' + ' commented on your post',
     body: notification.message,
     id: new Date().getTime(),
     schedule: {
