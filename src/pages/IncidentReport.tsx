@@ -23,6 +23,7 @@ import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../compo
 import AddIncident from '../components/service/addIncident';
 import { selectServiceAccount } from '../states/reducers/service-reducer';
 import { accountInterface } from '../components/service/serviceTypes';
+import { Dialog } from '@capacitor/dialog';
 
 
 const IncidentReport: React.FC = () => {
@@ -39,6 +40,7 @@ const IncidentReport: React.FC = () => {
 
     useEffect(() => {
         if (!servAcc.code) {
+           Dialog.alert({message:'It seems you have not entered a service code', title:'No service code in History'})
             history.push(`/feed/default`)
         }
     }, [servAcc])

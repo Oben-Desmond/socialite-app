@@ -113,7 +113,7 @@ function Notifications() {
 export default Notifications;
 
 const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notification }) => {
-
+   const history=useHistory();
     function showToast() {
         Toast.show({ text: `notification opened` }).then(console.log)
     }
@@ -130,7 +130,7 @@ const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notif
     }
     if (notification.type == 'incident') {
         return (
-            <IonItem button onClick={showToast}>
+            <IonItem button onClick={()=>history.push('/incident-report')}>
                 <Avatar name={notification.sender_name.trim()} photoUrl={notification.sender_photo} usePicture={!!notification.sender_photo} ></Avatar>
                 <IonNote><b>{notification.sender_name}</b> reported an Incident <b><i>"{notification.message}"</i></b></IonNote>
                 <IonNote className={`ion-margin-start`}>

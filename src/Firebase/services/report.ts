@@ -189,7 +189,7 @@ function incidentEmailTemplate(incident: reportInterface) {
             ${incident.description
         }    
         </p>
-        <a href="https://socionet.co.za/reports/${incident.id}">
+        <a href="https://socionet.co.za/notifications">
         <button style='padding: 10px;
         border: none;
         background-color: rgb(189, 136, 36);
