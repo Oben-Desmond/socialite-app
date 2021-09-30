@@ -71,7 +71,7 @@ const Login: React.FC = () => {
                 </div>
                 <IonList className={`login-list`}>
                     <IonToolbar>
-                        <IonTitle>Login | <span style={{ color: `var(--ion-color-secondary)` }}>Socialite</span></IonTitle>
+                        <IonTitle>Login | <span style={{ color: `var(--ion-color-secondary)` }}>Socionet</span></IonTitle>
                     </IonToolbar>
                     <form onSubmit={loginUser}>
                         <IonList className={`login-list`}>
