@@ -38,7 +38,7 @@ import { selectServiceAccount, update_account } from '../states/reducers/service
 import { showInAppNotification } from './notifications/notifcation';
 import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { getAppNotifications, getServiceAccount, setServiceAccount } from '../states/storage/storage-getters';
+import { getAppNotifications, getServiceAccount, getStoredCountry, setServiceAccount } from '../states/storage/storage-getters';
 import { NotificationRedux, selectNotification, update_notifications } from '../states/reducers/InAppNotifications';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
@@ -91,8 +91,8 @@ const Menu: React.FC = () => {
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
   const servAccount: accountInterface = useSelector(selectServiceAccount)
-  const notifState:NotificationRedux=useSelector(selectNotification)
-   
+  const notifState: NotificationRedux = useSelector(selectNotification)
+
   useEffect(() => {
     initLocation()
     LocalNotifications.addListener('localNotificationActionPerformed', () => {
@@ -139,13 +139,7 @@ const Menu: React.FC = () => {
   }
   useEffect(() => {
 
-    fetch(`https://get.geojs.io/v1/ip/country.json`).then(async res => {
-      const country: countryInfoInterface | undefined = (await res.json())
-      if (country) {
-        dispatch(updateCountry(country))
-        Storage.set({ key: 'country', value: JSON.stringify(country) });
-      }
-    }).catch(console.log)
+    initializeCountry()
     Storage.get({ key: `favorites` }).then((res) => {
       if (res.value) {
         dispatch(init_favorites(JSON.parse(res.value)))
@@ -156,6 +150,24 @@ const Menu: React.FC = () => {
 
   }, [])
 
+  async function initializeCountry() {
+    const storedCountry = await getStoredCountry();
+    if (storedCountry) {
+      dispatch(updateCountry(storedCountry))
+    }
+    fetch(`https://get.geojs.io/v1/ip/country.json`).then(async res => {
+      const country: countryInfoInterface | undefined = (await res.json())
+
+      if (country) {
+        if (country.name == storedCountry?.name) {
+          return;
+        }
+        dispatch(updateCountry(country))
+        Storage.set({ key: 'country', value: JSON.stringify(country) });
+      }
+    }).catch(console.log)
+
+  }
 
   async function initUser() {
     const userStr = (await Storage.get({ key: `user` })).value
@@ -235,7 +247,7 @@ const Menu: React.FC = () => {
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
                   <IonIcon color={location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                   <IonLabel color={`dark`} style={{ fontFamily: 'Comfortaa', color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
-                 {appPage.title=='Notifications'&& notifState.new&&<IonBadge slot='end' style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} color='danger'>
+                  {appPage.title == 'Notifications' && notifState.new && <IonBadge slot='end' style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} color='danger'>
                     <div style={{ width: '1px', height: '3px' }}></div>
                   </IonBadge>}
                 </IonItem>

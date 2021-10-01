@@ -1,5 +1,6 @@
 import { Storage } from "@capacitor/storage"
 import { accountInterface } from "../../components/service/serviceTypes";
+import { countryInfoInterface } from "../../interfaces/country";
 import { InAppNotification } from "../../interfaces/notifications";
 
 
@@ -31,6 +32,13 @@ export const getLocation=async()=>{
         return undefined
 } 
 
+export const getStoredCountry =async ():Promise<countryInfoInterface|undefined>=>{
+    const value =  (await Storage.get({key:'country'})).value
+    if(value){
+        return (JSON.parse(value))
+    }
+    return undefined
+} 
 
 export const getServiceAccount =async ():Promise<accountInterface|undefined>=>{
     const value =  (await Storage.get({key:'service-code'})).value
@@ -39,6 +47,8 @@ export const getServiceAccount =async ():Promise<accountInterface|undefined>=>{
     }
     return undefined
 } 
+
+
 
 
 export const setServiceAccount =async (value:accountInterface)=>{

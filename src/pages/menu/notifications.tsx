@@ -44,6 +44,7 @@ function Notifications() {
 
     useEffect(() => {
         setAppNotifications(notifications);
+        dispatch(update_new(false))
     }, [notifications])
     const history = useHistory()
     function goBack() {
