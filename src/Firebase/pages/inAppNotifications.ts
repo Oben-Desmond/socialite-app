@@ -22,7 +22,7 @@ export const getInAppNotifications = async (param: { user_email: string, country
                 const temp: any[] = Object.values(value);
                 console.log(temp, 'get notifications')
                 callBack(temp);
-                db.ref('notification-channels').remove()
+                // db.ref('notification-channels').remove()
             }
             else {
                 callBack([])

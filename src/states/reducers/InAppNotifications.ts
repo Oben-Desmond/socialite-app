@@ -44,6 +44,6 @@ const NotificationReducer = (state = initialNotifications, action: ActionUpdate|
 
 export const selectNotification = (state: any) => state.NotificationReducer
 
-export const { update_notifications } = actions;
+export const { update_notifications, update_new } = actions;
 
 export default NotificationReducer

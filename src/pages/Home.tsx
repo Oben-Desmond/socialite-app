@@ -26,11 +26,11 @@ import { PushNotifications, PushNotificationSchema, Token } from '@capacitor/pus
 import { UserInterface } from '../interfaces/users';
 import { selectUser } from '../states/reducers/userReducers';
 import axios from 'axios';
-import { getCountry } from '../states/storage/storage-getters';
+import { getCountry, setAppNotifications } from '../states/storage/storage-getters';
 import GeoSyncModal from '../components/GeoSyncModal';
 import { selectLocation } from '../states/reducers/location-reducer';
 import { Capacitor } from '@capacitor/core';
-import { NotificationRedux, selectNotification, update_notifications } from '../states/reducers/InAppNotifications';
+import { NotificationRedux, selectNotification, update_new, update_notifications } from '../states/reducers/InAppNotifications';
 import { getInAppNotifications } from '../Firebase/pages/inAppNotifications';
 import { InAppNotification } from '../interfaces/notifications';
 
@@ -90,6 +90,7 @@ const Home: React.FC = function () {
             dispatch(update_new(true))
         }
         dispatch(update_notifications(values))
+        setAppNotifications(values)
     }
 
     useEffect(() => {
@@ -289,7 +290,4 @@ function PushNotif(user: any, history: any) {
     );
 
 }
-
-function update_new(arg0: boolean): any {
-    throw new Error('Function not implemented.');
-}
+ 

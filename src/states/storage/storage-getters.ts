@@ -57,5 +57,6 @@ export const getAppNotifications= async ():Promise<InAppNotification[]> =>{
 
 
 export const setAppNotifications= async (values:InAppNotification[]) =>{
+    alert(JSON.stringify(values)+'<--- set notifications')
     Storage.set({key:'notifications', value:JSON.stringify(values)})
 }

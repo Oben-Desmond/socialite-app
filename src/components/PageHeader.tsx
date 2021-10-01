@@ -23,7 +23,6 @@ function PageHeader() {
     const [showWeather, setshowWeather] = React.useState(false)
     const [progress, setprogress] = useState(0)
     const notifState:NotificationRedux=useSelector(selectNotification)
-    const {notifications}=notifState;
     
     const history = useHistory()
     useEffect(() => {
@@ -96,9 +95,9 @@ function PageHeader() {
             <IonToolbar color={`primary`} >
                 <IonMenuButton slot={`start`}>
                 </IonMenuButton>
-                <IonBadge style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} slot='start' color='danger'>
+               {notifState.new&& <IonBadge style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} slot='start' color='danger'>
                     <div style={{ width: '1px', height: '3px' }}></div>
-                </IonBadge>
+                </IonBadge>}
                 <IonButton className='report-btn' fill={`outline`} size={`small`} slot={`end`} routerLink={`/report`} color={`danger`}>REPORT</IonButton>
                 <IonTitle> Socionet</IonTitle>
                  </IonToolbar>
