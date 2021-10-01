@@ -1,5 +1,6 @@
 import { Storage } from "@capacitor/storage"
 import { accountInterface } from "../../components/service/serviceTypes";
+import { InAppNotification } from "../../interfaces/notifications";
 
 
  export const getCountry=async()=>{
@@ -44,3 +45,17 @@ export const setServiceAccount =async (value:accountInterface)=>{
     const str= JSON.stringify(value)
     Storage.set({key:'service-code',value:str})
 } 
+
+export const getAppNotifications= async ():Promise<InAppNotification[]> =>{
+    const val= (await Storage.get({key:'notifications'})).value
+    if(val){
+        return JSON.parse(val)
+    }
+    return []
+}
+
+
+
+export const setAppNotifications= async (values:InAppNotification[]) =>{
+    Storage.set({key:'notifications', value:JSON.stringify(values)})
+}
