@@ -14,7 +14,7 @@ import SkeletonHome from '../components/top stories/dummy';
 import PageHeader from '../components/PageHeader';
 import { Pictures } from './images/images';
 import { initializePushNotification } from '../App';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectCountry } from '../states/reducers/countryReducer';
 import { countryInfoInterface } from '../interfaces/country';
 import { Toast } from '@capacitor/toast';
@@ -30,6 +30,9 @@ import { getCountry } from '../states/storage/storage-getters';
 import GeoSyncModal from '../components/GeoSyncModal';
 import { selectLocation } from '../states/reducers/location-reducer';
 import { Capacitor } from '@capacitor/core';
+import { NotificationRedux, selectNotification, update_notifications } from '../states/reducers/InAppNotifications';
+import { getInAppNotifications } from '../Firebase/pages/inAppNotifications';
+import { InAppNotification } from '../interfaces/notifications';
 
 
 
@@ -40,6 +43,7 @@ const Home: React.FC = function () {
     const [stories, setstories] = useState<PostInterface[]>([])
     const [openSinkMap, setopenSinkMap] = useState(false)
     const [loaded, setloaded] = useState(false)
+    const dispatch = useDispatch()
 
     const countryinfo: countryInfoInterface = useSelector(selectCountry)
     const locationInfo: { long: number, lat: number } = useSelector(selectLocation)
@@ -47,6 +51,9 @@ const Home: React.FC = function () {
     const params: { postid: string } = useParams()
     const user: UserInterface = useSelector(selectUser)
     const history = useHistory();
+    const notifState:NotificationRedux=useSelector(selectNotification)
+    const {notifications}=notifState;
+    
     useEffect(() => {
 
         if (params.postid == `default` || !params.postid) {
@@ -77,6 +84,14 @@ const Home: React.FC = function () {
         })
     }
 
+ 
+    function updateNotificationList(values: InAppNotification[]) {
+        if (notifications.length < values.length) {
+            dispatch(update_new(true))
+        }
+        dispatch(update_notifications(values))
+    }
+
     useEffect(() => {
         console.log(`fetching...`)
         let unsub = () => { }
@@ -86,6 +101,7 @@ const Home: React.FC = function () {
         }
         if (countryinfo) {
             unsub = getFeed(() => { })
+            getInAppNotifications({ user_email: user.email, country: countryinfo.name, callBack: updateNotificationList })
         }
 
         return (() => unsub())
@@ -272,4 +288,8 @@ function PushNotif(user: any, history: any) {
         }
     );
 
+}
+
+function update_new(arg0: boolean): any {
+    throw new Error('Function not implemented.');
 }

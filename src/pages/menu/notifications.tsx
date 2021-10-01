@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../../states/reducers/userReducers';
 import { selectCountry } from '../../states/reducers/countryReducer';
 import { countryInfoInterface } from '../../interfaces/country';
-import { selectNotification, update_notifications } from '../../states/reducers/InAppNotifications';
+import { NotificationRedux, selectNotification, update_notifications } from '../../states/reducers/InAppNotifications';
 import { setAppNotifications } from '../../states/storage/storage-getters';
 
 
@@ -29,9 +29,10 @@ function Notifications() {
     const [classifieds, setclassifieds] = useState<InAppNotification[]>([])
     const user: UserInterface = useSelector(selectUser)
     const countryInfo: countryInfoInterface = useSelector(selectCountry)
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
 
-    const notifications:InAppNotification[]= useSelector(selectNotification)
+    const notifState: NotificationRedux = useSelector(selectNotification)
+    const { notifications } = notifState;
 
     useEffect(() => {
         setincidents([...notifications.filter(info => info.category == 'incident')])
@@ -41,13 +42,6 @@ function Notifications() {
         setclassifieds([...notifications.filter(info => info.category == 'classified')])
     }, [notifications])
 
-    useEffect(() => {
-        getInAppNotifications({ user_email: user.email, country: countryInfo.name, callBack: updateNotificationList})
-    }, [])
-
-    function updateNotificationList(values:InAppNotification[]){
-        dispatch(update_notifications(values)) 
-    }
     useEffect(() => {
         setAppNotifications(notifications);
     }, [notifications])
@@ -123,7 +117,7 @@ function Notifications() {
 export default Notifications;
 
 const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notification }) => {
-   const history=useHistory();
+    const history = useHistory();
     function showToast() {
         Toast.show({ text: `notification opened` }).then(console.log)
     }
@@ -140,7 +134,7 @@ const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notif
     }
     if (notification.type == 'incident') {
         return (
-            <IonItem button onClick={()=>history.push('/incident-report')}>
+            <IonItem button onClick={() => history.push('/incident-report')}>
                 <Avatar name={notification.sender_name.trim()} photoUrl={notification.sender_photo} usePicture={!!notification.sender_photo} ></Avatar>
                 <IonNote><b>{notification.sender_name}</b> reported an Incident <b><i>"{notification.message}"</i></b></IonNote>
                 <IonNote className={`ion-margin-start`}>
@@ -216,3 +210,7 @@ const info = [
     }
 
 ]
+
+function update_new(arg0: boolean): any {
+    throw new Error('Function not implemented.');
+}
