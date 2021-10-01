@@ -34,7 +34,7 @@ const actions: actions = {
 const NotificationReducer = (state = initialNotifications, action: ActionUpdate|ActionNew):NotificationRedux => {
 
     switch (action.type) {
-        case 'update_notifications': return ({...state, notifications:action.payload});
+        case 'update_notifications': return ({...state, notifications:[...state.notifications,...action.payload]});
         case 'update_new': return ({...state, new:action.payload});
 
         default: return state;

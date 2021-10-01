@@ -121,7 +121,6 @@ const Menu: React.FC = () => {
 
   async function initializeAppNotifications(){
     const storedNotifications=await getAppNotifications()
-    alert(JSON.stringify(storedNotifications))
     dispatch(update_notifications(storedNotifications));
   }
 
