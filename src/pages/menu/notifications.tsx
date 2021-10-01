@@ -18,6 +18,7 @@ import { selectUser } from '../../states/reducers/userReducers';
 import { selectCountry } from '../../states/reducers/countryReducer';
 import { countryInfoInterface } from '../../interfaces/country';
 import { selectNotification, update_notifications } from '../../states/reducers/InAppNotifications';
+import { setAppNotifications } from '../../states/storage/storage-getters';
 
 
 function Notifications() {
@@ -41,8 +42,15 @@ function Notifications() {
     }, [notifications])
 
     useEffect(() => {
-        getInAppNotifications({ user_email: user.email, country: countryInfo.name, callBack: (values)=>dispatch(update_notifications(values)) })
+        getInAppNotifications({ user_email: user.email, country: countryInfo.name, callBack: updateNotificationList})
     }, [])
+
+    function updateNotificationList(values:InAppNotification[]){
+        dispatch(update_notifications(values)) 
+    }
+    useEffect(() => {
+        setAppNotifications(notifications);
+    }, [notifications])
     const history = useHistory()
     function goBack() {
         history.goBack()
