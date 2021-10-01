@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../../states/reducers/userReducers';
 import { selectCountry } from '../../states/reducers/countryReducer';
 import { countryInfoInterface } from '../../interfaces/country';
-import { NotificationRedux, selectNotification, update_notifications } from '../../states/reducers/InAppNotifications';
+import { NotificationRedux, selectNotification, update_new, update_notifications } from '../../states/reducers/InAppNotifications';
 import { setAppNotifications } from '../../states/storage/storage-getters';
 
 
@@ -211,7 +211,4 @@ const info = [
     }
 
 ]
-
-function update_new(arg0: boolean): any {
-    throw new Error('Function not implemented.');
-}
+ 

@@ -139,14 +139,15 @@ const Menu: React.FC = () => {
   }
   useEffect(() => {
 
-    initializeCountry()
     Storage.get({ key: `favorites` }).then((res) => {
       if (res.value) {
         dispatch(init_favorites(JSON.parse(res.value)))
       }
     })
-    initLocation()
+   
     initUser()
+    initializeCountry()
+    initLocation()
 
   }, [])
 

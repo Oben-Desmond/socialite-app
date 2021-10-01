@@ -11,6 +11,7 @@ import { UserInterface } from "../../interfaces/users";
 import { selectUser } from "../../states/reducers/userReducers";
 import { useSelector } from "react-redux";
 import ReportersModal from "./ReportersModal";
+import LetteredAvatar from "../LetterAvatar";
 
 
 
@@ -39,56 +40,33 @@ const ReportersCard: React.FC<{ report: reportInterface }> = ({ report }) => {
     }, [report])
 
     return (
-        <div>
-            <IonItem disabled={!report.location && !report.author && report.images.length <= 0} onClick={() => setviewReport(true)}>
-                <IonGrid>
-                    <IonRow>
-                        <IonCol className={`ion-align-self-center`}>
-                            {report.author && <>
-                                {(report.photoUrl || (user.photoUrl && user.email == report.author)) ? <IonAvatar style={{ width: '50px', height: '50px' }}>
-                                    <IonImg src={report.photoUrl || user.photoUrl} />
-                                </IonAvatar> : <UserAvatar name={report.author} ></UserAvatar>}</>}
-                            {
-                                !report.author && <IonIcon size={`large`} icon={banOutline} />
-                            }
-                        </IonCol>
-                        <IonCol className={`ion-align-self-center ion-text-capitalize`} >
-                            <IonRow>
-                                <div >
-                                    <IonLabel>{report.author}</IonLabel>
-                                </div>
-                                <div style={{ height: `30px` }}></div>
-                                <div>
-                                    <IonLabel>{report.category}</IonLabel>
-                                </div>
-                            </IonRow>
-                            <IonRow>
-                                <IonNote>
-                                    {report.description}
-                                </IonNote>
-                            </IonRow>
-                        </IonCol>
-                        <IonCol className={`ion-align-self-center ion-text-center`}>
-                            <IonRow style={{ textAlign: `center` }}>
-                                {(!seen && user.email !== report.author) && <IonCol>
-                                    <IonBadge color={`success`}><div style={{ width: `4px`, height: `4px` }}></div> </IonBadge>
-                                    {/* <IonIcon color={`success`} icon={checkmarkDone}></IonIcon> */}
-                                </IonCol>}
-                            </IonRow>
-                            <IonRow className={`ion-text-center`}>
-                                <IonNote className={`ion-text-center`} style={{ textAlign: `center` }} color={`secondary`}>
-                                    <TimeAgo timestamp={report.timestamp}></TimeAgo>
-                                </IonNote>
-                            </IonRow>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
+        <div className='ion-padding-top'>
+            <IonItem disabled={!report.location && !report.author && report.images.length <= 0} onClick={() => setviewReport(true)} button >
+                {report.author ? <Avatar name={report.author.trim()} photoUrl={report.photoUrl} usePicture={!!report.photoUrl} ></Avatar> : <IonIcon size={`large`} icon={banOutline} />}
+                <IonNote><b>{report.author}</b> sent a report <b><i>"{report.description}"</i></b></IonNote>
+                <IonNote className={`ion-margin-start`}>
+                    <TimeAgo timestamp={report.timestamp}></TimeAgo>
+                </IonNote>
             </IonItem>
+            {/* <ReportStatistics></ReportStatistics> */}
             <ReportersModal report={report} onDidDismiss={() => setviewReport(false)} isOpen={viewReport}></ReportersModal>
             {/* <ReportStatistics></ReportStatistics> */}
         </div>
     )
 }
+
+
+export function Avatar(props: { usePicture: boolean, photoUrl: string, name: string }) {
+    const { usePicture, name, photoUrl } = props
+    return (
+        <> {usePicture ? <IonAvatar slot={`start`}>
+            <IonImg src={photoUrl} />
+        </IonAvatar> : <div style={{ marginBottom: 5, marginRight: 10, transform: 'translateY(-5px) scale(0.8)' }} >
+            <LetteredAvatar name={name[0]} ></LetteredAvatar>
+        </div>}</>
+    )
+}
+
 
 
 export default ReportersCard
