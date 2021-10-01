@@ -13,10 +13,11 @@ import TimeAgo from '../../components/timeago';
 import LetteredAvatar from '../../components/LetterAvatar';
 import { getInAppNotifications } from '../../Firebase/pages/inAppNotifications';
 import { UserInterface } from '../../interfaces/users';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../../states/reducers/userReducers';
 import { selectCountry } from '../../states/reducers/countryReducer';
 import { countryInfoInterface } from '../../interfaces/country';
+import { selectNotification, update_notifications } from '../../states/reducers/InAppNotifications';
 
 
 function Notifications() {
@@ -27,8 +28,9 @@ function Notifications() {
     const [classifieds, setclassifieds] = useState<InAppNotification[]>([])
     const user: UserInterface = useSelector(selectUser)
     const countryInfo: countryInfoInterface = useSelector(selectCountry)
+    const dispatch=useDispatch();
 
-    const [notifications, setnotifications] = useState<InAppNotification[]>([])
+    const notifications:InAppNotification[]= useSelector(selectNotification)
 
     useEffect(() => {
         setincidents([...notifications.filter(info => info.category == 'incident')])
@@ -39,7 +41,7 @@ function Notifications() {
     }, [notifications])
 
     useEffect(() => {
-        getInAppNotifications({ user_email: user.email, country: countryInfo.name, callBack: setnotifications })
+        getInAppNotifications({ user_email: user.email, country: countryInfo.name, callBack: (values)=>dispatch(update_notifications(values)) })
     }, [])
     const history = useHistory()
     function goBack() {
