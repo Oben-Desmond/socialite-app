@@ -183,7 +183,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                       {category && category!=`other`  && category.length>1&& <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
                                 <IonLabel color={`secondary`}>sub category</IonLabel>
-                                <IonSelect onIonChange={(e) => setsubcategory(e.detail.value)} value={subcategory} name={`subcategory`} >
+                                <IonSelect interface="action-sheet" onIonChange={(e) => setsubcategory(e.detail.value)} value={subcategory} name={`subcategory`} >
 
                                     {
                                         (subcategories[category] || []).map((data:string) => {

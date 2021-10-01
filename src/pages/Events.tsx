@@ -114,8 +114,12 @@ const Events: React.FC = function () {
                 <IonRefresher ref={refresherRef} onIonRefresh={() => getEvent(() => refresherRef.current?.complete())} slot={`fixed`}>
                     <IonRefresherContent></IonRefresherContent>
                 </IonRefresher>
-                <GeoSyncModal displayText={`Sync feed to`} isOpen={openSyncMap} onDidDismiss={radius => { if (radius) SyncPostWithDistance(radius) }}></GeoSyncModal>
-                <IonToolbar>
+                <GeoSyncModal displayText={`Sync Events to`} isOpen={openSyncMap} onDidDismiss={radius => {
+                    if (radius) {
+                        SyncPostWithDistance(radius)
+                    };
+                    setopenSyncMap(false)
+                }}></GeoSyncModal> <IonToolbar>
                     <IonItem lines={`none`}>
                         {distance <= 0 && <IonCardSubtitle>Sync Events to your location</IonCardSubtitle>}
                         <IonCardSubtitle  >

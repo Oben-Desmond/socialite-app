@@ -194,7 +194,11 @@ const Home: React.FC = function () {
         <IonPage className={`home`}>
             <PageHeader></PageHeader>
             <IonContent className={`home`}>
-                <GeoSyncModal displayText={`Sync feed to`} isOpen={openSinkMap} onDidDismiss={radius => { if (radius) SyncFeedWithDistance(radius) }}></GeoSyncModal>
+                <GeoSyncModal displayText={`Sync feed to`} isOpen={openSinkMap} onDidDismiss={radius => { if (radius) {
+                    SyncFeedWithDistance(radius)
+                    } 
+                    setopenSinkMap(false)
+                    }}></GeoSyncModal>
                 <IonToolbar>
                     <IonItem lines={`none`}>
                         {distance <= 0 && <IonCardSubtitle>Sync feed to your location</IonCardSubtitle>}

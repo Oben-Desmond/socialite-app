@@ -56,10 +56,10 @@ const Classifieds: React.FC = () => {
             setprevTab(selectedTab);
             return;
         }
-        setTimeout(  () => {
-           
+        setTimeout(() => {
+
             getPost(params.postid)
-            
+
         }, 1200);
 
     }, [params])
@@ -235,7 +235,6 @@ const Classifieds: React.FC = () => {
                     <IonRefresher ref={refresherRef} onIonRefresh={() => getLatestClassifieds(() => refresherRef.current?.complete())} slot={`fixed`}>
                         <IonRefresherContent></IonRefresherContent>
                     </IonRefresher>
-                    <GeoSyncModal displayText={`Sync feed to`} isOpen={openSyncMap} onDidDismiss={radius => { if (radius) SyncPostWithDistance(radius) }}></GeoSyncModal>
 
                     <IonContent scrollY={false} style={{ height: `45px`, width: `100%` }} scrollX className={`category-tab`}>
                         <div style={{ width: `600vw` }}>
@@ -243,7 +242,7 @@ const Classifieds: React.FC = () => {
                         </div>
                     </IonContent>
                     {loading && <SkeletonHome></SkeletonHome>}
-                    {notFound && (classifiedList || [])?.length <= 0 && <div className={`ion-padding`}><IonImg src={Pictures.notfound} /> <IonLabel>NOT FOUND</IonLabel></div>}
+                    {notFound && (classifiedList || [])?.length <= 0 && <div className={`ion-padding`}><IonImg src={Pictures.notfound} /> <IonLabel>NOT RESULT</IonLabel></div>}
                     {searchTabText && <IonToolbar style={{ textAlign: `center` }}>
                         <IonText>
                             Search Results
@@ -331,6 +330,12 @@ const Classifieds: React.FC = () => {
                         </IonItem>
                     </IonContent>
                 </IonPopover>
+                <GeoSyncModal displayText={`Sync feed to`} isOpen={openSyncMap} onDidDismiss={radius => {
+                    if (radius) {
+                        SyncPostWithDistance(radius)
+                    };
+                    setopenSyncMap(false)
+                }}></GeoSyncModal>
                 <SearchModal searchForItem={searchForItem} onDidDismiss={() => setstartSearch(false)} isOpen={startSearch}></SearchModal>
                 <UploadClassified onDidDismiss={() => { setuploadItem(false) }} isOpen={uploadItem}></UploadClassified>
             </SelectedTabContext.Provider>
