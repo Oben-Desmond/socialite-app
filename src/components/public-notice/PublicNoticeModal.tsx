@@ -20,9 +20,11 @@ import { selectCountry } from '../../states/reducers/countryReducer';
 import { countryInfoInterface } from '../../interfaces/country';
 import { Keyboard } from '@capacitor/keyboard';
 import EditNoticeFab from './EditNoticeFab';
-import { getRandomColor } from '../text formaters/getRandomColor';
+import * as uuid from 'uuid';
 import { Share } from '@capacitor/share';
 import { sendCommentReaction, sendReactionNotificaton } from '../../Firebase/services/reaction-notifications';
+import { sendInAppNotification } from '../../Firebase/pages/inAppNotifications';
+import { InAppNotification } from '../../interfaces/notifications';
 
 
 const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: PostInterface, title: string }> = function ({ isOpen, onDidDismiss, post, title }) {
@@ -59,8 +61,8 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     }
     function likePost() {
         let likes = reactions?.likes || []
-        if(!user) return;
-        sendReactionNotificaton('',user,post);
+        if (!user) return;
+        sendReactionNotificaton('', user, post);
 
         if (user?.email) {
             if (likes.indexOf(user.email) >= 0) {
@@ -87,15 +89,15 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
     }
     function updateComment(text: string) {
         if (!user?.email || !user) return;
-        sendCommentReaction(text,user,post);
-
+        sendCommentReaction(text, user, post);
+        const id = Date.now() + uuid.v4().substr(0.6);
         const commentObj: commentInterface = {
             author_name: user?.name,
             description: text,
             photoUrl: user?.photoUrl,
             subcomments: [],
             timestamp: Date.now(),
-            id: Date.now() + user.email
+            id
         }
         console.log(commentObj)
         const commentTitle = title.replace(` `, ``).trim()
@@ -104,26 +106,43 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             commentItemRef.current?.scrollIntoView({ behavior: `smooth` })
 
         }).catch(alert)
+        const inAppInfo: InAppNotification = {
+            category: 'events',
+            id,
+            message: text,
+            path: `http://socionet.co.za/events/${post.id}`,
+            post_id: post.id,
+            post_title: post.title,
+            sender: user.email,
+            sender_name: user.name,
+            sender_photo: user.photoUrl,
+            timestamp: Date.now(),
+            type: 'comment'
+
+        }
+        if (post.email != user.email) {
+            sendInAppNotification({ country: countryInfo.name, notification: inAppInfo, reciever: post.email })
+        }
 
     }
     function getProfileInfo(email: string) {
         setviewProfile(true)
 
         if (email == post.email) {
-            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``), domainCode:undefined })
+            setprofile({ bio: ``, domain: ``, email: email, location: ``, name: post.author_name, photoUrl: post.author_url, tel: (user?.tel || ``), domainCode: undefined })
         }
     }
     async function handleKeyBoard() {
-        try{
+        try {
             await Keyboard.addListener(`keyboardDidHide`, () => {
                 setmoveInputUp(false)
             })
-          }catch(err){
-              console.log(err)
-          }
+        } catch (err) {
+            console.log(err)
+        }
     }
-    function sharePost(){
-        Share.share({dialogTitle:`check out this public notice`,url:`https://socionet.co.za/public-notice/${post.id}`})
+    function sharePost() {
+        Share.share({ dialogTitle: `check out this public notice`, url: `https://socionet.co.za/public-notice/${post.id}` })
     }
 
     return (
@@ -170,15 +189,15 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                     <p style={{ whiteSpace: `pre-line` }}> {post.description}</p>
                 </IonToolbar>
                 <IonToolbar>
-                    <IonSlides options={{ slidesPerView: 2 }} style={{height:'100px'}} >
+                    <IonSlides options={{ slidesPerView: 2 }} style={{ height: '100px' }} >
                         {post.images.map((img, index) => {
-                             if (post.images.length == 1) return (
+                            if (post.images.length == 1) return (
                                 <>
                                     <IonSlide key={index}>
                                         <ViewImage img={img}></ViewImage>
                                     </IonSlide>
                                     <IonSlide>
-                                        <div style={{width:'100px'}} ></div>
+                                        <div style={{ width: '100px' }} ></div>
                                     </IonSlide>
                                 </>
                             )
@@ -220,7 +239,7 @@ const PublicNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                             </IonCol>
                             <IonCol>
                                 <IonLabel >
-                                   share
+                                    share
                                 </IonLabel>
                             </IonCol>
                         </IonRow>
@@ -319,7 +338,7 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
                         <IonButton color={`light`} fill={`clear`} size={`small`} onClick={closeComment} style={{}} slot={`start`} shape={`round`}>
                             <IonIcon icon={closeCircleOutline} />
                         </IonButton>
-                        <IonTextarea     onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
+                        <IonTextarea onIonBlur={props.onBlur} autofocus ref={textAreaRef} rows={rows} value={text} onIonChange={handleChange} placeholder={`comment on this post `}></IonTextarea>
                     </IonToolbar>
                 </IonCol>
                 <IonCol>
@@ -391,7 +410,7 @@ function Comment(props: { comment: commentInterface }) {
             <IonCol>
                 <IonRow>
                     <IonCol size={`3`}>
-                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width:`50px` }}>
+                        {comment.photoUrl && <IonAvatar style={{ height: `50px`, width: `50px` }}>
                             <img src={comment.photoUrl} ></img>
                         </IonAvatar>}
 

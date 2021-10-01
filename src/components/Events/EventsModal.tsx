@@ -117,6 +117,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
             id
         }
         console.log(commentObj)
+
         uploadCommentToFirebase(commentObj, commentTitle, countryInfo, post.id).then(() => {
             setcommenttext(``)
             commentItemRef.current?.scrollIntoView({ behavior: `smooth` })
@@ -137,9 +138,9 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
             type: 'comment'
 
         }
-
-        sendInAppNotification({ country: countryInfo.name, notification: inAppInfo, reciever: post.email })
-
+        if (post.email != user.email) {
+            sendInAppNotification({ country: countryInfo.name, notification: inAppInfo, reciever: post.email })
+        }
 
     }
     function getProfileInfo(email: string) {
