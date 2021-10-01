@@ -1,53 +1,45 @@
 import {
   IonAlert,
   IonAvatar,
-  IonButton,
+  IonBadge,
   IonButtons,
-  IonCardHeader,
   IonContent,
   IonIcon,
   IonImg,
   IonItem,
   IonLabel,
-  IonList,
-  IonListHeader,
   IonLoading,
   IonMenu,
   IonMenuToggle,
-  IonNote,
-  IonPopover,
-  IonRow,
   IonToolbar,
 } from '@ionic/react';
 
 import { useHistory, useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, cashOutline, chevronDown, chevronUp, exit, exitOutline, flagOutline, hammerOutline, heart, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, notificationsOutline, paperPlaneOutline, paperPlaneSharp, people, peopleOutline, personOutline, settingsOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { exit, exitOutline, hammerOutline, homeOutline, notificationsOutline, peopleOutline, personOutline } from 'ionicons/icons';
 import './Menu.css';
 import { Pictures } from '../pages/images/images';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserInterface } from '../interfaces/users';
-import FlipMove from 'react-flip-move';
 import React from 'react';
 import { updateCountry } from '../states/action-creators/country';
 import { countryInfoInterface } from '../interfaces/country';
 import LetteredAvatar from './LetterAvatar';
 import { Storage } from '@capacitor/storage';
 import { updateUser } from '../states/action-creators/users';
-import { init_favorites, update_favorites } from '../states/reducers/favoritesReducer';
+import { init_favorites } from '../states/reducers/favoritesReducer';
 import { auth, fstore } from '../Firebase/Firebase';
-import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { update_location } from '../states/reducers/location-reducer';
 import { Dialog } from '@capacitor/dialog';
 import { accountInterface } from './service/serviceTypes';
 import { selectServiceAccount, update_account } from '../states/reducers/service-reducer';
-import { scheduleNotif, showInAppNotification } from './notifications/notifcation';
+import { showInAppNotification } from './notifications/notifcation';
 import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { getAppNotifications, getServiceAccount, setServiceAccount } from '../states/storage/storage-getters';
-import { update_notifications } from '../states/reducers/InAppNotifications';
+import { NotificationRedux, selectNotification, update_notifications } from '../states/reducers/InAppNotifications';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -98,29 +90,30 @@ const Menu: React.FC = () => {
   const dispatch = useDispatch()
   const countryInfo: countryInfoInterface | undefined = rootState.countryReducer
   const history = useHistory()
-  const servAccount:accountInterface = useSelector(selectServiceAccount)
-
+  const servAccount: accountInterface = useSelector(selectServiceAccount)
+  const notifState:NotificationRedux=useSelector(selectNotification)
+   
   useEffect(() => {
     initLocation()
-    LocalNotifications.addListener('localNotificationActionPerformed',()=>{
+    LocalNotifications.addListener('localNotificationActionPerformed', () => {
       history.push('/notifications')
     })
-     
+
     initializeService()
     initializeAppNotifications()
-    
-     
+
+
   }, [])
 
-  async function initializeService(){
-       const acc = await getServiceAccount()
-       if(acc?.code){
-         dispatch(update_account(acc))
-       }
+  async function initializeService() {
+    const acc = await getServiceAccount()
+    if (acc?.code) {
+      dispatch(update_account(acc))
+    }
   }
 
-  async function initializeAppNotifications(){
-    const storedNotifications=await getAppNotifications()
+  async function initializeAppNotifications() {
+    const storedNotifications = await getAppNotifications()
     dispatch(update_notifications(storedNotifications));
   }
 
@@ -208,7 +201,7 @@ const Menu: React.FC = () => {
 
   useEffect(() => {
     if (countryInfo?.country && user.email) {
-      ListenForInAppNotifications({ callBack: (info) => {showInAppNotification(info) }, country:countryInfo.name,user_email:user.email})
+      ListenForInAppNotifications({ callBack: (info) => { showInAppNotification(info) }, country: countryInfo.name, user_email: user.email })
     }
   }, [countryInfo])
   return (
@@ -231,7 +224,7 @@ const Menu: React.FC = () => {
         </IonToolbar>
       </IonToolbar>
       <IonContent>
-        <IonAlert buttons={[{ text: `send`,  handler: submitCode }, { text: `cancel` }]} inputs={[{ type: `number`,value:servAccount.code,  }]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={() => setgetCode(false)} isOpen={getCode} />
+        <IonAlert buttons={[{ text: `send`, handler: submitCode }, { text: `cancel` }]} inputs={[{ type: `number`, value: servAccount.code, }]} message={`add service code below`} header={`Please add service Code`} onDidDismiss={() => setgetCode(false)} isOpen={getCode} />
         <IonLoading message={`loading...`} onDidDismiss={() => setloading(false)} isOpen={loading}></IonLoading>
         <div className={`list`}>
           {appPages.map((appPage, index) => {
@@ -242,6 +235,9 @@ const Menu: React.FC = () => {
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
                   <IonIcon color={location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                   <IonLabel color={`dark`} style={{ fontFamily: 'Comfortaa', color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
+                 {appPage.title=='Notifications'&& notifState.new&&<IonBadge slot='end' style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} color='danger'>
+                    <div style={{ width: '1px', height: '3px' }}></div>
+                  </IonBadge>}
                 </IonItem>
               </IonMenuToggle>
             );

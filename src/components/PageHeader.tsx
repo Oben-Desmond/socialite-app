@@ -1,23 +1,10 @@
 
-import { App } from '@capacitor/app';
-import { Dialog } from '@capacitor/dialog';
-import { Toast } from '@capacitor/toast';
-import { IonHeader, IonToolbar, IonMenuButton, IonButton, IonTitle, IonButtons, IonLabel, IonBadge, IonProgressBar, createGesture } from '@ionic/react';
+import { IonToolbar, IonMenuButton, IonButton, IonTitle, IonBadge, IonProgressBar, createGesture } from '@ionic/react';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { getServicesNearBy, ReportIncident } from '../Firebase/services/report';
-import { countryInfoInterface } from '../interfaces/country';
-import { StoreStateInteface } from '../interfaces/redux';
-import { UserInterface } from '../interfaces/users';
-import { WiDaySunny } from '../package/weather-icons-react';
-import { selectCountry } from '../states/reducers/countryReducer';
 import { NotificationRedux, selectNotification } from '../states/reducers/InAppNotifications';
-import { selectLocation } from '../states/reducers/location-reducer';
-import { selectUser } from '../states/reducers/userReducers';
-import { availableAccount } from './service/serviceTypes';
-import WeatherModal from './WeatherModal';
 
 function PageHeader() {
     const [showWeather, setshowWeather] = React.useState(false)
