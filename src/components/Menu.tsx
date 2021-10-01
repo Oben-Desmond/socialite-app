@@ -46,7 +46,8 @@ import { selectServiceAccount, update_account } from '../states/reducers/service
 import { scheduleNotif, showInAppNotification } from './notifications/notifcation';
 import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { getServiceAccount, setServiceAccount } from '../states/storage/storage-getters';
+import { getAppNotifications, getServiceAccount, setServiceAccount } from '../states/storage/storage-getters';
+import { update_notifications } from '../states/reducers/InAppNotifications';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -106,6 +107,7 @@ const Menu: React.FC = () => {
     })
      
     initializeService()
+    initializeAppNotifications()
     
      
   }, [])
@@ -115,6 +117,11 @@ const Menu: React.FC = () => {
        if(acc?.code){
          dispatch(update_account(acc))
        }
+  }
+
+  async function initializeAppNotifications(){
+    const storedNotifications=await getAppNotifications()
+    dispatch(update_notifications(storedNotifications));
   }
 
   async function loginToService(code = user.domainCode) {
