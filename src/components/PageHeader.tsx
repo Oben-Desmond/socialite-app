@@ -13,6 +13,7 @@ import { StoreStateInteface } from '../interfaces/redux';
 import { UserInterface } from '../interfaces/users';
 import { WiDaySunny } from '../package/weather-icons-react';
 import { selectCountry } from '../states/reducers/countryReducer';
+import { NotificationRedux, selectNotification } from '../states/reducers/InAppNotifications';
 import { selectLocation } from '../states/reducers/location-reducer';
 import { selectUser } from '../states/reducers/userReducers';
 import { availableAccount } from './service/serviceTypes';
@@ -21,7 +22,9 @@ import WeatherModal from './WeatherModal';
 function PageHeader() {
     const [showWeather, setshowWeather] = React.useState(false)
     const [progress, setprogress] = useState(0)
-   
+    const notifState:NotificationRedux=useSelector(selectNotification)
+    const {notifications}=notifState;
+    
     const history = useHistory()
     useEffect(() => {
         initGesture()
@@ -98,14 +101,7 @@ function PageHeader() {
                 </IonBadge>
                 <IonButton className='report-btn' fill={`outline`} size={`small`} slot={`end`} routerLink={`/report`} color={`danger`}>REPORT</IonButton>
                 <IonTitle> Socionet</IonTitle>
-                {/* <IonButtons className={`weather`} slot={`end`}>
-                        <div onClick={() => setshowWeather(true)} style={{ textAlign: `center` }}>
-                            <WiDaySunny size={24} color='#fbfb00' />
-                            <IonLabel style={{ display: `block` }} >{ countryInfo?.country_3||`SA`}</IonLabel>
-                        </div>
-                    </IonButtons> */}
-                <WeatherModal onDidDismiss={() => setshowWeather(false)} isOpen={showWeather}></WeatherModal>
-            </IonToolbar>
+                 </IonToolbar>
             {progress != 0 && <IonProgressBar color='danger' value={progress}></IonProgressBar>}
         </div>
     );
