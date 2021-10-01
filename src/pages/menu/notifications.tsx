@@ -126,7 +126,7 @@ const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notif
     }
     if (notification.type == 'comment') {
         return (
-            <IonItem button onClick={showToast}>
+            <IonItem button onClick={()=>setopenModal(true)}>
                 <Avatar name={notification.sender_name.trim()} photoUrl={notification.sender_photo} usePicture={!!notification.sender_photo} ></Avatar>
                 <IonNote><b>{notification.sender_name}</b> sent a comment on your post <b><i>"{notification.post_title}"</i></b></IonNote>
                 <IonNote className={`ion-margin-start`}>
