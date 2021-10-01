@@ -261,8 +261,9 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
            type:'comment'
 
         }
-        sendInAppNotification({country:countryInfo.name, notification:inAppInfo,reciever:post.email})
-
+        if (post.email != user.email) {
+            sendInAppNotification({ country: countryInfo.name, notification: inAppInfo, reciever: post.email })
+        }
     }
     function getProfileInfo(email: string) {
         setviewProfile(true)
