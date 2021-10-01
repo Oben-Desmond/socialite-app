@@ -19,6 +19,7 @@ import { selectCountry } from '../../states/reducers/countryReducer';
 import { countryInfoInterface } from '../../interfaces/country';
 import { NotificationRedux, selectNotification, update_new, update_notifications } from '../../states/reducers/InAppNotifications';
 import { setAppNotifications } from '../../states/storage/storage-getters';
+import PostNotificationModal from './PostNotificationModal';
 
 
 function Notifications() {
@@ -119,6 +120,7 @@ export default Notifications;
 
 const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notification }) => {
     const history = useHistory();
+    const [openModal, setopenModal] = useState(false)
     function showToast() {
         Toast.show({ text: `notification opened` }).then(console.log)
     }
@@ -130,6 +132,7 @@ const NotificationItem: React.FC<{ notification: InAppNotification }> = ({ notif
                 <IonNote className={`ion-margin-start`}>
                     <TimeAgo timestamp={notification.timestamp}></TimeAgo>
                 </IonNote>
+                <PostNotificationModal isOpen={openModal} onDidDismiss={()=>setopenModal(false)}></PostNotificationModal>
             </IonItem>
         )
     }
