@@ -1,6 +1,6 @@
 // @flow strict
 
-import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCard, IonCol, IonContent, IonFab, IonFabButton, IonFabList, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonNote, IonRippleEffect, IonRow, IonSlide, IonSlides, IonSpinner, IonTextarea, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonBackdrop, IonButton, IonButtons, IonCard, IonCol, IonContent, IonFab, IonFabButton, IonFabList, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonNote, IonRippleEffect, IonRow, IonSlide, IonSlides, IonSpinner, IonText, IonTextarea, IonToolbar } from '@ionic/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { Pictures } from '../../pages/images/images';
 import "../styles/Cards.css";
@@ -77,72 +77,122 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
         setdisliked(!disliked);
     }
     return (
-        <div className={`stories-card comfortaa`}>
-            <IonList>
-                <div onClick={() => setreadmore(true)} className="hero-img">
-                    <img src={post.images[0]} />
-                </div>
-                <IonFab vertical='bottom' horizontal='start' style={{ height: '20%', width: '140%', transform: 'translate(-20px,0)', background: '#000', opacity: 0.7 }} >
-                    <div style={{ width: '100%', height: '100%', }} >
+        // <div className={`stories-card comfortaa`}>
+        //     <IonList>
+        //         <div onClick={() => setreadmore(true)} className="hero-img">
+        //             <img src={post.images[0]} />
+        //         </div>
+        //         <IonFab vertical='bottom' horizontal='start' style={{ height: '20%', width: '140%', transform: 'translate(-20px,0)', background: '#000', opacity: 0.7 }} >
+        //             <div style={{ width: '100%', height: '100%', }} >
 
-                    </div>
-                </IonFab>
-                {/* <IonFab vertical='bottom' horizontal='end' style={{ height: '20%', width: '50%', transform: 'translate(20px,0)' }} >
-                    <div style={{ width: '100%', height: '100%', backgroundImage: 'linear-gradient(to bottom right, #0000003f, #00000035, #000000a1, #0000007c, #000000)' }}></div>
-                </IonFab> */}
+        //             </div>
+        //         </IonFab>
+        //         {/* <IonFab vertical='bottom' horizontal='end' style={{ height: '20%', width: '50%', transform: 'translate(20px,0)' }} >
+        //             <div style={{ width: '100%', height: '100%', backgroundImage: 'linear-gradient(to bottom right, #0000003f, #00000035, #000000a1, #0000007c, #000000)' }}></div>
+        //         </IonFab> */}
 
 
-                <IonFab style={{ width: '120%' }} horizontal='start' vertical='bottom'>
+        //         <IonFab style={{ width: '120%' }} horizontal='start' vertical='bottom'>
 
-                    <IonItem color='none' lines='none' >
-                        {(post.author_url || (user.photoUrl && user.email == post.email)) ? <IonAvatar>
-                            <IonImg src={post.author_url || user.photoUrl} />
-                        </IonAvatar> : <LetteredAvatar name={post.author_name} size={40} ></LetteredAvatar>}
+        //             <IonItem color='none' lines='none' >
+        //                 {(post.author_url || (user.photoUrl && user.email == post.email)) ? <IonAvatar>
+        //                     <IonImg src={post.author_url || user.photoUrl} />
+        //                 </IonAvatar> : <LetteredAvatar name={post.author_name} size={40} ></LetteredAvatar>}
 
-                        <div style={{ margin: '0 25px 0 15px' }}  >
-                            <IonLabel className='comfortaa' color='light'>
-                                {post.author_name}
-                            </IonLabel>
-                        </div>
+        //                 <div style={{ margin: '0 25px 0 15px' }}  >
+        //                     <IonLabel className='comfortaa' color='light'>
+        //                         {post.author_name}
+        //                     </IonLabel>
+        //                 </div>
 
-                        <IonButtons  >
-                            <IonButton onClick={() => { likePost() }} color={`light`}>
-                                <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
-                                <IonLabel>
-                                    {
-                                        postLikes?.length
-                                    }
-                                </IonLabel>
-                            </IonButton>
-                            <IonButton onClick={() => { disLikePost() }} color={`light`}>
-                                <IonIcon slot='start' color={!disliked ? 'light' : 'secondary'} icon={thumbsDownOutline}></IonIcon>
-                                <IonLabel>
-                                    {
-                                        postDislikes?.length
-                                    }
-                                </IonLabel>
-                            </IonButton>
-                        </IonButtons>
+        //                 <IonButtons  >
+        //                     <IonButton onClick={() => { likePost() }} color={`light`}>
+        //                         <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
+        //                         <IonLabel>
+        //                             {
+        //                                 postLikes?.length
+        //                             }
+        //                         </IonLabel>
+        //                     </IonButton>
+        //                     <IonButton onClick={() => { disLikePost() }} color={`light`}>
+        //                         <IonIcon slot='start' color={!disliked ? 'light' : 'secondary'} icon={thumbsDownOutline}></IonIcon>
+        //                         <IonLabel>
+        //                             {
+        //                                 postDislikes?.length
+        //                             }
+        //                         </IonLabel>
+        //                     </IonButton>
+        //                 </IonButtons>
 
-                    </IonItem>
-                </IonFab>
-            </IonList>
-            <div className="ion-activatable ripple-parent" onClick={() => setreadmore(true)}>
-                <IonLabel className={`news-caption`}>
-                    {post.title}
-                </IonLabel>
-                <p className={`description`}>
-                    {post.description.substr(0, 180)}...
+        //             </IonItem>
+        //         </IonFab>
+        //     </IonList>
+        //     <div className="ion-activatable ripple-parent" onClick={() => setreadmore(true)}>
+        //         <IonLabel className={`news-caption`}>
+        //             {post.title}
+        //         </IonLabel>
+        //         <p className={`description`}>
+        //             {post.description.substr(0, 180)}...
 
-            <IonButtons style={{ marginTop: '5px' }}>
-                        <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
-                    </IonButtons>
-                    <hr />
-                </p>
-                <IonRippleEffect />
-            </div>
-            <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
-        </div>
+        //     <IonButtons style={{ marginTop: '5px' }}>
+        //                 <IonLabel color={`secondary`} className={`time-place`}> <IonLabel color={`primary`}><GetHoursAgo timestamp={post.timestamp}></GetHoursAgo> </IonLabel> {post.location}</IonLabel>
+        //             </IonButtons>
+        //             <hr />
+        //         </p>
+        //         <IonRippleEffect />
+        //     </div>
+        //     <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
+        // </div>
+         <div style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
+         <IonToolbar className='image-container'>
+             <div onClick={() => setreadmore(true)} style={{ textAlign: `center`, maxHeight: `30vh` }}>
+                 <img style={{ height: '46vh', objectFit: 'cover' }} src={post.images[0]} />
+             </div>
+             <div className="reactions">
+                 <IonItem color='none' lines='none'>
+                     {
+                         (post.author_url || (user.email == post.email && user.photoUrl)) ?
+                             <IonAvatar>
+                                 <IonImg src={user.photoUrl || post.author_url} />
+                             </IonAvatar> : <LetteredAvatar name={post.author_name}></LetteredAvatar>
+                     }
+                     <div style={{ width: '10px' }}></div>
+                     <IonText color='light'>
+                         {post.author_name}
+                     </IonText>
+
+                     <IonButtons slot='end' >
+                         <IonButton onClick={() => { likePost() }} color={`light`}>
+                             <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
+                             <IonLabel>
+                                 {
+                                     postLikes?.length
+                                 }
+                             </IonLabel>
+                         </IonButton>
+                         <IonButton onClick={() => { disLikePost() }} color={`light`}>
+                             <IonIcon slot='start' color={!disliked ? 'light' : 'secondary'} icon={!disliked ? thumbsDownOutline : thumbsDown}></IonIcon>
+                             <IonLabel>
+                                 {
+                                     postDislikes?.length
+                                 }
+                             </IonLabel>
+                         </IonButton>
+                     </IonButtons>
+                 </IonItem>
+             </div>
+         </IonToolbar>
+         <IonToolbar onClick={() => setreadmore(true)} style={{ padding: `10px 20px` }}>
+             <div >
+                 <IonLabel style={{ textTransform: `capitalize` }}><b>{post.title}</b></IonLabel>
+                 <p style={{ color: `#595858`, fontSize: `15px`, marginBottom: `0` }} >
+                     {post.description.substr(0, 150)}...
+                     </p>
+             </div>
+             <IonToolbar>
+                 <IonLabel color={`medium`} ><GetHoursAgo timestamp={post.timestamp} />  <IonLabel color={`secondary`}>{post.location}</IonLabel></IonLabel>
+             </IonToolbar>
+         </IonToolbar></div>
     );
 };
 

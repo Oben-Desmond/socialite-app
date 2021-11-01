@@ -1,5 +1,5 @@
 
-import { IonModal, IonHeader, IonContent, IonCardContent, IonCardTitle, IonItem, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonButton, IonProgressBar } from "@ionic/react";
+import { IonModal, IonHeader, IonContent, IonCardContent, IonCardTitle, IonItem, IonIcon, IonLabel, IonInput, IonTextarea, IonToolbar, IonButton, IonProgressBar, IonCardSubtitle } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -12,6 +12,8 @@ import { countryInfoInterface } from "../../interfaces/country";
 import { UploadPublicNotice } from "./firebase-functions";
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from "../PhotoOptionsModal";
 import { Dialog } from "@capacitor/dialog";
+import { accountInterface } from "../service/serviceTypes";
+import { selectServiceAccount } from "../../states/reducers/service-reducer";
 
 
 
@@ -23,6 +25,7 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
     const countryInfo: countryInfoInterface = rootState.countryReducer
     const [images, setimages] = useState<any[]>([]);
     const [PhotoOptions, setPhotoOptions] = useState(false)
+    const serviceAcc:accountInterface = useSelector(selectServiceAccount)
 
     const titleRef = useRef<HTMLDivElement>(null)
     const storyRef = useRef<HTMLDivElement>(null)
@@ -38,6 +41,7 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
                 return data[key] = data[key].value
             }
         })
+        data.title=data.title+` @${serviceAcc.name}`
         
         if (images.length <= 0) {
             Dialog.alert({ message: `Please add an image so people can clearly understand what the Notice is about`, title: `Image is Missen` })
@@ -97,6 +101,9 @@ const AddNoticeModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> = 
             <IonCardContent mode={`md`}>
                 <IonToolbar className={`ion-padding`} >
                     <IonCardTitle>ADD PUBLIC NOTICE</IonCardTitle>
+                    <IonCardSubtitle>
+                        @{serviceAcc.name}
+                    </IonCardSubtitle>
                 </IonToolbar >
                 <IonCardContent>
                     <form onSubmit={addPost} action="">

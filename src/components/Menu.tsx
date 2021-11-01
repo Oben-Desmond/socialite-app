@@ -126,9 +126,14 @@ const Menu: React.FC = () => {
     setloading(true)
 
     try {
-      let account: accountInterface | any = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
+      let account: accountInterface  = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
       dispatch(update_account(account))
       setServiceAccount(account)
+      if(account.type==`company`){
+        history.push(`/company`) 
+        setloading(false)
+        return; 
+      }
       history.push(`/service/${account.type}`)
     }
     catch (err) {
@@ -278,7 +283,7 @@ const Menu: React.FC = () => {
 
 export default Menu;
 
-async function interpreteCode(code: string, country: string, user: UserInterface) {
+export async function interpreteCode(code: string, country: string, user: UserInterface):Promise<accountInterface> {
 
   // const accOwner:accountInterface={
   //   code:`102001`,
@@ -306,7 +311,7 @@ async function interpreteCode(code: string, country: string, user: UserInterface
       .then((snapshot) => {
         if (!(snapshot.data() && snapshot.exists)) {
           reject({ message: `No such service account matches the service code` })
-          return;
+          return undefined;
         }
         else {
           const acc: accountInterface | any = snapshot.data();

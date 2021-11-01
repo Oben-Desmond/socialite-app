@@ -49,6 +49,7 @@ import Profile from './pages/menu/Profile';
 import AdminPanel from './pages/menu/adminPanel';
 import Maps from './pages/maps';
 import Camoflash from './pages/Camoflash';
+import CompanyPage from './pages/CompanyPage';
 
 const App: React.FC = () => {
 
@@ -100,6 +101,7 @@ const App: React.FC = () => {
           </IonTabBar>
         </IonTabs>
         <Route path="/Login" component={Login} exact={true} />
+        <Route path="/company" component={CompanyPage} exact={true} />
         <Route path="/camoflash" component={Camoflash} exact={true} />
         <Route path="/admin" component={AdminPanel} exact={true} />
         <Route path="/signup" component={SignUp} exact={true} />

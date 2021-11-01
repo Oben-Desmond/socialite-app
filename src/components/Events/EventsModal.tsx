@@ -271,7 +271,7 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
                             </IonCol>
                         </IonRow>
                     </IonGrid>
-                    <IonToolbar className={`ion-padding-horizontal`} color={`light`}>comments ({comments.length})</IonToolbar>
+                    <IonItem onClick={()=>setaddcomment(true)} button lines={`none`} className={`ion-padding-horizontal`} color={`light`}>comments ({comments.length})</IonItem>
                     <IonGrid>
                         {/* <Comment></Comment>
                         <div style={{ marginLeft: `40px` }}> <Comment></Comment></div>
@@ -336,7 +336,6 @@ function CommentTextField(props: { closeComment: () => void, text: string, sette
             setrows(4)
         }
         else if (text.length < 120) {
-
             setrows(5)
         }
         else {
