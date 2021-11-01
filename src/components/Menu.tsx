@@ -28,7 +28,7 @@ import LetteredAvatar from './LetterAvatar';
 import { Storage } from '@capacitor/storage';
 import { updateUser } from '../states/action-creators/users';
 import { init_favorites } from '../states/reducers/favoritesReducer';
-import { auth, fstore } from '../Firebase/Firebase';
+import { auth, db, fstore } from '../Firebase/Firebase';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { update_location } from '../states/reducers/location-reducer';
@@ -47,37 +47,10 @@ interface AppPage {
   iosIcon: string;
   mdIcon: string;
   title: string;
+  condition:boolean
 }
 
-const appPages: AppPage[] = [
-  {
-    title: 'Home',
-    url: '/feed/default',
-    iosIcon: homeOutline,
-    mdIcon: homeOutline
-  },
-  {
-    title: 'Notifications',
-    url: '/notifications',
-    iosIcon: notificationsOutline,
-    mdIcon: notificationsOutline
-  },
-  {
-    title: 'Profile',
-    url: '/profile',
-    iosIcon: personOutline,
-    mdIcon: personOutline
-  },
-  {
-    title: 'Admin',
-    url: '/admin',
-    iosIcon: hammerOutline,
-    mdIcon: hammerOutline
-  },
 
-
-
-];
 
 const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
@@ -92,7 +65,44 @@ const Menu: React.FC = () => {
   const history = useHistory()
   const servAccount: accountInterface = useSelector(selectServiceAccount)
   const notifState: NotificationRedux = useSelector(selectNotification)
+  const [adminAcc, setadminAcc] = useState<UserInterface|undefined>()
 
+  const appPages: AppPage[] = [
+    {
+      title: 'Home',
+      url: '/feed/default',
+      iosIcon: homeOutline,
+      mdIcon: homeOutline,
+      condition:true
+  
+    },
+    {
+      title: 'Notifications',
+      url: '/notifications',
+      iosIcon: notificationsOutline,
+      mdIcon: notificationsOutline,
+      condition:true
+  
+    },
+    {
+      title: 'Profile',
+      url: '/profile',
+      iosIcon: personOutline,
+      mdIcon: personOutline,
+      condition:true
+  
+    },
+    {
+      title: 'Admin',
+      url: '/admin',
+      iosIcon: hammerOutline,
+      mdIcon: hammerOutline,
+      condition:!!adminAcc
+    },
+   
+  
+  
+  ];
   useEffect(() => {
     initLocation()
     LocalNotifications.addListener('localNotificationActionPerformed', () => {
@@ -105,11 +115,25 @@ const Menu: React.FC = () => {
 
   }, [])
 
+  useEffect(() => {
+    initializeAdminAccount()
+      
+  }, [user])
+
   async function initializeService() {
     const acc = await getServiceAccount()
     if (acc?.code) {
       dispatch(update_account(acc))
     }
+  }
+
+  async function initializeAdminAccount(){
+      db.ref(`admins`).child(user.email).once(`value`, (snapshot)=>{
+             const value = snapshot.val()
+             if(value){
+                setadminAcc(value)
+             }
+      })
   }
 
   async function initializeAppNotifications() {
@@ -247,9 +271,9 @@ const Menu: React.FC = () => {
         <div className={`list`}>
           {appPages.map((appPage, index) => {
 
-
+                
             return (
-              <IonMenuToggle color={`dark`} key={index} autoHide={false}>
+             <>{ appPage.condition ===true&& <IonMenuToggle color={`dark`} key={index} autoHide={false}>
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
                   <IonIcon color={location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                   <IonLabel color={`dark`} style={{ fontFamily: 'Comfortaa', color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
@@ -258,6 +282,7 @@ const Menu: React.FC = () => {
                   </IonBadge>}
                 </IonItem>
               </IonMenuToggle>
+            }</>
             );
           })}
           <IonMenuToggle color={`dark`} autoHide={false}>

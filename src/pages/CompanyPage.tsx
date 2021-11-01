@@ -11,13 +11,13 @@ import { Pictures } from './images/images'
 
 const CompanyPage: React.FC = () => {
     const [createAd, setcreateAd] = useState(false)
-    const serviceAccount:accountInterface = useSelector(selectServiceAccount)
+    const serviceAccount: accountInterface = useSelector(selectServiceAccount)
     const history = useHistory()
     useEffect(() => {
-        if(!serviceAccount.code){
-               history.goBack();
-        }
-    }, [ ])
+        // if(!serviceAccount.code){
+        //        history.goBack();
+        // }
+    }, [])
     return (
         <IonPage>
             <IonHeader>
@@ -26,28 +26,36 @@ const CompanyPage: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-               <IonToolbar color='light'>
-               <IonGrid>
-                    <IonRow>
-                        <IonCol>
-                            <AdvertBusinessCard advert={{clicks:30, title:'Football advert', views:400}} ></AdvertBusinessCard>
-                        </IonCol>
-                        <IonCol>
-                            <AdvertBusinessCard advert={{clicks:30, title:'Football advert', views:400}} ></AdvertBusinessCard>
-                        </IonCol>
-                        <IonCol>
-                            <AdvertBusinessCard advert={{clicks:30, title:'Football advert', views:400}} ></AdvertBusinessCard>
-                        </IonCol>
-                        <IonCol>
-                            <AdvertBusinessCard advert={{clicks:30, title:'Football advert', views:400}} ></AdvertBusinessCard>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
-               </IonToolbar>
+                <IonToolbar color='light'>
+                    <IonGrid>
+                        <IonRow>
+                            {[1, 2, 3, 45, 6, 3, 45, 7].map(() => <IonCol>
+                                <AdvertBusinessCard advert={{
+                                    image_url: Pictures.event1,
+                                    title: `cool add`, video: '',
+                                    action_text: `contact us`, author_id: ``,
+                                    author_name: ``, clicks: 2,
+                                    company_id: ``, company_name: ``,
+                                    geohash: ``,
+                                    link: `https://socionet.co.za`,
+                                    location: {
+                                        lat: 0.236,
+                                        long: 7.3976
+                                    },
+                                    upload_timestamp: 13784,
+                                    views: 78,
+                                    country:`Cameroon`,
+                                    id:``
+                                }} ></AdvertBusinessCard>
+                            </IonCol>)
+                            }
+                        </IonRow>
+                    </IonGrid>
+                </IonToolbar>
             </IonContent>
-            <CreateAdvert isOpen={createAd} onDidDismiss={()=>setcreateAd(false)} ></CreateAdvert>
+            <CreateAdvert isOpen={createAd} onDidDismiss={() => setcreateAd(false)} ></CreateAdvert>
             <IonFab vertical='bottom' horizontal='end' >
-                <IonFabButton onClick={()=>{setcreateAd(true)}} color='secondary'>
+                <IonFabButton onClick={() => { setcreateAd(true) }} color='secondary'>
                     <IonIcon icon={add}>
                     </IonIcon>
                 </IonFabButton>

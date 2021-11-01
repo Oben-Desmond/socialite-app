@@ -1,9 +1,13 @@
 import { Dialog } from '@capacitor/dialog'
 import { Toast } from '@capacitor/toast'
-import { IonModal, IonHeader, IonProgressBar, IonContent, IonCardContent, IonToolbar, IonCardTitle, IonInput, IonTextarea, IonButton } from '@ionic/react'
+import { IonModal, IonHeader, IonProgressBar, IonContent, IonCardContent, IonToolbar, IonCardTitle, IonInput, IonTextarea, IonButton, IonIcon, IonItem, IonLabel, IonButtons } from '@ionic/react'
+import { cameraOutline, trash } from 'ionicons/icons'
+import { title } from 'process'
 import React, { useRef, useState } from 'react'
 import FlipMove from 'react-flip-move'
 import { useSelector } from 'react-redux'
+import { uploadAd } from '../../Firebase/services/advert_queries'
+import { Advert } from '../../interfaces/adverts_interfaces'
 import { countryInfoInterface } from '../../interfaces/country'
 import { UserInterface } from '../../interfaces/users'
 import { selectCountry } from '../../states/reducers/countryReducer'
@@ -12,12 +16,7 @@ import ImageSlide from '../image slides'
 import PhotoOptionsModal, { photosFromCamera, photosFromGallery } from '../PhotoOptionsModal'
 
 interface EditAdvert {
-    advert: {
-        image: string,
-        video?: string,
-        description: string,
-        title: string
-    },
+    advert: Advert,
     isOpen: boolean,
     onDidDismiss: () => void
 }
@@ -26,19 +25,17 @@ const EditAdvert: React.FC<EditAdvert> = ({ advert, isOpen, onDidDismiss }) => {
     const [loading, setloading] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
     const [showImg, setshowImg] = useState<number>()
-    const [image, setimage] = useState<string>(advert.image)
-    const [input, setinput] = useState({ title: advert.title, description: advert.description })
+    const [image, setimage] = useState<string>(advert.image_url)
     const user: UserInterface = useSelector(selectUser)
-    const countryInfo: countryInfoInterface = useSelector(selectCountry)
-    const titleRef = useRef<HTMLDivElement>(null)
-    const descRef = useRef<HTMLDivElement>(null)
     const [changesMade, setchangesMade] = useState(false)
+
+    const [thisTitle, setthisTitle] = useState(advert.title);
+    const [thisClickLink, setthisClickLink] = useState(advert.link);
+    const [thisActionText, setthisActionText] = useState(advert.action_text);
 
 
     function editPost(e: any) {
         e.preventDefault()
-        const { title, description } = input
-        let data: any = { title, description }
 
         if (user.email) {
             // setloading(true)
@@ -65,7 +62,6 @@ const EditAdvert: React.FC<EditAdvert> = ({ advert, isOpen, onDidDismiss }) => {
     }
 
 
-
     function takePicture() {
 
         photosFromCamera().then((data: any) => {
@@ -83,17 +79,44 @@ const EditAdvert: React.FC<EditAdvert> = ({ advert, isOpen, onDidDismiss }) => {
         })
     }
 
-    function changeText(){
-        if(!changesMade){
+
+    function cancelChanges() {
+
+        setchangesMade(false)
+
+    }
+
+    function handleTitleChange(e: CustomEvent) {
+        setthisTitle(e.detail.value || ``)
+        detectChanges({ thisTitle: e.detail.value, thisActionText, thisClick: thisClickLink })
+    }
+    function handleLinkChange(e: CustomEvent) {
+        setthisClickLink(e.detail.value || ``)
+        detectChanges({ thisTitle, thisActionText, thisClick: e.detail.value })
+    }
+    function handleActionTextChange(e: CustomEvent) {
+        setthisActionText(e.detail.value || ``)
+        detectChanges({ thisTitle, thisActionText: e.detail.value, thisClick: thisClickLink })
+    }
+
+    function detectChanges(input: { thisTitle: string, thisActionText: string, thisClick: string }) {
+        const { thisClick, thisActionText, thisTitle } = input
+        if (thisTitle == advert.title && thisClick == advert.link && thisActionText == advert.action_text) {
+            setchangesMade(false)
+        }
+        else {
             setchangesMade(true)
         }
     }
 
-    function cancelChanges(){
-     setinput({ title: advert.title, description: advert.description })
-     setchangesMade(false)
+    async function deleteAd() {
+        const value = (await Dialog.confirm({ message: `Are you sure you want to permanently delete this advert ? \n`, title: `Delete Advert`, okButtonTitle: `Delete` })).value
+        if (value) {
 
+        }
+        
     }
+
     return (
         <IonModal onDidDismiss={onDidDismiss} showBackdrop swipeToClose cssClass={`add-modal edit-modal`} mode={`ios`} isOpen={isOpen}>
 
@@ -109,6 +132,11 @@ const EditAdvert: React.FC<EditAdvert> = ({ advert, isOpen, onDidDismiss }) => {
                 <IonCardContent mode={`md`}>
                     <IonToolbar className={`ion-padding`} >
                         <IonCardTitle color={`secondary`} className={`ion-padding-start`}>Edit Advert</IonCardTitle>
+                        <IonButtons slot={`end`}>
+                            <IonButton onClick={deleteAd}>
+                                <IonIcon icon={trash}></IonIcon>
+                            </IonButton>
+                        </IonButtons>
                     </IonToolbar >
                     <IonCardContent>
                         <form onSubmit={editPost} action="">
@@ -119,35 +147,29 @@ const EditAdvert: React.FC<EditAdvert> = ({ advert, isOpen, onDidDismiss }) => {
                                     </span>
                                 }
                             </FlipMove>
-                            <div ref={titleRef} onClick={() => titleRef.current?.scrollIntoView({ behavior: `smooth` })} className="input">
-                                <IonInput onIonChange={e => {setinput({ ...input, title: (e.detail.value || ``) }); changeText()}} value={input.title} required name={`title`} placeholder={`Enter title of description`}></IonInput>
-                            </div>
-                            <div ref={descRef} onClick={() => descRef.current?.scrollIntoView({ behavior: `smooth` })} style={{ whiteSpace: `pre-wrap` }} className="input">
-                                <IonTextarea rows={4} value={input.description} onIonChange={e => {setinput({ ...input, description: (e.detail.value || ``) }); changeText()}} required name={`description`} placeholder={`Enter description detail`}></IonTextarea>
-                            </div>
-                            {/* <div className={`input`}>
-                                <IonItem lines={`none`} color={`none`}>
-                                    <IonLabel color={`secondary`}>category</IonLabel>
-                                    <IonSelect name={`category`} value={`sports`}>
-                                        <IonSelectOption value={`business`}>Business</IonSelectOption>
-                                        <IonSelectOption value={`business`}>Education</IonSelectOption>
-                                        <IonSelectOption value={`entertainment`}>Entertainment</IonSelectOption>
-                                        <IonSelectOption value={`family`}>Family</IonSelectOption>
-                                        <IonSelectOption value={`health`}>Health</IonSelectOption>
-                                        <IonSelectOption value={`politics`}>Politics</IonSelectOption>
-                                        <IonSelectOption value={`religion`}>Religion</IonSelectOption>
-                                        <IonSelectOption value={`science`}>Science</IonSelectOption>
-                                        <IonSelectOption value={`sports`}>Sports</IonSelectOption>
-                                        <IonSelectOption value={`technology`}>Technology</IonSelectOption>
-                                    </IonSelect>
-                                </IonItem >
+                            <div style={{ height: `10px` }}></div>
+                            {/* <div className="input">
+                                <IonItem lines={`none`} color={`none`} onClick={() => setPhotoOptions(true)} button>
+                                    <IonIcon color={`secondary`} icon={cameraOutline}></IonIcon>
+                                    <IonLabel className={`ion-padding-start`}> add photo</IonLabel>
+                                </IonItem>
                             </div> */}
+                            <div className="input ">
+                                <IonInput onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })} onIonChange={handleTitleChange} value={thisTitle} placeholder={`Enter title of ad`}></IonInput>
+                            </div>
+                            <div className="input ">
+                                <IonInput type={`url`} onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })} onIonChange={handleLinkChange} value={thisClickLink} required name={`link`} placeholder={`Enter click link e.g socionet.co.za`}></IonInput>
+                            </div>
+                            <div className="input ">
+                                <IonInput onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })} onIonChange={handleActionTextChange} value={thisActionText} required name={`action`} placeholder={`Enter call to action e.g Contact Us`}></IonInput>
+                            </div>
+
                             <IonToolbar style={{ height: `40px` }}></IonToolbar>
 
-                           {changesMade&& <IonToolbar className={`ion-padding-top`} style={{ textAlign: `center` }}>
+                            {changesMade && <IonToolbar className={`ion-padding-top`} style={{ textAlign: `center` }}>
                                 <IonButton slot="end" type={"submit"}>
                                     save changes</IonButton>
-                                    <IonButton fill='outline' onClick={cancelChanges}>
+                                <IonButton fill='outline' onClick={cancelChanges}>
                                     cancel</IonButton>
                             </IonToolbar>}
                         </form>

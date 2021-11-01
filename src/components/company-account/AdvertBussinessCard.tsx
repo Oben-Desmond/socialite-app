@@ -1,14 +1,10 @@
-import { IonCard, IonImg, IonToolbar, IonCardSubtitle, IonButtons, IonButton, IonLabel, IonIcon, IonNote, IonItem } from "@ionic/react"
-import { eye } from "ionicons/icons"
+import { IonCard, IonImg, IonToolbar, IonCardSubtitle, IonButtons, IonButton, IonLabel, IonIcon, IonNote, IonItem, IonChip } from "@ionic/react"
+import { eye, pencil, people } from "ionicons/icons"
 import React, { useState } from "react"
-import { Pictures } from "../../pages/images/images" 
+import { Advert } from "../../interfaces/adverts_interfaces"
+import { Pictures } from "../../pages/images/images"
 import EditAdvert from "./EditAdvert"
-
-interface Advert {
-    title: string,
-    clicks: number,
-    views: number
-}
+ 
 
 interface AdvertBusinessCard {
     advert: Advert
@@ -20,36 +16,41 @@ const AdvertBusinessCard: React.FC<AdvertBusinessCard> = ({ advert }) => {
             <IonNote style={{ marginLeft: 10, transform: 'translateY(10px)' }}>
                 Ad
         </IonNote>
-            <IonCard onClick={()=>seteditAd(true)}>
+            <IonCard  >
                 <IonImg src={Pictures.event2}></IonImg>
                 <IonItem >
                     <IonCardSubtitle>
                         {advert.title}
                     </IonCardSubtitle>
-                    <IonButtons slot='end'>
-                        <IonButton color='success'>
-                            <IonLabel>clicks {advert.clicks}</IonLabel>
-                        </IonButton>
-                        <IonButton color='tertiary'>
-                            <IonIcon icon={eye}></IonIcon>
-                            <IonLabel className='' style={{ marginLeft: 2 }}>
-                                {advert.views}
-                            </IonLabel>
-                        </IonButton>
-                    </IonButtons>
-                </IonItem>
-                <IonNote>
-                    <div className="ion-padding">
 
-                        <small >
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos, laboriosam dolorem iure quidem id hic architecto incidunt velit quisquam nulla veritatis similique, aliquid autem natus, itaque perspiciatis! Reprehenderit, nam accusantium?
-                            <IonButton color='secondary' style={{ fontSize: '10px', }} fill='clear'>
-                                Read more
-                            </IonButton>
-                        </small>
-                    </div>
-                </IonNote>
-                <EditAdvert advert={{description:'',image:Pictures.event1, title:advert.title, video:''}} isOpen={editAd} onDidDismiss={() => seteditAd(false)}></EditAdvert>
+                </IonItem>
+                <IonItem lines={`none`}>
+                   {!!advert.approve_timestamp? <><IonChip color='dark'>
+                        <IonLabel>{advert.clicks} clicks  </IonLabel>
+                    </IonChip>
+                    <IonChip color='dark'>
+                        <IonIcon icon={eye}></IonIcon>
+                        <IonLabel className='' style={{ marginLeft: 2 }}>
+                            {advert.views}
+                        </IonLabel>
+                    </IonChip></>:
+                     <IonChip color='medium'>
+                     <IonIcon icon={people}></IonIcon>
+                     <IonLabel className='' style={{ marginLeft: 2 }}>
+                         pending approval...
+                     </IonLabel>
+                 </IonChip>
+                    }
+                    
+                    <IonButton onClick={() => seteditAd(true)} fill={`clear`} slot={`end`} color='secondary'>
+                        <IonIcon icon={pencil}></IonIcon>
+                        <IonLabel className='' style={{ marginLeft: 2 }}>
+                            Edit
+                        </IonLabel>
+                    </IonButton>
+                </IonItem>
+
+                <EditAdvert advert={advert} isOpen={editAd} onDidDismiss={() => seteditAd(false)}></EditAdvert>
             </IonCard>
         </>
     )

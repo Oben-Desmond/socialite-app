@@ -1,6 +1,6 @@
 import { Dialog } from '@capacitor/dialog'
 import { Toast } from '@capacitor/toast'
-import { IonModal, IonHeader, IonProgressBar, IonContent, IonCardContent, IonToolbar, IonCardTitle, IonInput, IonTextarea, IonButton, IonBackdrop, IonIcon, IonItem, IonLabel } from '@ionic/react'
+import { IonModal, IonHeader, IonProgressBar, IonContent, IonCardContent, IonToolbar, IonCardTitle, IonInput, IonTextarea, IonButton, IonBackdrop, IonIcon, IonItem, IonLabel, IonNote } from '@ionic/react'
 import { cameraOutline } from 'ionicons/icons'
 import React, { useRef, useState } from 'react'
 import FlipMove from 'react-flip-move'
@@ -26,15 +26,17 @@ interface CreateAdvert {
     onDidDismiss: () => void
 }
 
-const CreateAdvert: React.FC<CreateAdvert> = ({  isOpen, onDidDismiss }) => {
+const CreateAdvert: React.FC<CreateAdvert> = ({ isOpen, onDidDismiss }) => {
     const rootState: StoreStateInteface | any = useSelector(state => state)
     const dropRef = useRef<HTMLIonBackdropElement>(null)
     const user: UserInterface = rootState.userReducer;
-    const countryInfo: countryInfoInterface = rootState.countryReducer
     const [image, setimage] = useState<string>('');
     const contentRef = useRef<HTMLIonContentElement>(null)
-    const locationInfo: { long: number, lat: number } = useSelector(selectLocation)
     const [editImage, seteditImage] = useState(false)
+    const [imageSize, setimageSize] = useState(0);
+    const [title, settitle] = useState(``);
+    const [clickLink, setclickLink] = useState(``);
+    const [actionText, setactionText] = useState(``);
 
     const [loading, setloading] = useState(false)
     const [PhotoOptions, setPhotoOptions] = useState(false)
@@ -74,33 +76,49 @@ const CreateAdvert: React.FC<CreateAdvert> = ({  isOpen, onDidDismiss }) => {
     function deleteItem(item: number) {
 
         setimage('')
-    }
-    function scrollDown() {
-        contentRef.current?.scrollToBottom(400)
+        setimageSize(0)
     }
 
 
     function takePicture() {
 
         photosFromCamera().then((data: any) => {
-            if (data)
+            if (data) {
                 setimage(data)
+                processImageSize(data)
+            }
+            setPhotoOptions(false)
 
         })
     }
 
 
-    function galleryPhotos() {
-        photosFromGallery().then((data: any) => {
-            if (data)
-                setimage(data)
-        })
-    } function finishedEditing(newImg: string) {
+    async function galleryPhotos() {
 
-        setimage(newImg);
-        seteditImage(false)
+        await photosFromGallery().then((data: any) => {
+            if (data) {
+                setimage(data)
+                processImageSize(data)
+            }
+        }).catch(console.log);
+        setPhotoOptions(false)
+
     }
-    return <IonModal onDidDismiss={onDidDismiss} swipeToClose cssClass={`add-modal`} mode={`ios`} isOpen={isOpen}>
+
+    async function processImageSize(data: string) {
+        try {
+            const blob = await (await fetch(data)).blob()
+            //  console.log(blob.size/1000/1000)
+            setimageSize(blob.size)
+        } catch {
+
+        }
+    }
+    return <IonModal onDidPresent={() => {
+        if (!image) {
+            galleryPhotos()
+        }
+    }} onDidDismiss={onDidDismiss} swipeToClose cssClass={`add-modal`} mode={`ios`} isOpen={isOpen}>
 
         <IonHeader>
             <div className="header">
@@ -124,40 +142,30 @@ const CreateAdvert: React.FC<CreateAdvert> = ({  isOpen, onDidDismiss }) => {
                                 }
                             </FlipMove>
                         </IonItem>}
+                       { !!image &&<IonNote>
+                            {imageSize / 1000 / 1000 < 1 ? imageSize / 1000 + ` kb` : imageSize / 1000 / 1000 + `mb`}
+                        </IonNote>}
+                        <div style={{ height: `10px` }}></div>
                         <div className="input">
                             <IonItem lines={`none`} color={`none`} onClick={() => setPhotoOptions(true)} button>
                                 <IonIcon color={`secondary`} icon={cameraOutline}></IonIcon>
-                                <IonLabel className={`ion-padding-start`}> Take photos</IonLabel>
+                                <IonLabel className={`ion-padding-start`}> add photo</IonLabel>
                             </IonItem>
                         </div>
-                        <div className="input">
-                            <IonInput onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })} autocomplete={`country-name`}   autocorrect={`on`} required name={`title`} placeholder={`Enter name of ad`}></IonInput>
+                        <div className="input ">
+                            <IonInput onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })}   onIonChange={(e) => settitle(e.detail.value || ``)} value={title} placeholder={`Enter title of ad`}></IonInput>
                         </div>
-                        <div style={{ whiteSpace: `pre-wrap` }} className="input">
-                            <IonTextarea rows={4} onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })} required name={`story`} placeholder={`Enter advert description`}></IonTextarea>
+                        <div className="input ">
+                            <IonInput type={`url`} onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })}  onIonChange={(e) => setclickLink(e.detail.value || ``)} value={clickLink} required name={`link`} placeholder={`Enter click link e.g socionet.co.za`}></IonInput>
                         </div>
-                        {/* <div className={`input`}>
-                             <IonItem lines={`none`} color={`none`}>
-                                 <IonLabel color={`secondary`}>category</IonLabel>
-                                 <IonSelect name={`category`} value={`sports`}>
-                                   
-                                     <IonSelectOption value={`business`}>Business</IonSelectOption>
-                                     <IonSelectOption value={`business`}>Education</IonSelectOption>
-                                     <IonSelectOption value={`entertainment`}>Entertainment</IonSelectOption>
-                                     <IonSelectOption value={`family`}>Family</IonSelectOption>
-                                     <IonSelectOption value={`health`}>Health</IonSelectOption>
-                                     <IonSelectOption value={`politics`}>Politics</IonSelectOption>
-                                     <IonSelectOption value={`religion`}>Religion</IonSelectOption>
-                                     <IonSelectOption value={`science`}>Science</IonSelectOption>
-                                     <IonSelectOption value={`sports`}>Sports</IonSelectOption>
-                                     <IonSelectOption value={`technology`}>Technology</IonSelectOption>
-                                 </IonSelect>
-                             </IonItem >
-                         </div> */}
+                        <div className="input ">
+                            <IonInput onClick={(e: any) => e.target.scrollIntoView({ behavior: 'smooth' })} onIonChange={(e) => setactionText(e.detail.value || ``)} value={actionText} required name={`action`} placeholder={`Enter call to action e.g Contact Us`}></IonInput>
+                        </div> 
+                        
 
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
-                               Launch Campaign</IonButton>
+                                Launch Campaign</IonButton>
                         </IonToolbar>
                         <IonToolbar style={{ height: `50vh` }} ></IonToolbar>
                     </form>
@@ -166,10 +174,10 @@ const CreateAdvert: React.FC<CreateAdvert> = ({  isOpen, onDidDismiss }) => {
             {false && <div >
                 <IonBackdrop ref={dropRef}></IonBackdrop>
             </div>}
-            <PhotoOptionsModal fromPhotos={galleryPhotos} fromCamera={takePicture} onDidDismiss={() => { setPhotoOptions(false) }} isOpen={PhotoOptions}></PhotoOptionsModal>
+            <PhotoOptionsModal fromPhotos={galleryPhotos} fromCamera={takePicture} onDidDismiss={() => { setPhotoOptions(false); }} isOpen={PhotoOptions}></PhotoOptionsModal>
         </IonContent>
     </IonModal>
- 
+
 }
 
 export default CreateAdvert
