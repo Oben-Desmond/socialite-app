@@ -9,8 +9,8 @@ import { NotificationRedux, selectNotification } from '../states/reducers/InAppN
 function PageHeader() {
     const [showWeather, setshowWeather] = React.useState(false)
     const [progress, setprogress] = useState(0)
-    const notifState:NotificationRedux=useSelector(selectNotification)
-    
+    const notifState: NotificationRedux = useSelector(selectNotification)
+
     const history = useHistory()
     useEffect(() => {
         initGesture()
@@ -28,7 +28,7 @@ function PageHeader() {
             el: button,
             threshold: 0,
             onStart: () => {
-                 
+
                 onStart();
             },
             onEnd: () => {
@@ -74,7 +74,7 @@ function PageHeader() {
             }
         }
     }
-   
+
 
     return (
         <div>
@@ -82,15 +82,18 @@ function PageHeader() {
             <IonToolbar color={`primary`} >
                 <IonMenuButton slot={`start`}>
                 </IonMenuButton>
-               {notifState.new&& <IonBadge style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} slot='start' color='danger'>
+                {notifState?.new && <IonBadge style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} slot='start' color='danger'>
                     <div style={{ width: '1px', height: '3px' }}></div>
                 </IonBadge>}
                 <IonButton className='report-btn' fill={`outline`} size={`small`} slot={`end`} routerLink={`/report`} color={`danger`}>REPORT</IonButton>
                 <IonTitle> Socionet</IonTitle>
-                 </IonToolbar>
+            </IonToolbar>
             {progress != 0 && <IonProgressBar color='danger' value={progress}></IonProgressBar>}
         </div>
     );
 };
 
 export default PageHeader;
+
+
+export { }

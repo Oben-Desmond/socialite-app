@@ -1,1 +1,1 @@
-git add . && git commit -m  "in app notifications" && git push -u origin main
+git add . && git commit -m  "worked with exchange rates" && git push -u origin main

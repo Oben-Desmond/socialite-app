@@ -1,8 +1,8 @@
 // @flow strict
 
 import { Geolocation } from '@capacitor/geolocation';
-import { IonActionSheet, IonAvatar, IonBackdrop, IonBadge, IonButton, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
-import { add, addCircleOutline, close, ellipsisVertical, heartOutline, shirtOutline, sync } from 'ionicons/icons';
+import { IonActionSheet, IonAvatar, IonBackdrop, IonBadge, IonButton, IonButtons, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonPopover, IonProgressBar, IonRefresher, IonRefresherContent, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { add, addCircleOutline, cashOutline, close, ellipsisVertical, heartOutline, shirtOutline, sync } from 'ionicons/icons';
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
@@ -19,6 +19,8 @@ import { getSyncedClassifieds } from '../Firebase/pages/classifieds';
 import { classifiedItemInterface } from '../interfaces/classifiedItems';
 import { PostInterface } from '../interfaces/posts';
 import { UserInterface } from '../interfaces/users';
+import { CURRENCIES } from '../states/constants';
+import { Currency, selectCurrency, update_currency } from '../states/reducers/currency_reducer';
 import { selectFavorites } from '../states/reducers/favoritesReducer';
 import { selectLocation, update_location } from '../states/reducers/location-reducer';
 import { selectUser } from '../states/reducers/userReducers';
@@ -39,20 +41,24 @@ const Classifieds: React.FC = () => {
     const [notFound, setnotFound] = useState(false)
     const [selectedTab, setselectedTab] = useState<categoryPayloadInterface>({ cat: `latest`, subcat: subcategories[maincategories[0].name] || `other` })
     const [prevTab, setprevTab] = useState<categoryPayloadInterface>({ cat: ``, subcat: `` })
+    const [select_currency_option, setselect_currency_option] = useState(false)
     const user_location = useSelector(selectLocation)
     const user: UserInterface = useSelector(selectUser)
     const favorites = useSelector(selectFavorites)
     const refresherRef = useRef<HTMLIonRefresherElement>(null)
-    const [distance, setdistance] = useState<number>(0)
+    const [distance, setdistance] = useState<number>(500)
     const [openSyncMap, setopenSyncMap] = useState(false)
     const locationInfo: { long: number, lat: number } = useSelector(selectLocation);
-
+    const [current_currency, setcurrent_currency] = useState(0)
+    const currency_state: Currency = useSelector(selectCurrency);
+    const dispatch = useDispatch();
 
     const params: { postid: string } = useParams()
 
     useEffect(() => {
         if (params.postid == `default` || !params.postid) {
-            getItemsFromTab(selectedTab)
+            // getItemsFromTab(selectedTab)
+            SyncPostWithDistance(distance)
             setprevTab(selectedTab);
             return;
         }
@@ -78,7 +84,6 @@ const Classifieds: React.FC = () => {
         })
     }
 
-    const dispatch = useDispatch()
     function openUploadItem() {
         setuploadItem(true)
         setshowMenu(false)
@@ -207,30 +212,47 @@ const Classifieds: React.FC = () => {
         console.log(posts)
         setloading(false)
     }
-
+    function modifyCurrency(index: number) {
+        setcurrent_currency(index)
+        const newCurrency: Currency = {
+            name: CURRENCIES[index],
+            equivalent: {
+                ...currency_state.equivalent
+            }
+        }
+        console.log(newCurrency)
+        dispatch(update_currency(newCurrency))
+    }
     return (
         <IonPage className={`classifieds`}>
             <SelectedTabContext.Provider value={[selectedTab, setselectedTab]}>
                 <div style={{ height: `25px`, background: `var(--ion-color-primary)` }} className="status-bar"></div>
                 {/* {loading && <IonProgressBar color={`secondary`} type={`indeterminate`}></IonProgressBar>} */}
-                <div className={`header`} style={{ background: `white` }}>
+                <IonToolbar >
                     <div className="title">
-                        <IonLabel>Classifieds</IonLabel>
-                        <div onClick={() => setopenSyncMap(true)}>
-                            <IonButton fill={`clear`}>
-                                <IonIcon icon={sync} />
-                                <IonBadge color={`success`} >{distance > 0 && distance + `km`}</IonBadge>
-                            </IonButton>
-                        </div>
-                        <div className="menu" onClick={() => setshowMenu(true)}>
-                            <IonButton fill={`clear`}>
-                                <IonIcon icon={ellipsisVertical} />
-                            </IonButton>
-                        </div>
+                        <IonItem lines={`none`} >
+                            <IonLabel>Classifieds</IonLabel>
+
+                            <IonButtons slot={`end`}>
+                                <IonButton onClick={() => setopenSyncMap(true)} fill={`clear`}>
+                                    <IonIcon icon={sync} />
+                                    <IonBadge color={`success`} >{distance > 0 && distance + `km`}</IonBadge>
+                                </IonButton>
+
+                                <IonButton onClick={() => setselect_currency_option(true)} color={`tertiary`} fill={`clear`}>
+                                    <IonIcon icon={cashOutline} />
+                                    {CURRENCIES[current_currency]}
+                                </IonButton>
+                                <IonButton fill={`clear`}>
+                                    <IonIcon icon={ellipsisVertical} />
+                                </IonButton>
+                            </IonButtons>
+                        </IonItem>
+
                     </div>
                     <IonSearchbar onClick={() => setstartSearch(true)} mode={`ios`} placeholder={`search`}></IonSearchbar>
 
-                </div>
+                </IonToolbar>
                 <IonContent >
                     <IonRefresher ref={refresherRef} onIonRefresh={() => getLatestClassifieds(() => refresherRef.current?.complete())} slot={`fixed`}>
                         <IonRefresherContent></IonRefresherContent>
@@ -336,6 +358,7 @@ const Classifieds: React.FC = () => {
                     };
                     setopenSyncMap(false)
                 }}></GeoSyncModal>
+                <IonActionSheet header={`choose currency`} isOpen={select_currency_option} buttons={CURRENCIES.map((currency, index) => ({ text: currency, handler: () => modifyCurrency(index) }))} onDidDismiss={() => { setselect_currency_option(false) }} />
                 <SearchModal searchForItem={searchForItem} onDidDismiss={() => setstartSearch(false)} isOpen={startSearch}></SearchModal>
                 <UploadClassified onDidDismiss={() => { setuploadItem(false) }} isOpen={uploadItem}></UploadClassified>
             </SelectedTabContext.Provider>

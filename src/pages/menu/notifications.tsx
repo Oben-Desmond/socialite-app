@@ -33,7 +33,7 @@ function Notifications() {
     const dispatch = useDispatch();
 
     const notifState: NotificationRedux = useSelector(selectNotification)
-    const { notifications } = notifState;
+    const  notifications =   notifState?.notifications||[];
 
     useEffect(() => {
         setincidents([...notifications.filter(info => info.category == 'incident')])

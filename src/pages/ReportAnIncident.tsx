@@ -70,9 +70,14 @@ const ReportAnIncident: React.FC = () => {
             console.log(docs)
             if (docs.length <= 0) setnoData(true)
         })
-
+        setuploadIncident(true)
+        takePicture()
 
     }, [])
+    useIonViewDidEnter(()=>{
+        setuploadIncident(true)
+        takePicture()
+    })
     function takePicture() {
         setPhotoOptions(false)
         photosFromCamera().then((data: any) => {

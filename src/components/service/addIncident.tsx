@@ -23,6 +23,22 @@ import { availableAccount } from "./serviceTypes";
 import { selectServiceAccount } from "../../states/reducers/service-reducer";
 
 
+const Medical_Emergency =`Medical_Emergency`
+const Crime = `Crime`
+const Accident =`Accident`
+const Protest= `Protest`
+const Municipal_Issues =  `Municipal_Issues`
+
+const report_type = {
+    Municipal_Issues,
+    Medical_Emergency,
+    Crime,
+    Protest, 
+    Accident
+
+}
+
+
 
 const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentImages: string[] }> = ({ onDidDismiss, isOpen, parentImages }) => {
 
@@ -66,7 +82,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
         }
         const incident: reportInterface = {
             author: user.email,
-            category,
+            category:categoryFromType(category),
             country: countryInfo.name,
             description: textAreaRef.current?.value || ``,
             id: uuid.v4(),
@@ -99,6 +115,20 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
         setimages([...parentImages])
     }, [parentImages])
 
+    function categoryFromType(category:string):string{
+
+        switch (category) {
+            case report_type.Accident: return `health`;
+            case report_type.Crime: return `police`;
+            case report_type.Medical_Emergency: return `health`;
+            case report_type.Municipal_Issues: return `municipal`;
+            case report_type.Protest: return `police`;
+               
+        
+            default: return `police`
+        }
+
+    }
 
     function deleteItem(item: number) {
         const imgs = images
@@ -168,12 +198,13 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         </div>
                         <div className={`input`}>
                             <IonItem lines={`none`} color={`none`}>
-                                <IonLabel color={`secondary`}>I am in need of </IonLabel>
-                                <IonSelect onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
-                                    <IonSelectOption value={`police`}>Police services</IonSelectOption>
-                                    <IonSelectOption value={`health`}>Hospital/Health services</IonSelectOption>
-                                    <IonSelectOption value={`municipal`}>Municipal Aid</IonSelectOption>
-                                    <IonSelectOption value={`firefighter`}>Fire Fighter service</IonSelectOption>
+                                <IonLabel color={`secondary`}>Report a ...</IonLabel>
+                                <IonSelect interface={`action-sheet`} onIonChange={(e) => setcategory(e.detail.value)} value={category || `sports`} name={`category`} >
+                                <IonSelectOption value={Crime}>Crime</IonSelectOption>
+                                    <IonSelectOption value={Medical_Emergency}>Medical Emergency</IonSelectOption>
+                                    <IonSelectOption value={Accident}>Accident</IonSelectOption>
+                                    <IonSelectOption value={Protest}>Protest</IonSelectOption>
+                                    <IonSelectOption value={Municipal_Issues}>Municipal Issues</IonSelectOption>
                                 </IonSelect>
                             </IonItem >
                         </div>
@@ -184,7 +215,7 @@ const AddIncident: React.FC<{ onDidDismiss: () => void, isOpen: boolean, parentI
                         <IonToolbar style={{ height: `40px` }}></IonToolbar>
                         <IonToolbar style={{ textAlign: `center` }}>
                             <IonButton type={"submit"}>
-                                Post</IonButton>
+                                Report</IonButton>
                         </IonToolbar>
                         <IonToolbar style={{ height: `30vh` }} ></IonToolbar>
                     </form>

@@ -52,7 +52,7 @@ const Home: React.FC = function () {
     const user: UserInterface = useSelector(selectUser)
     const history = useHistory();
     const notifState:NotificationRedux=useSelector(selectNotification)
-    const {notifications}=notifState;
+    const notifications:InAppNotification[] = notifState?.notifications||[];
     
     useEffect(() => {
 

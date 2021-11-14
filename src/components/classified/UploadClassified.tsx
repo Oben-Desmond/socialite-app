@@ -223,6 +223,7 @@ const UploadClassified: React.FC<{ onDidDismiss: () => void, isOpen: boolean }> 
                                                 {/* <IonSelectOption value={`politics`}>Politics</IonSelectOption>
                                     <IonSelectOption value={`religion`}>Religion</IonSelectOption>
                                     <IonSelectOption value={`science`}>Science</IonSelectOption> */}
+
                                             </IonSelect>
                                         </IonItem >
                                     </div>

@@ -143,56 +143,56 @@ const StoriesCard: React.FC<{ post: PostInterface }> = function (props) {
         //     </div>
         //     <StoryModal title={`Local Feed`} post={post} onDidDismiss={() => setreadmore(false)} isOpen={readmore}></StoryModal>
         // </div>
-         <div style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
-         <IonToolbar className='image-container'>
-             <div onClick={() => setreadmore(true)} style={{ textAlign: `center`, maxHeight: `30vh` }}>
-                 <img style={{ height: '46vh', objectFit: 'cover' }} src={post.images[0]} />
-             </div>
-             <div className="reactions">
-                 <IonItem color='none' lines='none'>
-                     {
-                         (post.author_url || (user.email == post.email && user.photoUrl)) ?
-                             <IonAvatar>
-                                 <IonImg src={user.photoUrl || post.author_url} />
-                             </IonAvatar> : <LetteredAvatar name={post.author_name}></LetteredAvatar>
-                     }
-                     <div style={{ width: '10px' }}></div>
-                     <IonText color='light'>
-                         {post.author_name}
-                     </IonText>
+        <div style={{ boxShadow: `0px 2px 5px rgba(0,0,0,0.34)`, marginBottom: `10px` }}>
+            <IonToolbar className='image-container'>
+                <div onClick={() => setreadmore(true)} style={{ textAlign: `center`, maxHeight: `30vh` }}>
+                    <img style={{ height: '46vh', objectFit: 'cover' }} src={post.images[0]} />
+                </div>
+                <div className="reactions">
+                    <IonItem color='none' lines='none'>
+                        {
+                            (post.author_url || (user.email == post.email && user.photoUrl)) ?
+                                <IonAvatar>
+                                    <IonImg src={user.photoUrl || post.author_url} />
+                                </IonAvatar> : <LetteredAvatar name={post.author_name}></LetteredAvatar>
+                        }
+                        <div style={{ width: '10px' }}></div>
+                        <IonText color='light'>
+                            {post.author_name}
+                        </IonText>
 
-                     <IonButtons slot='end' >
-                         <IonButton onClick={() => { likePost() }} color={`light`}>
-                             <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
-                             <IonLabel>
-                                 {
-                                     postLikes?.length
-                                 }
-                             </IonLabel>
-                         </IonButton>
-                         <IonButton onClick={() => { disLikePost() }} color={`light`}>
-                             <IonIcon slot='start' color={!disliked ? 'light' : 'secondary'} icon={!disliked ? thumbsDownOutline : thumbsDown}></IonIcon>
-                             <IonLabel>
-                                 {
-                                     postDislikes?.length
-                                 }
-                             </IonLabel>
-                         </IonButton>
-                     </IonButtons>
-                 </IonItem>
-             </div>
-         </IonToolbar>
-         <IonToolbar onClick={() => setreadmore(true)} style={{ padding: `10px 20px` }}>
-             <div >
-                 <IonLabel style={{ textTransform: `capitalize` }}><b>{post.title}</b></IonLabel>
-                 <p style={{ color: `#595858`, fontSize: `15px`, marginBottom: `0` }} >
-                     {post.description.substr(0, 150)}...
+                        <IonButtons slot='end' >
+                            <IonButton onClick={() => { likePost() }} color={`light`}>
+                                <IonIcon slot='start' color={!liked ? 'light' : 'secondary'} icon={!liked ? thumbsUpOutline : thumbsUp}></IonIcon>
+                                <IonLabel>
+                                    {
+                                        postLikes?.length
+                                    }
+                                </IonLabel>
+                            </IonButton>
+                            <IonButton onClick={() => { disLikePost() }} color={`light`}>
+                                <IonIcon slot='start' color={!disliked ? 'light' : 'secondary'} icon={!disliked ? thumbsDownOutline : thumbsDown}></IonIcon>
+                                <IonLabel>
+                                    {
+                                        postDislikes?.length
+                                    }
+                                </IonLabel>
+                            </IonButton>
+                        </IonButtons>
+                    </IonItem>
+                </div>
+            </IonToolbar>
+            <IonToolbar onClick={() => setreadmore(true)} style={{ padding: `10px 20px` }}>
+                <div >
+                    <IonLabel style={{ textTransform: `capitalize` }}><b>{post.title}</b></IonLabel>
+                    <p style={{ color: `#595858`, fontSize: `15px`, marginBottom: `0` }} >
+                        {post.description.substr(0, 150)}...
                      </p>
-             </div>
-             <IonToolbar>
-                 <IonLabel color={`medium`} ><GetHoursAgo timestamp={post.timestamp} />  <IonLabel color={`secondary`}>{post.location}</IonLabel></IonLabel>
-             </IonToolbar>
-         </IonToolbar></div>
+                </div>
+                <IonToolbar>
+                    <IonLabel color={`medium`} ><GetHoursAgo timestamp={post.timestamp} />  <IonLabel color={`secondary`}>{post.location}</IonLabel></IonLabel>
+                </IonToolbar>
+            </IonToolbar></div>
     );
 };
 
@@ -280,7 +280,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
 
 
         sendCommentReaction(text, user, post);
-        const id= Date.now()+ uuid.v4().substr(0.6) ;
+        const id = Date.now() + uuid.v4().substr(0.6);
         const commentObj: commentInterface = {
             author_name: user?.name,
             description: text,
@@ -297,18 +297,18 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
 
         }).catch(alert)
 
-        const inAppInfo:InAppNotification={
-           category:'feed',
-           id,
-           message:text,
-           path:`http://socionet.co.za/feed/${post.id}`,
-           post_id:post.id,
-           post_title:post.title,
-           sender:user.email,
-           sender_name:user.name,
-           sender_photo:user.photoUrl,
-           timestamp:Date.now(),
-           type:'comment'
+        const inAppInfo: InAppNotification = {
+            category: 'feed',
+            id,
+            message: text,
+            path: `http://socionet.co.za/feed/${post.id}`,
+            post_id: post.id,
+            post_title: post.title,
+            sender: user.email,
+            sender_name: user.name,
+            sender_photo: user.photoUrl,
+            timestamp: Date.now(),
+            type: 'comment'
 
         }
         if (post.email != user.email) {
@@ -351,12 +351,12 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             </IonHeader>
             <IonContent ref={contentRef} >
                 <div className="background  k hero-img">
-                    <img style={{maxHeight:`40vh`,objectFit:`cover`}} width={`100%`} src={post.images[0]}></img>
+                    <img style={{ maxHeight: `40vh`, objectFit: `cover` }} width={`100%`} src={post.images[0]}></img>
                 </div>
                 <IonToolbar className={`story-card`}>
                     <IonItem style={{ transform: !post.author_url ? `translate(0,10px)` : `auto` }} className={`author`} lines={`none`} color={`none`}>
                         {!!post.author_url && <IonAvatar slot={`start`}>
-                            <img style={{maxHeight:`30vh`}} src={post.author_url} />
+                            <img style={{ maxHeight: `30vh` }} src={post.author_url} />
                         </IonAvatar>}
                         {
                             !post.author_url && post.author_name && <IonButtons slot={`start`}  >
@@ -437,7 +437,7 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
                             </IonCol>
                         </IonRow>
                     </IonGrid>
-                    <IonToolbar className={`ion-padding-horizontal`} color={`light`}>comments ({comments.length})</IonToolbar>
+                    <IonItem onClick={() => setaddcomment(true)} button lines={`none`} className={`ion-padding-horizontal`} color={`light`}>comments ({comments.length})</IonItem>
                     <IonGrid>
                         {/* <Comment></Comment>
                         <div style={{ marginLeft: `40px` }}> <Comment></Comment></div>
@@ -461,13 +461,13 @@ export const StoryModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, p
             {/* <FlipMove appearAnimation={'elevator'}> */}
             {user?.email == post.email && !addcomment && <EditLocalFeedFab comments={comments} post={post} onEdit={() => { }} onDelete={() => { onDidDismiss(); }}></EditLocalFeedFab>}
             {/* </FlipMove> */}
-            <FlipMove >
+            {/* <FlipMove >
                 {!addcomment && user?.email && <IonFab onClick={() => setaddcomment(true)} vertical={`bottom`} horizontal={`end`}>
                     <IonFabButton>
                         <IonIcon icon={chatboxOutline} />
                     </IonFabButton>
                 </IonFab>}
-            </FlipMove >
+            </FlipMove > */}
             <IonFab onClick={() => setmoveInputUp(true)} style={{ transform: moveInputUp ? `translateY(-40vh)` : `translateY(0vh)`, transition: `0.5s` }} horizontal={`start`} vertical={`bottom`}>
                 <FlipMove >
                     {addcomment && <div className={`comment-footer`}>

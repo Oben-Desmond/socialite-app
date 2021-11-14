@@ -38,7 +38,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
     const mapRef = useRef<HTMLDivElement>(null)
     const favorites: classifiedItemInterface[] = useSelector(selectFavorites)
     const [averageRating, setaverageRating] = useState(0)
-    console.log(favorites)
+    // console.log(favorites)
     const [isAfavorite, setisAfavorite] = useState(false)
 
     
@@ -320,7 +320,7 @@ const ClassifiedItemModal: FC<{ isOpen: boolean, onDidDismiss: () => void, item:
             ;
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var d = R * c; // Distance in km
-        console.log(`d------------------`, d)
+        // console.log(`d------------------`, d)
         return (d)
 
 

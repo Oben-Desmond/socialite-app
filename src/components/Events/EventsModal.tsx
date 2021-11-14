@@ -294,13 +294,13 @@ const EventsModal: React.FC<{ onDidDismiss: () => void, isOpen: boolean, post: P
             {/* <FlipMove appearAnimation={'elevator'}> */}
             {user?.email == post.email && !addcomment && <EditEventsFab commentTitle={commentTitle} comments={comments} post={post} onEdit={() => { }} onDelete={() => { onDidDismiss(); }}></EditEventsFab>}
             {/* </FlipMove> */}
-            <FlipMove >
+            {/* <FlipMove >
                 {!addcomment && user?.email && <IonFab onClick={() => setaddcomment(true)} vertical={`bottom`} horizontal={`end`}>
                     <IonFabButton>
                         <IonIcon icon={chatboxOutline} />
                     </IonFabButton>
                 </IonFab>}
-            </FlipMove >
+            </FlipMove > */}
             <IonFab onClick={() => setmoveInputUp(true)} style={{ transform: moveInputUp ? `translateY(-40vh)` : `translateY(0vh)`, transition: `0.5s` }} horizontal={`start`} vertical={`bottom`}>
                 <FlipMove >
                     {addcomment && <div className={`comment-footer`}>

@@ -36,10 +36,11 @@ import { Dialog } from '@capacitor/dialog';
 import { accountInterface } from './service/serviceTypes';
 import { selectServiceAccount, update_account } from '../states/reducers/service-reducer';
 import { showInAppNotification } from './notifications/notifcation';
-import { ListenForInAppNotifications } from '../Firebase/pages/inAppNotifications';
+import { ListenForInAppNotifications, sanitizeDBId } from '../Firebase/pages/inAppNotifications';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { getAppNotifications, getServiceAccount, getStoredCountry, setServiceAccount } from '../states/storage/storage-getters';
 import { NotificationRedux, selectNotification, update_notifications } from '../states/reducers/InAppNotifications';
+import { SanitizeStringForDB } from './classified/uploadClassifiedToDB';
 
 const countries = [`south africa`, `cameroon`, `nigeria`, `ghana`]
 interface AppPage {
@@ -47,7 +48,7 @@ interface AppPage {
   iosIcon: string;
   mdIcon: string;
   title: string;
-  condition:boolean
+  condition: boolean
 }
 
 
@@ -65,7 +66,7 @@ const Menu: React.FC = () => {
   const history = useHistory()
   const servAccount: accountInterface = useSelector(selectServiceAccount)
   const notifState: NotificationRedux = useSelector(selectNotification)
-  const [adminAcc, setadminAcc] = useState<UserInterface|undefined>()
+  const [adminAcc, setadminAcc] = useState<UserInterface | undefined>()
 
   const appPages: AppPage[] = [
     {
@@ -73,35 +74,35 @@ const Menu: React.FC = () => {
       url: '/feed/default',
       iosIcon: homeOutline,
       mdIcon: homeOutline,
-      condition:true
-  
+      condition: true
+
     },
     {
       title: 'Notifications',
       url: '/notifications',
       iosIcon: notificationsOutline,
       mdIcon: notificationsOutline,
-      condition:true
-  
+      condition: true
+
     },
     {
       title: 'Profile',
       url: '/profile',
       iosIcon: personOutline,
       mdIcon: personOutline,
-      condition:true
-  
+      condition: true
+
     },
     {
       title: 'Admin',
       url: '/admin',
       iosIcon: hammerOutline,
       mdIcon: hammerOutline,
-      condition:!!adminAcc
+      condition: !!adminAcc
     },
-   
-  
-  
+
+
+
   ];
   useEffect(() => {
     initLocation()
@@ -117,7 +118,7 @@ const Menu: React.FC = () => {
 
   useEffect(() => {
     initializeAdminAccount()
-      
+
   }, [user])
 
   async function initializeService() {
@@ -127,13 +128,16 @@ const Menu: React.FC = () => {
     }
   }
 
-  async function initializeAdminAccount(){
-      db.ref(`admins`).child(user.email).once(`value`, (snapshot)=>{
-             const value = snapshot.val()
-             if(value){
-                setadminAcc(value)
-             }
+  async function initializeAdminAccount() {
+    if (user && user.email) {
+      const path = SanitizeStringForDB(user.email);
+      db.ref(`admins`).child(path).once(`value`, (snapshot) => {
+        const value = snapshot.val()
+        if (value) {
+          setadminAcc(value)
+        }
       })
+    }
   }
 
   async function initializeAppNotifications() {
@@ -150,13 +154,13 @@ const Menu: React.FC = () => {
     setloading(true)
 
     try {
-      let account: accountInterface  = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
+      let account: accountInterface = await interpreteCode(code, countryInfo?.name || `South Africa`, user)
       dispatch(update_account(account))
       setServiceAccount(account)
-      if(account.type==`company`){
-        history.push(`/company`) 
+      if (account.type == `company`) {
+        history.push(`/company`)
         setloading(false)
-        return; 
+        return;
       }
       history.push(`/service/${account.type}`)
     }
@@ -173,7 +177,7 @@ const Menu: React.FC = () => {
         dispatch(init_favorites(JSON.parse(res.value)))
       }
     })
-   
+
     initUser()
     initializeCountry()
     initLocation()
@@ -271,18 +275,18 @@ const Menu: React.FC = () => {
         <div className={`list`}>
           {appPages.map((appPage, index) => {
 
-                
+
             return (
-             <>{ appPage.condition ===true&& <IonMenuToggle color={`dark`} key={index} autoHide={false}>
+              <>{appPage.condition === true && <IonMenuToggle color={`dark`} key={index} autoHide={false}>
                 <IonItem routerLink={appPage.url} color={`dark`} routerDirection="forward" lines={`full`} detail={false}>
                   <IonIcon color={location.pathname === appPage.url ? 'warning' : 'light'} slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                   <IonLabel color={`dark`} style={{ fontFamily: 'Comfortaa', color: location.pathname === appPage.url ? 'var(--ion-color-warning)' : 'white' }} >{appPage.title}</IonLabel>
-                  {appPage.title == 'Notifications' && notifState.new && <IonBadge slot='end' style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} color='danger'>
+                  {appPage.title == 'Notifications' && notifState?.new && <IonBadge slot='end' style={{ transform: 'translate(-14px,0)', borderRadius: '50%', }} color='danger'>
                     <div style={{ width: '1px', height: '3px' }}></div>
                   </IonBadge>}
                 </IonItem>
               </IonMenuToggle>
-            }</>
+              }</>
             );
           })}
           <IonMenuToggle color={`dark`} autoHide={false}>
@@ -308,7 +312,7 @@ const Menu: React.FC = () => {
 
 export default Menu;
 
-export async function interpreteCode(code: string, country: string, user: UserInterface):Promise<accountInterface> {
+export async function interpreteCode(code: string, country: string, user: UserInterface): Promise<accountInterface> {
 
   // const accOwner:accountInterface={
   //   code:`102001`,

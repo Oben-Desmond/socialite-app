@@ -20,7 +20,7 @@ export interface Advert{
    },
    geohash:string,
    country:string,
-   disapproved_message:string,
+   disapproved_message?:string,
    id:string
 }
 

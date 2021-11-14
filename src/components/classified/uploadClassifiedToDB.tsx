@@ -260,3 +260,7 @@ export function fetchItemById(id: string, callBack: (val: PostInterface | any) =
         })
 
 }
+
+export function SanitizeStringForDB(word:string){
+    return  removeOccurence(word, [`.`, `$`, `#`, `[`, `]`, `-`, `+`, `*`, ` `])
+}

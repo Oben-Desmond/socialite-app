@@ -6,9 +6,10 @@ import ClassifiedReviewsReducer from "./states/reducers/reviews-reducer";
 import favoritesReducer from "./states/reducers/favoritesReducer";
 import serviceReducer from "./states/reducers/service-reducer";
 import NotificationReducer from "./states/reducers/InAppNotifications";
+import CurrencyReducer from "./states/reducers/currency_reducer";
 
 
-const Reducers= combineReducers({userReducer, countryReducer, locationReducer, ClassifiedReviewsReducer,  favoritesReducer, serviceReducer, NotificationReducer})
+const Reducers= combineReducers({userReducer, countryReducer, locationReducer, ClassifiedReviewsReducer,  favoritesReducer, serviceReducer, CurrencyReducer})
 const store = createStore(Reducers, {})
 
 
